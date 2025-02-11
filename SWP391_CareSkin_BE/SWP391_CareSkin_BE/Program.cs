@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.Data.Data;
+
 namespace SWP391_CareSkin_BE
 {
     public class Program
@@ -8,6 +12,11 @@ namespace SWP391_CareSkin_BE
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddDbContext<MyDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
