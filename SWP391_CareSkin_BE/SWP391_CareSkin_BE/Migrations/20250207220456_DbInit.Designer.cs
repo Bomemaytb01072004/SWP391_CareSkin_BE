@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.Data.Data;
 
 #nullable disable
 

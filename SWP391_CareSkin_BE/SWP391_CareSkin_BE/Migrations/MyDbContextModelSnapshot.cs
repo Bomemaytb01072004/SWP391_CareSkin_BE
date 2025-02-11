@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SWP391_CareSkin_BE.Data.Data;
-
 #nullable disable
 
 namespace SWP391_CareSkin_BE.Migrations

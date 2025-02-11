@@ -1,7 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.Data.Data;
 
 namespace SWP391_CareSkin_BE
 {
