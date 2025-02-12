@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SWP391_CareSkin_BE.Models;
 
-namespace  SWP391_CareSkin_BE.Data
+namespace SWP391_CareSkin_BE.Data
 
 {
     public class MyDbContext : DbContext
@@ -8,7 +9,7 @@ namespace  SWP391_CareSkin_BE.Data
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
         //region Dbset
-        public DbSet<User> Users { get; set; }
+        public DbSet<Customers> Customers { get; set; }
 
         // end Dbset
     }

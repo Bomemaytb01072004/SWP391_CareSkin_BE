@@ -3,15 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("BlogNews")]
-    public class BlogNews
+    [Table("Quizs")]
+    public class Quizs
     {
-        public int BlogId { get; set; }
+        public int QuizId { get; set; }
 
         public string Title { get; set; }
 
-        public string Content { get; set; }
-
-        public int CustomerId { get; set; }
+        public string Description { get; set; }
     }
 }

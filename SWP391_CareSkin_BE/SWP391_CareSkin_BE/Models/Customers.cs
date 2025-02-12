@@ -6,15 +6,20 @@ namespace SWP391_CareSkin_BE.Models
     [Table("Customers")]
     public class Customers
     {
-        [Key]
         public int CustomerId { get; set; }
 
-        public string UserName  { get; set; }
+        [Required]
+        [MaxLength(20)]
+        public string UserName { get; set; }
 
-        public string PassWord { get; set; }
+        [Required]
+        [MaxLength(20)]
+        public string Password { get; set; }
 
         public string FullName { get; set; }
 
+        [Required, MaxLength(100)]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$")]
         public string Email { get; set; }
 
         public int Phone { get; set; }

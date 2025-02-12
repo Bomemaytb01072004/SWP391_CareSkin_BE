@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SWP391_CareSkin_BE.Models;
 
 
 
-namespace  SWP391_CareSkin_BE.Data
+namespace SWP391_CareSkin_BE.Data
 .Controllers
 {
     [Route("api/[controller]")]
@@ -23,7 +22,7 @@ namespace  SWP391_CareSkin_BE.Data
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             //tìm user trong database
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == request.UserName);
+            var user = await _context.Customers.FirstOrDefaultAsync(u => u.UserName == request.UserName);
             
             //so sáng user  
             if (user == null)

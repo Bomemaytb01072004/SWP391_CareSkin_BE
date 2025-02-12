@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.Models.LoginRequest",
+        "Type": "SWP391_CareSkin_BE.Data.LoginRequest",
         "IsRequired": true
       }
     ],
@@ -25,7 +25,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.Models.RegisterRequest",
+        "Type": "SWP391_CareSkin_BE.Data.RegisterRequest",
         "IsRequired": true
       }
     ],
