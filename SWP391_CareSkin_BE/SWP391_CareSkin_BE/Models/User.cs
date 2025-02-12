@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SWP391_CareSkin_BE.Data
+namespace SWP391_CareSkin_BE.Models
 {
     [Table("User")]
     public class User
@@ -11,11 +11,11 @@ namespace SWP391_CareSkin_BE.Data
 
         [Required]
         [MaxLength(20)]
-        public String UserName { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [MaxLength(20)]
-        public String Password { get; set; }
+        public string Password { get; set; }
 
         [Required, MaxLength(100)]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$")]

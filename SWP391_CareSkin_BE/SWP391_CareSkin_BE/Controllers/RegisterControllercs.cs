@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.Data.Data;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.DTOS;
+using Microsoft.AspNetCore.Identity.Data;
 
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -19,7 +20,7 @@ namespace SWP391_CareSkin_BE.Controllers
 
     
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||

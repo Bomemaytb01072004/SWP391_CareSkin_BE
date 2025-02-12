@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.Models;
 
-
-
-namespace  SWP391_CareSkin_BE.Data
-.Controllers
+namespace SWP391_CareSkin_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,20 +19,20 @@ namespace  SWP391_CareSkin_BE.Data
             _context = context;
         }
 
-        [HttpPost ("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
             //tìm user trong database
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == request.UserName);
-            
+
             //so sáng user  
             if (user == null)
             {
-                return Unauthorized(new {message ="Đăng nhập thất bại. Sai tên đăng nhập hoặc mật khẩu!!"});
+                return Unauthorized(new { message = "Đăng nhập thất bại. Sai tên đăng nhập hoặc mật khẩu!!" });
             }
 
             //so sánh password 
-            if(user.Password != request.Password)
+            if (user.Password != request.Password)
             {
                 return Unauthorized(new { message = "Đăng nhập thất  bại. Sai tên đăng nhập hoặc mặt khẩu!!" });
             }
