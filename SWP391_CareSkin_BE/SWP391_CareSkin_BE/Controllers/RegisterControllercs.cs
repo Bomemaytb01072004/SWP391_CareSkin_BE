@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.Data.Data;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.DTOS;
+using Microsoft.AspNetCore.Identity.Data;
 
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -19,7 +20,7 @@ namespace SWP391_CareSkin_BE.Controllers
 
     
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||
@@ -33,7 +34,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 return BadRequest(new { message = "Mật khẩu xác nhận không khớp!" });
             }
 
-            var existingUser = await _context.Users
+            var existingUser = await _context.Customers
                 .FirstOrDefaultAsync(u => u.UserName == request.UserName || u.Email == request.Email);
 
             if (existingUser != null)
@@ -41,17 +42,17 @@ namespace SWP391_CareSkin_BE.Controllers
                 return Conflict(new { message = "Tên đăng nhập hoặc email đã tồn tại!" });
             }
 
-            var newUser = new User
+            var newUser = new Customers
             {
                 UserName = request.UserName,
                 Password = request.Password,
                 Email = request.Email 
             };
 
-            await _context.Users.AddAsync(newUser);
+            await _context.Customers.AddAsync(newUser);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Đăng ký thành công!", userId = newUser.IdUser });
+            return Ok(new { message = "Đăng ký thành công!", userId = newUser.CustomerId });
         }
     }
 }

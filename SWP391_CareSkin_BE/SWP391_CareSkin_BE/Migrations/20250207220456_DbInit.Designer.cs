@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.Data.Data;
 
 #nullable disable
 
@@ -14,7 +13,7 @@ namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
     [Migration("20250207220456_DbInit")]
-    partial class DbInit
+    partial class DbInit : Migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +52,11 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.ToTable("User");
                 });
 #pragma warning restore 612, 618
+        }
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            throw new NotImplementedException();
         }
     }
 }

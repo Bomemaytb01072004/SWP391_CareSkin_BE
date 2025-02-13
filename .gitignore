@@ -293,3 +293,23 @@ Beta
 0 / 0
 used queries
 1
+*.dll
+*.exe
+*.pdb
+*.log
+*.cache
+*.vs
+.vs/
+*.user
+*.suo
+*.vscode/
+app.db
+packages/
+project.lock.json
+project.assets.json
+*.nuget/
+*.nupkg
+*.snupkg
+.env
+.secrets/
+secrets.json
