@@ -22,7 +22,10 @@ namespace SWP391_CareSkin_BE.Models
         public int ML {  get; set; }
 
         public virtual Brand Brands { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public virtual ICollection<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; } = new List<SkinCareRoutineProduct>();
         public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public virtual ICollection<RatingFeedbacks> RatingFeedbacks { get; set; } = new List<RatingFeedbacks>();
     }
 }

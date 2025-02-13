@@ -14,5 +14,11 @@ namespace SWP391_CareSkin_BE.Models
 
         public int AnswerId { get; set; }
 
+        public virtual Customers Customers { get; set; }
+
+        public virtual Questions Questions { get; set; }
+
+        public virtual Answers Answers { get; set; }
+
     }
 }

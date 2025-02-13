@@ -15,5 +15,11 @@ namespace SWP391_CareSkin_BE.Models
         public int SkinTypeId { get; set; }
 
         public DateTime LastQuizTime { get; set; }
+
+        public virtual Customers Customers { get; set; }
+
+        public virtual Quizs Quizs { get; set; }
+
+        public virtual SkinType SkinType { get; set; }
     }
 }

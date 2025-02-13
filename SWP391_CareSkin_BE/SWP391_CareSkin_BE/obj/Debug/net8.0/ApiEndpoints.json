@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.Data.LoginRequest",
+        "Type": "SWP391_CareSkin_BE.DTOS.LoginDTO",
         "IsRequired": true
       }
     ],
@@ -25,7 +25,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.Data.RegisterRequest",
+        "Type": "SWP391_CareSkin_BE.DTOS.RegisterDTO",
         "IsRequired": true
       }
     ],

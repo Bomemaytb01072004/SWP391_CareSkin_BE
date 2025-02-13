@@ -13,6 +13,9 @@ namespace SWP391_CareSkin_BE.Models
 
        public string Description { get; set; }
 
+        public virtual ICollection<Results> Results { get; set; } = new List<Results>();
+
+        public virtual ICollection<SkinCareRoutine> SkinCareRoutines { get; set; } = new List<SkinCareRoutine>();
 
     }
 }

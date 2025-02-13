@@ -8,7 +8,7 @@ namespace SWP391_CareSkin_BE.Models
     public class Admin
     {
         [Key]
-        public int Id {  get; set; }
+        public int AdminId {  get; set; }
 
         [Required]
         public string UserName { get; set; }

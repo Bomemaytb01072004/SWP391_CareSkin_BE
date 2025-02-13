@@ -15,5 +15,9 @@ namespace SWP391_CareSkin_BE.Models
         public int Rating { get; set; }
 
         public string FeedBack { get; set; }
+
+        public virtual Customers Customers { get; set; }
+
+        public virtual Product Product { get; set; }
     }
 }

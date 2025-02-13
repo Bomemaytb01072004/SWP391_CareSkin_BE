@@ -14,6 +14,9 @@ namespace SWP391_CareSkin_BE.Models
 
         public int PointForSkinType { get; set; }
 
+        public virtual Questions Questions { get; set; }
+
+        public virtual ICollection<Historys> Historys { get; set; } = new List<Historys>();
 
     }
 }

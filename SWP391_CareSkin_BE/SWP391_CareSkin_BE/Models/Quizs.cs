@@ -11,5 +11,8 @@ namespace SWP391_CareSkin_BE.Models
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        public virtual ICollection<Questions> Questions { get; set; } = new List<Questions>();
+        public virtual ICollection<Results> Results { get; set; } = new List<Results>();
     }
 }

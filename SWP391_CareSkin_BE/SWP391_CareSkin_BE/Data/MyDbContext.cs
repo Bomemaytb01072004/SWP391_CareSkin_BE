@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.Data
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
         //region Dbset
-        public DbSet<User> Users { get; set; }
+        public DbSet<Customers> Customers { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Brand> Brands { get; set; }
@@ -31,17 +31,17 @@ namespace SWP391_CareSkin_BE.Data
             base.OnModelCreating(modelBuilder);
 
             //primary key 
-            modelBuilder.Entity<User>().HasKey(u => u.IdUser);
-            modelBuilder.Entity<Admin>().HasKey(a => a.Id);
+            modelBuilder.Entity<Customers>().HasKey(u => u.CustomerId);
+            modelBuilder.Entity<Admin>().HasKey(a => a.AdminId);
             modelBuilder.Entity<Staff>().HasKey(s => s.Staff_Id);
             modelBuilder.Entity<Brand>().HasKey(b => b.Brand_Id);
             modelBuilder.Entity<Product>().HasKey(p => p.Product_Id);
             modelBuilder.Entity<SkinType>().HasKey(st => st.Id);
             modelBuilder.Entity<SkinCareRoutine>().HasKey(scr => scr.Id);
             modelBuilder.Entity<Promotion>().HasKey(p => p.Id);
-            modelBuilder.Entity<Cart>().HasKey(c => c.Id);
-            modelBuilder.Entity<FAQ>().HasKey(f => f.Id);
-            modelBuilder.Entity<OrderProduct>().HasKey(op => new { op.Order_ID, op.Product_ID });
+            modelBuilder.Entity<Cart>().HasKey(c => c.CartId);
+            modelBuilder.Entity<FAQ>().HasKey(f => f.FAQId);
+            modelBuilder.Entity<OrderProduct>().HasKey(op => op.OrderProductId);
             modelBuilder.Entity<PromotionProduct>().HasKey(pp => new { pp.Product_Id, pp.Promotion_Id });
             modelBuilder.Entity<SkinCareRoutineProduct>().HasKey(srp => new { srp.SkinCare_Routine_Id, srp.Product_Id });
         

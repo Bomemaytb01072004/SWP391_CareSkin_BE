@@ -24,5 +24,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Profile_Picture { get; set; }
 
+        public virtual ICollection<Supports> Supports { get; set; } = new List<Supports>();
+
     }
 }

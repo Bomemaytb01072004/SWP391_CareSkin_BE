@@ -32,6 +32,20 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Address { get; set; }
 
-        public int Points { get; set; }
+        public virtual ICollection<BlogNews> BlogNews { get; set; } = new List<BlogNews>();
+
+        public virtual ICollection<Historys> Historys { get; set; } = new List<Historys>();
+
+        public virtual ICollection<Results> Results { get; set; } = new List<Results>();
+
+        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+        public virtual ICollection<Orders> Orders { get; set; } = new List<Orders>();
+
+        public virtual ICollection<RatingFeedbacks> RatingFeedbacks { get; set; } = new List<RatingFeedbacks>();
+
+        public virtual ICollection<Supports> Supports { get; set; } = new List<Supports>();
+
+
     }
 }
