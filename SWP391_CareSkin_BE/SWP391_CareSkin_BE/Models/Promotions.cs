@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("Promotion")]
-    public class Promotion
+    public class Promotions
     {
         [Key]
-        public int Id { get; set; }
+        public int PromotionId { get; set; }
 
         public string Name { get; set; }
 
@@ -17,7 +17,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateTime End_Date { get; set; }
 
-        public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
-        public virtual ICollection<PromotionOrder> PromotionOrders { get; set; } = new List<PromotionOrder>();
+        public virtual ICollection<PromotionProducts> PromotionProducts { get; set; } = new List<PromotionProducts>();
+        public virtual ICollection<PromotionOrders> PromotionOrders { get; set; } = new List<PromotionOrders>();
     }
 }

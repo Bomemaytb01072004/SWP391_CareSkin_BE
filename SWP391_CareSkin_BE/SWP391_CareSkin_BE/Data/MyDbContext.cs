@@ -12,16 +12,16 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Customers> Customers { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<Admin> Admins { get; set; }
-        public DbSet<Brand> Brands { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<OrderProduct> OrderProducts { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Promotion> Promotions { get; set; }
-        public DbSet<PromotionProduct> promotionProducts { get; set; }
-        public DbSet<SkinCareRoutine> SkinCareRoutines { get; set; }
-        public DbSet<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; }
-        public DbSet<SkinType> skinTypes { get; set; }
-        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Brands> Brands { get; set; }
+        public DbSet<Carts> Carts { get; set; }
+        public DbSet<OrderProducts> OrderProducts { get; set; }
+        public DbSet<Products> Products { get; set; }
+        public DbSet<Promotions> Promotions { get; set; }
+        public DbSet<PromotionProducts> promotionProducts { get; set; }
+        public DbSet<SkinCareRoutines> SkinCareRoutines { get; set; }
+        public DbSet<SkinCareRoutineProducts> SkinCareRoutineProducts { get; set; }
+        public DbSet<SkinTypes> skinTypes { get; set; }
+        public DbSet<Staffs> Staffs { get; set; }
 
         // end Dbset
 
@@ -33,63 +33,24 @@ namespace SWP391_CareSkin_BE.Data
             //primary key 
             modelBuilder.Entity<Customers>().HasKey(u => u.CustomerId);
             modelBuilder.Entity<Admin>().HasKey(a => a.AdminId);
-            modelBuilder.Entity<Staff>().HasKey(s => s.Staff_Id);
-            modelBuilder.Entity<Brand>().HasKey(b => b.Brand_Id);
-            modelBuilder.Entity<Product>().HasKey(p => p.Product_Id);
-            modelBuilder.Entity<SkinType>().HasKey(st => st.Id);
-            modelBuilder.Entity<SkinCareRoutine>().HasKey(scr => scr.Id);
-            modelBuilder.Entity<Promotion>().HasKey(p => p.Id);
-            modelBuilder.Entity<Cart>().HasKey(c => c.CartId);
+            modelBuilder.Entity<Staffs>().HasKey(s => s.StaffId);
+            modelBuilder.Entity<Brands>().HasKey(b => b.BrandId);
+            modelBuilder.Entity<Products>().HasKey(p => p.ProductId);
+            modelBuilder.Entity<SkinTypes>().HasKey(st => st.Id);
+            modelBuilder.Entity<SkinCareRoutines>().HasKey(scr => scr.Id);
+            modelBuilder.Entity<Promotions>().HasKey(p => p.PromotionId);
+            modelBuilder.Entity<Carts>().HasKey(c => c.CartId);
             modelBuilder.Entity<FAQ>().HasKey(f => f.FAQId);
-            modelBuilder.Entity<OrderProduct>().HasKey(op => op.OrderProductId);
-            modelBuilder.Entity<PromotionProduct>().HasKey(pp => new { pp.Product_Id, pp.Promotion_Id });
-            modelBuilder.Entity<SkinCareRoutineProduct>().HasKey(srp => new { srp.SkinCare_Routine_Id, srp.Product_Id });
+            modelBuilder.Entity<OrderProducts>().HasKey(op => op.OrderProductId);
+            modelBuilder.Entity<PromotionProducts>().HasKey(pp => new { pp.ProductId, pp.PromotionId });
+            modelBuilder.Entity<SkinCareRoutineProducts>().HasKey(srp => new { srp.SkinCareRoutineId, srp.ProductId });
         
             // end primary key
 
 
             //relationship
 
-            modelBuilder.Entity<Cart>()
-               .HasOne(c => c.Product)
-               .WithMany()
-               .HasForeignKey(c => c.Product_Id);
-
-            modelBuilder.Entity<OrderProduct>()
-                .HasOne(op => op.Product)
-                .WithMany()
-                .HasForeignKey(op => op.Product_ID);
-
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Brands)
-                .WithMany(b => b.Products)
-                .HasForeignKey(p => p.Brand_ID);
-
-            modelBuilder.Entity<PromotionProduct>()
-                .HasOne(pp => pp.Product)
-                .WithMany(p => p.PromotionProducts)
-                .HasForeignKey(pp => pp.Product_Id);
-
-            modelBuilder.Entity<PromotionProduct>()
-                .HasOne(pp => pp.Promotion)
-                .WithMany(pr => pr.PromotionProducts)
-                .HasForeignKey(pp => pp.Promotion_Id);
-
-            modelBuilder.Entity<SkinCareRoutine>()
-                .HasOne(sr => sr.SkinType)
-                .WithMany()
-                .HasForeignKey(sr => sr.Skin_Type_Id);
-
-            modelBuilder.Entity<SkinCareRoutineProduct>()
-                .HasOne(srp => srp.SkinCareRoutine)
-                .WithMany(scr => scr.SkinCareRoutineProducts)
-                .HasForeignKey(srp => srp.SkinCare_Routine_Id);
-
-            modelBuilder.Entity<SkinCareRoutineProduct>()
-                .HasOne(srp => srp.Product)
-                .WithMany(p => p.SkinCareRoutineProducts)
-                .HasForeignKey(srp => srp.Product_Id);
-
+            
 
             //end relationship
         }

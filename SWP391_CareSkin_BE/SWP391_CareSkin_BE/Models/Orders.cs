@@ -26,8 +26,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual OrderStatus OrderStatus { get; set; }
 
-        public virtual PromotionOrder PromotionOrder { get; set; }
+        public virtual PromotionOrders PromotionOrder { get; set; }
 
-        public virtual OrderProduct OrderProduct { get; set; }
+        public virtual OrderProducts OrderProduct { get; set; }
     }
 }

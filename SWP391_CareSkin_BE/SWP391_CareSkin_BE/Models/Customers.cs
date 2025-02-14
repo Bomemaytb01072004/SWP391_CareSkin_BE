@@ -38,7 +38,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual ICollection<Results> Results { get; set; } = new List<Results>();
 
-        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+        public virtual ICollection<Carts> Carts { get; set; } = new List<Carts>();
 
         public virtual ICollection<Orders> Orders { get; set; } = new List<Orders>();
 

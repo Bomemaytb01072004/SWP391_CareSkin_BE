@@ -20,6 +20,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual Quizs Quizs { get; set; }
 
-        public virtual SkinType SkinType { get; set; }
+        public virtual SkinTypes SkinType { get; set; }
     }
 }

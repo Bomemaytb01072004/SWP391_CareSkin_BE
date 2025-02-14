@@ -18,6 +18,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual Customers Customers { get; set; }
 
-        public virtual Product Product { get; set; }
+        public virtual Products Product { get; set; }
     }
 }

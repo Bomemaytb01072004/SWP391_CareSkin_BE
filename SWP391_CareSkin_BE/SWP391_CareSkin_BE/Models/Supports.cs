@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int StaffId { get; set; }
 
-        public virtual Staff Staff { get; set; }
+        public virtual Staffs Staff { get; set; }
 
         public virtual Customers Customers { get; set; }
     }
