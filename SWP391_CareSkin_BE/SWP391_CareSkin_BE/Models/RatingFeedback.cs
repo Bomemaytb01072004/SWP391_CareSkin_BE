@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("RatingFeedbacks")]
-    public class RatingFeedbacks
+    [Table("RatingFeedback")]
+    public class RatingFeedback
     {
         public int Id { get; set; }
 
@@ -16,8 +16,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public string FeedBack { get; set; }
 
-        public virtual Customers Customers { get; set; }
+        public virtual Customer Customer { get; set; }
 
-        public virtual Products Product { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

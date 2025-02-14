@@ -42,7 +42,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 return Conflict(new { message = "Tên đăng nhập hoặc email đã tồn tại!" });
             }
 
-            var newUser = new Customers
+            var newUser = new Customer
             {
                 UserName = request.UserName,
                 Password = request.Password,

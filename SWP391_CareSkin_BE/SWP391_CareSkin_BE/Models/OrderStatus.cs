@@ -9,6 +9,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Status { get; set; }
 
-        public virtual ICollection<Orders> Orders { get; set; } = new List<Orders>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

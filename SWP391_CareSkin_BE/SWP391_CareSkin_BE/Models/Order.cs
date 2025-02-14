@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("Orders")]
-    public class Orders
+    [Table("Order")]
+    public class Order
     {
         public int OrderId { get; set; }
 
         public int CustomerId { get; set; }
 
-        public string OrderStatusId { get; set; }
+        public int OrderStatusId { get; set; }
 
         public int TotalPrice { get; set; }
 
@@ -22,12 +22,11 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Address { get; set; }
 
-        public virtual Customers Customers { get; set; }
+        public virtual Customer Customer { get; set; }
 
         public virtual OrderStatus OrderStatus { get; set; }
 
-        public virtual PromotionOrders PromotionOrder { get; set; }
-
-        public virtual OrderProducts OrderProduct { get; set; }
+        public virtual ICollection<PromotionOrder> PromotionOrders { get; set; } = new List<PromotionOrder>();
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 }
