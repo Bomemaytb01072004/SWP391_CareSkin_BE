@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("BlogNews")]
-    public class BlogNews
+    [Table("BlogNew")]
+    public class BlogNew
     {
         public int BlogId { get; set; }
 
@@ -14,6 +14,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public int CustomerId { get; set; }
 
-        public virtual Customers Customers { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

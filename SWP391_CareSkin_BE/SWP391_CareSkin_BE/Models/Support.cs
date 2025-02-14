@@ -3,18 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("Supports")]
-    public class Supports
+    [Table("Support")]
+    public class Support
     {
-        [Key]
         public int SuppportId { get; set; }
 
         public int CustomerId { get; set; }
 
         public int StaffId { get; set; }
 
-        public virtual Staffs Staff { get; set; }
+        public virtual Staff Staff { get; set; }
 
-        public virtual Customers Customers { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

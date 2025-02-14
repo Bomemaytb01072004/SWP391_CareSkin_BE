@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("Customers")]
-    public class Customers
+    public class Customer
     {
         public int CustomerId { get; set; }
 
@@ -32,19 +32,19 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Address { get; set; }
 
-        public virtual ICollection<BlogNews> BlogNews { get; set; } = new List<BlogNews>();
+        public virtual ICollection<BlogNew> BlogNews { get; set; } = new List<BlogNew>();
 
-        public virtual ICollection<Historys> Historys { get; set; } = new List<Historys>();
+        public virtual ICollection<History> Historys { get; set; } = new List<History>();
 
-        public virtual ICollection<Results> Results { get; set; } = new List<Results>();
+        public virtual ICollection<Result> Results { get; set; } = new List<Result>();
 
-        public virtual ICollection<Carts> Carts { get; set; } = new List<Carts>();
+        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-        public virtual ICollection<Orders> Orders { get; set; } = new List<Orders>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-        public virtual ICollection<RatingFeedbacks> RatingFeedbacks { get; set; } = new List<RatingFeedbacks>();
+        public virtual ICollection<RatingFeedback> RatingFeedbacks { get; set; } = new List<RatingFeedback>();
 
-        public virtual ICollection<Supports> Supports { get; set; } = new List<Supports>();
+        public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
 
 
     }

@@ -4,16 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("SkinCareRoutineProduct")]
-    public class SkinCareRoutineProducts
+    public class SkinCareRoutineProduct
     {
-        [Key]
         public int SkinCareRoutineId { get; set; }
         
-        [Key]
         public int ProductId { get; set; }
 
-        public virtual SkinCareRoutines SkinCareRoutine { get; set; }
-        public virtual Products Product { get; set; }
+        public virtual SkinCareRoutine SkinCareRoutine { get; set; }
+        public virtual Product Product { get; set; }
 
     }
 }

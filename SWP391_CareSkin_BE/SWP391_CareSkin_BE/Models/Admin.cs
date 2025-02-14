@@ -7,7 +7,6 @@ namespace SWP391_CareSkin_BE.Models
     [Table("Admin")]
     public class Admin
     {
-        [Key]
         public int AdminId {  get; set; }
 
         [Required]

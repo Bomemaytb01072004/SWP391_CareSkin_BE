@@ -6,7 +6,6 @@ namespace SWP391_CareSkin_BE.Models
     [Table("FAQ")]
     public class FAQ
     {
-        [Key]
         public int FAQId { get; set; }
 
         public string Question { get; set; }

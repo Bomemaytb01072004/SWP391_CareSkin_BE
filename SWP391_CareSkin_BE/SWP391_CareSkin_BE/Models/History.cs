@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("Historys")]
-    public class Historys
+    [Table("History")]
+    public class History
     {
         public int HistoryId { get; set; }
 
@@ -14,11 +14,11 @@ namespace SWP391_CareSkin_BE.Models
 
         public int AnswerId { get; set; }
 
-        public virtual Customers Customers { get; set; }
+        public virtual Customer Customer { get; set; }
 
-        public virtual Questions Questions { get; set; }
+        public virtual Question Question { get; set; }
 
-        public virtual Answers Answers { get; set; }
+        public virtual Answer Answer { get; set; }
 
     }
 }

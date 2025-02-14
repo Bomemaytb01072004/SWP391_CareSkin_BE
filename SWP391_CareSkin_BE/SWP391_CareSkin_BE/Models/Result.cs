@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("Results")]
-    public class Results
+    [Table("Result")]
+    public class Result
     {
         public int ResultId { get; set; }
 
@@ -16,10 +16,10 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateTime LastQuizTime { get; set; }
 
-        public virtual Customers Customers { get; set; }
+        public virtual Customer Customer { get; set; }
 
-        public virtual Quizs Quizs { get; set; }
+        public virtual Quiz Quiz { get; set; }
 
-        public virtual SkinTypes SkinType { get; set; }
+        public virtual SkinType SkinType { get; set; }
     }
 }

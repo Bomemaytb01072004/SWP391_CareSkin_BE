@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("Staff")]
-    public class Staffs
+    public class Staff
     {
-        [Key]
         public int StaffId { get; set; }
         [Required]
         public string UserName { get; set; }
@@ -24,7 +23,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public string ProfilePicture { get; set; }
 
-        public virtual ICollection<Supports> Supports { get; set; } = new List<Supports>();
+        public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
 
     }
 }
