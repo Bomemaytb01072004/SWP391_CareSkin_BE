@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("Brand")]
-    public class Brand
+    public class Brands
     {
         [Key]
-        public int Brand_Id { get; set; }
+        public int BrandId { get; set; }
 
         public string Name { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<Products> Products { get; set; } = new List<Products>();
     }
 }

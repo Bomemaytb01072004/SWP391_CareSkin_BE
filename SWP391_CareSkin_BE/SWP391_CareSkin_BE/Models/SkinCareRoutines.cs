@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("SkinCareRoutine")]
-    public class SkinCareRoutine
+    public class SkinCareRoutines
     {
         [Key]
         public int Id { get; set; }
@@ -13,10 +13,10 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Description { get; set; }
 
-        public int Skin_Type_Id { get; set; }
+        public int SkinTypeId { get; set; }
 
-        public virtual SkinType SkinType { get; set; }
-        public virtual ICollection<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; } = new List<SkinCareRoutineProduct>();
+        public virtual SkinTypes SkinType { get; set; }
+        public virtual ICollection<SkinCareRoutineProducts> SkinCareRoutineProducts { get; set; } = new List<SkinCareRoutineProducts>();
 
     }
 }

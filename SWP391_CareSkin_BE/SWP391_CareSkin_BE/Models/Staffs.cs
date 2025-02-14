@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("Staff")]
-    public class Staff
+    public class Staffs
     {
         [Key]
-        public int Staff_Id { get; set; }
+        public int StaffId { get; set; }
         [Required]
         public string UserName { get; set; }
 
@@ -22,7 +22,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateTime DoB {  get; set; }
 
-        public string Profile_Picture { get; set; }
+        public string ProfilePicture { get; set; }
 
         public virtual ICollection<Supports> Supports { get; set; } = new List<Supports>();
 

@@ -24,7 +24,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateTime DoB {  get; set; }
 
-        public string Profile_Picture { get; set; }
+        public string ProfilePicture { get; set; }
 
 
 
