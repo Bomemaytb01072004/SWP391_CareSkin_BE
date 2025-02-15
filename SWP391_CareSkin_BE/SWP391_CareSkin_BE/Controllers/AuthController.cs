@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Services;
 
 
 
@@ -16,6 +20,7 @@ namespace  SWP391_CareSkin_BE.Data.Controllers
     {
         private readonly MyDbContext _context;
 
+       
         public AuthController(MyDbContext context)
         {
             _context = context;
@@ -24,23 +29,47 @@ namespace  SWP391_CareSkin_BE.Data.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
-            //tìm user trong database
-            var user = await _context.Customers.FirstOrDefaultAsync(u => u.UserName == request.UserName);
+            var admin = _context.Admins.FirstOrDefault(a => a.UserName == request.UserName);
+            var customer = _context.Customers.FirstOrDefault(c => c.UserName == request.UserName);
+            var staff = _context.Staffs.FirstOrDefault(s => s.UserName == request.UserName);
 
-            //so sáng user  
-            if (user == null)
+            object account = (object)admin ?? (object)staff ?? (object)customer;
+
+            //check username
+            if (account == null)
             {
-                return Unauthorized(new { message = "Đăng nhập thất bại. Sai tên đăng nhập hoặc mật khẩu!!" });
+                return Unauthorized("Sai tên đăng nhập hoặc thất bại!!!");
             }
 
-            //so sánh password 
-            if (user.Password != request.Password)
+
+            //check password
+            string password = admin != null ? admin.Password : staff != null ? staff.Password : customer != null ? customer.Password : null;
+
+            if (!Validate.VerifyPassword(password, request.Password)) 
             {
-                return Unauthorized(new { message = "Đăng nhập thất  bại. Sai tên đăng nhập hoặc mặt khẩu!!" });
+                return Unauthorized("Sai tên đăng nhập hoặc mật khẩu!!!!");
             }
 
-            // đăng nhâjp thành công 
-            return Ok("Đăng nhập thành công!");
+            //xac dinh role
+            string role = admin != null ? "Admin" : staff != null ? "Staff" : "Customer";
+
+            //luu role va username
+            var claim = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, request.UserName),
+                new Claim(ClaimTypes.Role, role)
+            };
+
+            // 
+            var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+
+            // đăng nhập thành công 
+            return Ok(new { message = "Đăng nhập thành công!!!" });
         }
+
+        
     }
 }
