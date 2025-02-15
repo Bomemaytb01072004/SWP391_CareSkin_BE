@@ -6,8 +6,7 @@ namespace SWP391_CareSkin_BE.Models
     [Table("Brand")]
     public class Brand
     {
-        [Key]
-        public int Brand_Id { get; set; }
+        public int BrandId { get; set; }
 
         public string Name { get; set; }
 

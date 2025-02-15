@@ -6,13 +6,14 @@ namespace SWP391_CareSkin_BE.Models
     [Table ("Cart")]
     public class Cart
     {
-        [Key]
-        public int Id { get; set; }
+        public int CartId { get; set; }
 
-        public int Customer_Id { get; set; }
+        public int CustomerId { get; set; }
 
-        public int Product_Id { get; set; }
+        public int ProductId { get; set; }
 
         public virtual Product Product { get; set; }
+
+        public virtual Customer Customer { get; set; }
     }
 }

@@ -6,7 +6,9 @@ using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.Models;
 
-namespace SWP391_CareSkin_BE.Controllers
+
+
+namespace  SWP391_CareSkin_BE.Data.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,7 +25,7 @@ namespace SWP391_CareSkin_BE.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
             //tìm user trong database
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == request.UserName);
+            var user = await _context.Customers.FirstOrDefaultAsync(u => u.UserName == request.UserName);
 
             //so sáng user  
             if (user == null)

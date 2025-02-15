@@ -7,11 +7,11 @@ namespace SWP391_CareSkin_BE.Models
     public class Product
     {
         [Key]
-        public int Product_Id { get; set; }
+        public int ProductId { get; set; }
 
         public string ProductName { get; set; }
 
-        public int Brand_ID { get; set; }
+        public int BrandId { get; set; }
 
         public double Price { get; set; }
 
@@ -21,8 +21,11 @@ namespace SWP391_CareSkin_BE.Models
 
         public int ML {  get; set; }
 
-        public virtual Brand Brands { get; set; }
+        public virtual Brand Brand { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public virtual ICollection<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; } = new List<SkinCareRoutineProduct>();
         public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public virtual ICollection<RatingFeedback> RatingFeedbacks { get; set; } = new List<RatingFeedback>();
     }
 }
