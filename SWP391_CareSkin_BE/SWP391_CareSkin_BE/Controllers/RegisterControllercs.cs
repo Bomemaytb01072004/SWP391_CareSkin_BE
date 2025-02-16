@@ -5,8 +5,8 @@ using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.DTOS;
 using Microsoft.AspNetCore.Identity.Data;
-using SWP391_CareSkin_BE.Models.Users;
-using SWP391_CareSkin_BE.Models.NewFolder;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
 
 
 namespace SWP391_CareSkin_BE.Controllers

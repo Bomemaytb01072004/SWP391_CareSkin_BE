@@ -5,7 +5,7 @@
 namespace SWP391_CareSkin_BE.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCareSkin : Migration
+    public partial class CareSkin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

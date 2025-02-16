@@ -12,8 +12,8 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250215030205_AddCareSkin")]
-    partial class AddCareSkin
+    [Migration("20250216140328_CareSkin")]
+    partial class CareSkin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

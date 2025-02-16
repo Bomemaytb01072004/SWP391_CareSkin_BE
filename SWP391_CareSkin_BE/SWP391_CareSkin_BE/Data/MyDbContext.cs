@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models.NewFolder;
-using SWP391_CareSkin_BE.Models.Order;
-using SWP391_CareSkin_BE.Models.Product;
-using SWP391_CareSkin_BE.Models.Promotion;
-using SWP391_CareSkin_BE.Models.Quiz;
-using SWP391_CareSkin_BE.Models.Routine;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Data
 
