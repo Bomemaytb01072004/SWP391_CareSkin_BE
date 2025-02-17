@@ -46,6 +46,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
 
-
+        public virtual ICollection<PromotionCustomer> PromotionCustomers { get; set; } = new List<PromotionCustomer>();
     }
 }

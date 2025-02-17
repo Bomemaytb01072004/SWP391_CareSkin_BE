@@ -11,6 +11,7 @@ namespace SWP391_CareSkin_BE.Models
         public int PromotionId { get; set; }
 
         public virtual Product Product { get; set; }
+
         public virtual Promotion Promotion { get; set; }
     }
 }
