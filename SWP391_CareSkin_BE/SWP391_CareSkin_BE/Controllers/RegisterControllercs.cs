@@ -20,13 +20,20 @@ namespace SWP391_CareSkin_BE.Controllers
             _context = context;
         }
 
-    
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.Email))
+                string.IsNullOrWhiteSpace(request.Email) ||
+                string.IsNullOrWhiteSpace(request.Dob) ||
+                string.IsNullOrWhiteSpace(request.ProfilePicture) ||
+                string.IsNullOrWhiteSpace(request.Gender) ||
+                string.IsNullOrWhiteSpace(request.Address) ||
+                 string.IsNullOrWhiteSpace(request.FullName))
+
+
             {
                 return BadRequest(new { message = "Tên đăng nhập, mật khẩu và email không được để trống!" });
             }
@@ -48,7 +55,12 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 UserName = request.UserName,
                 Password = request.Password,
-                Email = request.Email 
+                Email = request.Email,
+                Dob = request.Dob,
+                ProfilePicture = request.ProfilePicture,
+                Gender = request.Gender,
+                Address = request.Address,
+                FullName = request.FullName
             };
 
             await _context.Customers.AddAsync(newUser);

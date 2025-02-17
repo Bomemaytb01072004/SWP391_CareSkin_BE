@@ -13,6 +13,11 @@ namespace SWP391_CareSkin_BE
 
             // Add services to the container.
 
+            builder.Services.AddControllers().AddJsonOptions(options =>
+                 {
+                      options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                 });
+
             builder.Services.AddDbContext<MyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));
