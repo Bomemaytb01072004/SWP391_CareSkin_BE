@@ -42,6 +42,13 @@ namespace SWP391_CareSkin_BE
                 app.UseSwaggerUI();
             }
 
+   
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            app.Urls.Add($"http://*:{port}");
+
+            //CORS 
+            app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
