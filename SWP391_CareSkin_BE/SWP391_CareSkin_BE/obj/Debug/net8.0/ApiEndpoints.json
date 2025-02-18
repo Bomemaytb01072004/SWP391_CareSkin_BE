@@ -176,7 +176,7 @@
   {
     "ContainingType": "SWP391_CareSkin_BE.Controllers.RegisterController",
     "Method": "Register",
-    "RelativePath": "register",
+    "RelativePath": "api/Register/register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

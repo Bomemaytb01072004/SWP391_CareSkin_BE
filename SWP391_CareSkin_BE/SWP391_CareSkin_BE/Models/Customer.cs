@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.Models
         public string UserName { get; set; }
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(255)]
         public string Password { get; set; }
 
         public string FullName { get; set; }
@@ -24,7 +24,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int Phone { get; set; }
 
-        public string Dob { get; set; }
+        public DateTime Dob { get; set; }
 
         public string Gender { get; set; }
 

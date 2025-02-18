@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Services;
 
 
 
@@ -15,32 +20,48 @@ namespace SWP391_CareSkin_BE.Data.Controllers
     public class AuthController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly JwtHelper _jwtHelper;
 
-        public AuthController(MyDbContext context)
+
+        public AuthController(MyDbContext context, JwtHelper jwtHelper)
         {
             _context = context;
+            _jwtHelper = jwtHelper;
         }
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
-            //tìm user trong database
-            var user = await _context.Customers.FirstOrDefaultAsync(u => u.UserName == request.UserName);
+            var admin = _context.Admins.FirstOrDefault(a => a.UserName == request.UserName);
+            var customer = _context.Customers.FirstOrDefault(c => c.UserName == request.UserName);
+            var staff = _context.Staffs.FirstOrDefault(s => s.UserName == request.UserName);
 
-            //so sáng user  
-            if (user == null)
+            object account = (object)admin ?? (object)staff ?? (object)customer;
+
+            // check username
+            if (account == null)
             {
-                return Unauthorized(new { message = "Đăng nhập thất bại. Sai tên đăng nhập hoặc mật khẩu!!" });
+                return Unauthorized("Sai tên đăng nhập hoặc thất bại!!!");
             }
 
-            //so sánh password 
-            if (user.Password != request.Password)
-            {
-                return Unauthorized(new { message = "Đăng nhập thất  bại. Sai tên đăng nhập hoặc mặt khẩu!!" });
-            }
+            // check password
+            string password = admin != null ? admin.Password : staff != null ? staff.Password : customer != null ? customer.Password : null;
 
-            // đăng nhâjp thành công 
-            return Ok("Đăng nhập thành công!");
+            if (!Validate.VerifyPassword(password, request.Password))
+            {
+                return Unauthorized("Sai tên đăng nhập hoặc mật khẩu!!!!");
+            };
+
+            // xác định role
+            string role = admin != null ? "Admin" : staff != null ? "Staff" : "Customer";
+
+            // Tạo token JWT
+            var token = _jwtHelper.GenerateToken(request.UserName, role);
+
+            // trả về token
+            return Ok(new { token });
         }
+
+
     }
 }
