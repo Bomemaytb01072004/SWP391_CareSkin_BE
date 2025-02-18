@@ -7,7 +7,7 @@ namespace SWP391_CareSkin_BE.Models
     public class Promotion
     {
         [Key]
-        public int Id { get; set; }
+        public int PromotionId { get; set; }
 
         public string Name { get; set; }
 
@@ -18,5 +18,6 @@ namespace SWP391_CareSkin_BE.Models
         public DateTime End_Date { get; set; }
 
         public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
+        public virtual ICollection<PromotionOrder> PromotionOrders { get; set; } = new List<PromotionOrder>();
     }
 }

@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.Models.LoginRequest",
+        "Type": "SWP391_CareSkin_BE.DTOS.LoginDTO",
         "IsRequired": true
       }
     ],
@@ -18,38 +18,17 @@
   {
     "ContainingType": "SWP391_CareSkin_BE.Controllers.RegisterController",
     "Method": "Register",
-    "RelativePath": "register",
+    "RelativePath": "api/Register/register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.Models.RegisterRequest",
+        "Type": "SWP391_CareSkin_BE.DTOS.RegisterDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_CareSkin_BE.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[SWP391_CareSkin_BE.WeatherForecast, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "EndpointName": "GetWeatherForecast"
   }
 ]
