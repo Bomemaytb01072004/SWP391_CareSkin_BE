@@ -27,8 +27,8 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<PromotionOrder> PromotionOrders { get; set; }
-        public DbSet<PromotionProduct> PromotionProducts { get; set; }
+        public DbSet<PromotionCustomer> PromotionOrders { get; set; }
+        public DbSet<PromotionCustomer> PromotionProducts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Quiz> Quizs { get; set; }
@@ -61,7 +61,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Order>().HasKey(o => o.OrderId);
             modelBuilder.Entity<OrderStatus>().HasKey(o => o.OrderStatusId);
             modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
-            modelBuilder.Entity<PromotionOrder>().HasKey(p => new { p.OrderId, p.PromotionId });
+            modelBuilder.Entity<PromotionCustomer>().HasKey(p => new { p.CustomerId, p.PromotionId });
             modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.ProductId, p.PromotionId });
             modelBuilder.Entity<Promotion>().HasKey(p => p.PromotionId);
             modelBuilder.Entity<Question>().HasKey(q => q.QuestionsId);
@@ -126,10 +126,10 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(s => s.Customer)
                 .HasForeignKey(s => s.CustomerId);
 
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.PromotionOrders)
-                .WithOne(p => p.Order)
-                .HasForeignKey(p => p.OrderId);
+            modelBuilder.Entity<Customer>()
+                .HasMany(c => c.PromotionCustomers)
+                .WithOne(p => p.Customer)
+                .HasForeignKey(p => p.CustomerId);
 
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.OrderProducts)
@@ -166,13 +166,33 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(r => r.Product)
                 .HasForeignKey(r => r.ProductId);
 
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductVariations)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductMainIngredients)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductDetailIngredients)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductUsages)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
             modelBuilder.Entity<Promotion>()
                 .HasMany(p => p.PromotionProducts)
                 .WithOne(p => p.Promotion)
                 .HasForeignKey(p => p.PromotionId);
 
             modelBuilder.Entity<Promotion>()
-                .HasMany(p => p.PromotionOrders)
+                .HasMany(p => p.PromotionCustomers)
                 .WithOne(p => p.Promotion)
                 .HasForeignKey(p => p.PromotionId);
 
