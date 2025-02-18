@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 
 
 
-namespace  SWP391_CareSkin_BE.Data.Controllers
+namespace SWP391_CareSkin_BE.Data.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

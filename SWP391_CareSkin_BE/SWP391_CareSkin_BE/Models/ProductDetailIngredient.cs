@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int ProductId { get; set; }
 
-        public string Ingredient_name { get; set; }
+        public string IngredientName { get; set; }
 
         public virtual Product Product { get; set; }
     }

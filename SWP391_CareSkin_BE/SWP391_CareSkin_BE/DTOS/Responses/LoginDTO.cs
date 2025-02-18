@@ -1,4 +1,4 @@
-﻿namespace SWP391_CareSkin_BE.DTOS
+﻿namespace SWP391_CareSkin_BE.DTOS.Responses
 {
     public class LoginDTO
 
