@@ -13,7 +13,7 @@ using SWP391_CareSkin_BE.Services;
 
 
 
-namespace  SWP391_CareSkin_BE.Data.Controllers
+namespace SWP391_CareSkin_BE.Data.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

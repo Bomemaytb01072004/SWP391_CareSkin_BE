@@ -7,8 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <Compile Remove="Configurations\**" />
+    <Compile Remove="Middlewares\**" />
+    <Content Remove="Configurations\**" />
+    <Content Remove="Middlewares\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="Middlewares\**" />
+    <None Remove="Configurations\**" />
+    <None Remove="Middlewares\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -24,7 +35,6 @@
 
   <ItemGroup>
     <Folder Include="Configurations\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="DTOs\" />
     <Folder Include="Models\" />
     <Folder Include="Repositories\" />
