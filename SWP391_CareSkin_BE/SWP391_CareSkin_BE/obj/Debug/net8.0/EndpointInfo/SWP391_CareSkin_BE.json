@@ -286,7 +286,7 @@
         }
       }
     },
-    "/register": {
+    "/api/Register/register": {
       "post": {
         "tags": [
           "Register"
@@ -323,7 +323,7 @@
       "BrandCreateRequestDTO": {
         "type": "object",
         "properties": {
-          "name": {
+          "Name": {
             "type": "string",
             "nullable": true
           }
@@ -333,7 +333,7 @@
       "BrandUpdateRequestDTO": {
         "type": "object",
         "properties": {
-          "name": {
+          "Name": {
             "type": "string",
             "nullable": true
           }
@@ -347,7 +347,7 @@
             "type": "string",
             "nullable": true
           },
-          "password": {
+          "Password": {
             "type": "string",
             "nullable": true
           }
@@ -357,40 +357,40 @@
       "ProductCreateRequestDTO": {
         "type": "object",
         "properties": {
-          "productName": {
+          "ProductName": {
             "type": "string",
             "nullable": true
           },
-          "brandId": {
+          "BrandId": {
             "type": "integer",
             "format": "int32"
           },
-          "description": {
+          "Description": {
             "type": "string",
             "nullable": true
           },
-          "variations": {
+          "Variations": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
             },
             "nullable": true
           },
-          "mainIngredients": {
+          "MainIngredients": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductMainIngredientCreateRequestDTO"
             },
             "nullable": true
           },
-          "detailIngredients": {
+          "DetailIngredients": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductDetailIngredientCreateRequestDTO"
             },
             "nullable": true
           },
-          "usages": {
+          "Usages": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductUsageCreateRequestDTO"
@@ -403,7 +403,7 @@
       "ProductDetailIngredientCreateRequestDTO": {
         "type": "object",
         "properties": {
-          "ingredientName": {
+          "IngredientName": {
             "type": "string",
             "nullable": true
           }
@@ -413,11 +413,11 @@
       "ProductMainIngredientCreateRequestDTO": {
         "type": "object",
         "properties": {
-          "ingredientName": {
+          "IngredientName": {
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "Description": {
             "type": "string",
             "nullable": true
           }
@@ -427,15 +427,15 @@
       "ProductMainIngredientDTO": {
         "type": "object",
         "properties": {
-          "productMainIngredientId": {
+          "ProductMainIngredientId": {
             "type": "integer",
             "format": "int32"
           },
-          "ingredientName": {
+          "IngredientName": {
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "Description": {
             "type": "string",
             "nullable": true
           }
@@ -445,26 +445,26 @@
       "ProductUpdateRequestDTO": {
         "type": "object",
         "properties": {
-          "productName": {
+          "ProductName": {
             "type": "string",
             "nullable": true
           },
-          "brandId": {
+          "BrandId": {
             "type": "integer",
             "format": "int32"
           },
-          "description": {
+          "Description": {
             "type": "string",
             "nullable": true
           },
-          "variations": {
+          "Variations": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
             },
             "nullable": true
           },
-          "mainIngredients": {
+          "MainIngredients": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductMainIngredientDTO"
@@ -477,11 +477,11 @@
       "ProductUsageCreateRequestDTO": {
         "type": "object",
         "properties": {
-          "step": {
+          "Step": {
             "type": "integer",
             "format": "int32"
           },
-          "instruction": {
+          "Instruction": {
             "type": "string",
             "nullable": true
           }
@@ -491,11 +491,11 @@
       "ProductVariationCreateRequestDTO": {
         "type": "object",
         "properties": {
-          "ml": {
+          "Ml": {
             "type": "integer",
             "format": "int32"
           },
-          "price": {
+          "Price": {
             "type": "integer",
             "format": "int32"
           }
@@ -517,7 +517,27 @@
             "type": "string",
             "nullable": true
           },
+          "FullName": {
+            "type": "string",
+            "nullable": true
+          },
           "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "dob": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture": {
             "type": "string",
             "nullable": true
           }

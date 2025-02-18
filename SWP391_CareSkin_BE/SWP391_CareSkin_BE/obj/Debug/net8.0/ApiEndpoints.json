@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOS.Responses.LoginDTO",
+        "Type": "SWP391_CareSkin_BE.DTOS.LoginDTO",
         "IsRequired": true
       }
     ],
