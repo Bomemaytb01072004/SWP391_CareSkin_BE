@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.DTOS;
 using Microsoft.AspNetCore.Identity.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.DTOS.Responses;
 
 
 

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.Json.Serialization;
 
-namespace SWP391_CareSkin_BE.DTOS
+namespace SWP391_CareSkin_BE.DTOS.Responses
 {
     public class RegisterDTO
     {

@@ -13,13 +13,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int BrandId { get; set; }
 
-        public double Price { get; set; }
-
         public string Description { get; set; }
-
-        public string Main_Infredients { get; set; }
-
-        public int ML {  get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
@@ -27,5 +21,9 @@ namespace SWP391_CareSkin_BE.Models
         public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
         public virtual ICollection<RatingFeedback> RatingFeedbacks { get; set; } = new List<RatingFeedback>();
+        public virtual ICollection<ProductVariation> ProductVariations { get; set; } = new List<ProductVariation>();
+        public virtual ICollection<ProductMainIngredient> ProductMainIngredients { get; set; } = new List<ProductMainIngredient>();
+        public virtual ICollection<ProductDetailIngredient> ProductDetailIngredients { get; set; } = new List<ProductDetailIngredient>();
+        public virtual ICollection<ProductUsage> ProductUsages { get; set; } = new List<ProductUsage>();
     }
 }
