@@ -36,7 +36,7 @@
         }
       }
     },
-    "/register": {
+    "/api/Register/register": {
       "post": {
         "tags": [
           "Register"
@@ -77,7 +77,7 @@
             "type": "string",
             "nullable": true
           },
-          "password": {
+          "Password": {
             "type": "string",
             "nullable": true
           }
@@ -99,7 +99,27 @@
             "type": "string",
             "nullable": true
           },
+          "FullName": {
+            "type": "string",
+            "nullable": true
+          },
           "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "dob": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture": {
             "type": "string",
             "nullable": true
           }
