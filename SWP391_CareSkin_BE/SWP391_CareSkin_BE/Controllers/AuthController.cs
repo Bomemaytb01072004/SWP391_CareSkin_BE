@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
 
@@ -19,11 +20,13 @@ namespace  SWP391_CareSkin_BE.Data.Controllers
     public class AuthController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly JwtHelper _jwtHelper;
 
-       
-        public AuthController(MyDbContext context)
+
+        public AuthController(MyDbContext context, JwtHelper jwtHelper)
         {
             _context = context;
+            _jwtHelper = jwtHelper;
         }
 
         [HttpPost("Login")]
@@ -35,41 +38,30 @@ namespace  SWP391_CareSkin_BE.Data.Controllers
 
             object account = (object)admin ?? (object)staff ?? (object)customer;
 
-            //check username
+            // check username
             if (account == null)
             {
                 return Unauthorized("Sai tên đăng nhập hoặc thất bại!!!");
             }
 
-
-            //check password
+            // check password
             string password = admin != null ? admin.Password : staff != null ? staff.Password : customer != null ? customer.Password : null;
 
-            if (!Validate.VerifyPassword(password, request.Password)) 
+            if (!Validate.VerifyPassword(password, request.Password))
             {
                 return Unauthorized("Sai tên đăng nhập hoặc mật khẩu!!!!");
-            }
-
-            //xac dinh role
-            string role = admin != null ? "Admin" : staff != null ? "Staff" : "Customer";
-
-            //luu role va username
-            var claim = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, request.UserName),
-                new Claim(ClaimTypes.Role, role)
             };
 
-            // 
-            var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            // xác định role
+            string role = admin != null ? "Admin" : staff != null ? "Staff" : "Customer";
 
+            // Tạo token JWT
+            var token = _jwtHelper.GenerateToken(request.UserName, role);
 
-            // đăng nhập thành công 
-            return Ok(new { message = "Đăng nhập thành công!!!" });
+            // trả về token
+            return Ok(new { token });
         }
 
-        
+
     }
 }

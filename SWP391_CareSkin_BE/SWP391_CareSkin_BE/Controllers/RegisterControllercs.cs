@@ -9,8 +9,11 @@ using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Models;
 
 
+
 namespace SWP391_CareSkin_BE.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class RegisterController : ControllerBase
     {
         private readonly MyDbContext _context;
@@ -26,12 +29,12 @@ namespace SWP391_CareSkin_BE.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.Email) ||
-                string.IsNullOrWhiteSpace(request.Dob) ||
+                string.IsNullOrWhiteSpace(request.Email)|| 
+                request.Dob == default(DateTime) || 
                 string.IsNullOrWhiteSpace(request.ProfilePicture) ||
                 string.IsNullOrWhiteSpace(request.Gender) ||
                 string.IsNullOrWhiteSpace(request.Address) ||
-                 string.IsNullOrWhiteSpace(request.FullName))
+                string.IsNullOrWhiteSpace(request.FullName))
 
 
             {
@@ -51,10 +54,11 @@ namespace SWP391_CareSkin_BE.Controllers
                 return Conflict(new { message = "Tên đăng nhập hoặc email đã tồn tại!" });
             }
 
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var newUser = new Customer
             {
                 UserName = request.UserName,
-                Password = request.Password,
+                Password = hashedPassword,
                 Email = request.Email,
                 Dob = request.Dob,
                 ProfilePicture = request.ProfilePicture,

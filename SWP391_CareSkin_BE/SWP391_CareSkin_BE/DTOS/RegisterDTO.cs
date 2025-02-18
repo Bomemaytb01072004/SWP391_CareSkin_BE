@@ -21,7 +21,7 @@ namespace SWP391_CareSkin_BE.DTOS
         public string Email { get; set; }
 
         [JsonPropertyName("dob")]
-        public string Dob {  get; set; }
+        public DateTime Dob {  get; set; }
 
         [JsonPropertyName("gender")]
         public string Gender { get; set; }

@@ -2,9 +2,9 @@
 {
     public class Validate
     {
-        public static bool VerifyPassword(string passwordCheck, string password)
+        public static bool VerifyPassword(string hashedPassword, string plainPassword)
         {
-            return password == passwordCheck;
+            return BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
         }
     }
 }

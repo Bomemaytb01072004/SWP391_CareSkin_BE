@@ -12,7 +12,7 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250216140328_CareSkin")]
+    [Migration("20250218071628_CareSkin")]
     partial class CareSkin
     {
         /// <inheritdoc />
@@ -166,9 +166,8 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Dob")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
