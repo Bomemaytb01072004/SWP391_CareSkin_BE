@@ -31,7 +31,6 @@ namespace SWP391_CareSkin_BE.Controllers
                 string.IsNullOrWhiteSpace(request.Password) ||
                 string.IsNullOrWhiteSpace(request.Email))
 
-
             {
                 return BadRequest(new { message = "Tên đăng nhập, mật khẩu và email không được để trống!" });
             }
@@ -49,12 +48,17 @@ namespace SWP391_CareSkin_BE.Controllers
                 return Conflict(new { message = "Tên đăng nhập hoặc email đã tồn tại!" });
             }
 
-            
+
             var newUser = new Customer
             {
                 UserName = request.UserName,
                 Password = request.Password,
                 Email = request.Email,
+                Dob = request.Dob , 
+                ProfilePicture = request.ProfilePicture ?? "",
+                Gender = request.Gender ?? "Unknown",
+                Address = request.Address ?? "Not provided",
+                FullName = request.FullName ?? "No name"
             };
 
             await _context.Customers.AddAsync(newUser);

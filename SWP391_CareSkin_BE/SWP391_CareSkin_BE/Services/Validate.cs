@@ -4,7 +4,7 @@
     {
         public static bool VerifyPassword(string password, string plainPassword)
         {
-            return plainPassword == password;
+            return password == plainPassword;
         }
     }
 }
