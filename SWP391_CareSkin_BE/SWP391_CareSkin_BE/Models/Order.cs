@@ -12,6 +12,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public int OrderStatusId { get; set; }
 
+        public int PromotionId { get; set; }
+
         public int TotalPrice { get; set; }
 
         public DateTime OrderDate { get; set; }
@@ -26,7 +28,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual OrderStatus OrderStatus { get; set; }
 
-        public virtual ICollection<PromotionCustomer> PromotionOrders { get; set; } = new List<PromotionCustomer>();
+        public virtual Promotion Promotion { get; set; }
+
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 }

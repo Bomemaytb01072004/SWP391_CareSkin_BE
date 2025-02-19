@@ -7,7 +7,7 @@ namespace SWP391_CareSkin_BE.Models
     {
         public int OrderStatusId { get; set; }
 
-        public string Status { get; set; }
+        public string OrderStatusName { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
