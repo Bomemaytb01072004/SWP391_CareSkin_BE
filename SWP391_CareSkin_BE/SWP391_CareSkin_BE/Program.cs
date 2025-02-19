@@ -24,7 +24,7 @@ namespace SWP391_CareSkin_BE
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5174") 
+                    policy.WithOrigins("http://localhost:5173") 
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); 
@@ -72,6 +72,13 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICartService, CartService>();
+
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {

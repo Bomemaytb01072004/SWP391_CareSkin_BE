@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SWP391_CareSkin_BE.Models
 {
@@ -15,21 +16,21 @@ namespace SWP391_CareSkin_BE.Models
         [Required]
         [MaxLength(255)]
         public string Password { get; set; }
-
+        [AllowNull]
         public string FullName { get; set; }
 
         [Required, MaxLength(100)]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$")]
         public string Email { get; set; }
-
+        [AllowNull]
         public int Phone { get; set; }
-
+        [AllowNull]
         public DateTime Dob { get; set; }
-
+        [AllowNull]
         public string Gender { get; set; }
-
+        [AllowNull]
         public string ProfilePicture { get; set; }
-
+        [AllowNull]
         public string Address { get; set; }
 
         public virtual ICollection<BlogNew> BlogNews { get; set; } = new List<BlogNew>();

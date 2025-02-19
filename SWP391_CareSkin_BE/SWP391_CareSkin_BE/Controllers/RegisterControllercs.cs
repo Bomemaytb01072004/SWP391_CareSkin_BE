@@ -29,12 +29,7 @@ namespace SWP391_CareSkin_BE.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.Email)|| 
-                request.Dob == default(DateTime) || 
-                string.IsNullOrWhiteSpace(request.ProfilePicture) ||
-                string.IsNullOrWhiteSpace(request.Gender) ||
-                string.IsNullOrWhiteSpace(request.Address) ||
-                string.IsNullOrWhiteSpace(request.FullName))
+                string.IsNullOrWhiteSpace(request.Email))
 
 
             {
@@ -60,11 +55,6 @@ namespace SWP391_CareSkin_BE.Controllers
                 UserName = request.UserName,
                 Password = request.Password,
                 Email = request.Email,
-                Dob = request.Dob,
-                ProfilePicture = request.ProfilePicture,
-                Gender = request.Gender,
-                Address = request.Address,
-                FullName = request.FullName
             };
 
             await _context.Customers.AddAsync(newUser);
