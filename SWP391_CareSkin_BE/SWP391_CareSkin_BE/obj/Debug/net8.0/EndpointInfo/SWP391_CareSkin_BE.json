@@ -343,7 +343,7 @@
       "LoginDTO": {
         "type": "object",
         "properties": {
-          "userName": {
+          "UserName": {
             "type": "string",
             "nullable": true
           },
@@ -505,39 +505,19 @@
       "RegisterDTO": {
         "type": "object",
         "properties": {
-          "userName": {
+          "UserName": {
             "type": "string",
             "nullable": true
           },
-          "password": {
+          "Password": {
             "type": "string",
             "nullable": true
           },
-          "confirmPassword": {
+          "ConfirmPassword": {
             "type": "string",
             "nullable": true
           },
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "dob": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "gender": {
-            "type": "string",
-            "nullable": true
-          },
-          "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "profilePicture": {
+          "Email": {
             "type": "string",
             "nullable": true
           }
