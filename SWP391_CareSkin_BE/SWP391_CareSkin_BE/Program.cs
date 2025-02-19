@@ -25,12 +25,15 @@ namespace SWP391_CareSkin_BE
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                   
-                    policy.AllowAnyOrigin()
+
+                    policy.WithOrigins("https://localhost:8080")
+                          .AllowAnyOrigin()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
+                          
                 });
             });
+            //
 
             //build JWT
             builder.Services.AddSingleton<JwtHelper>();

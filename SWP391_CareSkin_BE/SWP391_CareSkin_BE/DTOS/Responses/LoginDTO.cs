@@ -5,7 +5,7 @@ namespace SWP391_CareSkin_BE.DTOS
     public class LoginDTO
 
     {
-        [JsonPropertyName("userName")]
+        [JsonPropertyName("UserName")]
         public string UserName { get; set; }
 
         [JsonPropertyName("Password")]
