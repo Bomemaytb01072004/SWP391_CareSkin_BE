@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj": {}
+    "D:\\SWP301_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj": {}
   },
   "projects": {
-    "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj": {
+    "D:\\SWP301_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj",
+        "projectUniqueName": "D:\\SWP301_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj",
         "projectName": "SWP391_CareSkin_BE",
-        "projectPath": "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\obj\\",
+        "projectPath": "D:\\SWP301_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE.csproj",
+        "packagesPath": "C:\\Users\\polig\\.nuget\\packages\\",
+        "outputPath": "D:\\SWP301_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\polig\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

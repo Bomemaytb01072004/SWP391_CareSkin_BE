@@ -17,6 +17,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 ProductId = product.ProductId,
                 ProductName = product.ProductName,
                 Description = product.Description,
+                Category = product.Category,
                 BrandName = product.Brand?.Name,
                 Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
                 {
@@ -54,6 +55,7 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 ProductName = request.ProductName,
                 BrandId = request.BrandId,
+                Category = request.Category,
                 Description = request.Description,
                 ProductVariations = request.Variations?.Select(v => new ProductVariation
                 {
@@ -85,6 +87,7 @@ namespace SWP391_CareSkin_BE.Mappers
 
             product.ProductName = request.ProductName;
             product.BrandId = request.BrandId;
+            product.Category = request.Category;
             product.Description = request.Description;
 
             // Ví dụ đơn giản: xoá toàn bộ Variation cũ và thêm Variation mới từ request.
