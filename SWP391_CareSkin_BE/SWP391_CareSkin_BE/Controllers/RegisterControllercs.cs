@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.Services;
 
 
 
@@ -48,11 +49,11 @@ namespace SWP391_CareSkin_BE.Controllers
                 return Conflict(new { message = "Tên đăng nhập hoặc email đã tồn tại!" });
             }
 
-
+            string hashedPassword = Validate.HashPassword(request.Password);
             var newUser = new Customer
             {
                 UserName = request.UserName,
-                Password = request.Password,
+                Password = hashedPassword,
                 Email = request.Email,
                 Dob = request.Dob , 
                 ProfilePicture = request.ProfilePicture ?? "",
