@@ -54,11 +54,11 @@ namespace SWP391_CareSkin_BE.Controllers
                 return Conflict(new { message = "Tên đăng nhập hoặc email đã tồn tại!" });
             }
 
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            
             var newUser = new Customer
             {
                 UserName = request.UserName,
-                Password = hashedPassword,
+                Password = request.Password,
                 Email = request.Email,
                 Dob = request.Dob,
                 ProfilePicture = request.ProfilePicture,
