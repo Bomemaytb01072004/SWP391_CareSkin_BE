@@ -24,7 +24,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int Phone { get; set; }
 
-        public DateTime Dob { get; set; }
+        public DateOnly Dob { get; set; }
 
         public string Gender { get; set; }
 

@@ -17,6 +17,8 @@ namespace SWP391_CareSkin_BE.Controllers
             _context = context;
         }
 
+        //USER
+
         [HttpGet("User")]
         public IActionResult GetAllUser()
         {
@@ -54,6 +56,8 @@ namespace SWP391_CareSkin_BE.Controllers
                 return NotFound();
             }
         }
+
+        //STAFF
 
         [HttpGet("Staff")]
         public IActionResult GetAllStaff()
@@ -137,6 +141,16 @@ namespace SWP391_CareSkin_BE.Controllers
                 return NotFound();
             }
         }
+
+        //PRODUCT
+
+        [HttpGet("Product")]
+        public IActionResult GetAllProduct(int id)
+        {
+            var product = _context.Products.ToList();
+            return Ok(product);
+        }
+
 
         
 
