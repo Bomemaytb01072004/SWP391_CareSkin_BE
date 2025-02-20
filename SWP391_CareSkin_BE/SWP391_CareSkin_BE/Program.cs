@@ -19,16 +19,35 @@ namespace SWP391_CareSkin_BE
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("Error: Connection String not create. Check again appsettings.json!");
+            }
+
+            builder.Services.AddDbContext<MyDbContext>(options =>
+                options.UseSqlServer(
+                connectionString,
+                sqlOptions => sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,           
+                maxRetryDelay: TimeSpan.FromSeconds(30), 
+                errorNumbersToAdd: null
+        )
+    )
+);
+
+
             // Add services to the container.
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173") 
+                    policy.WithOrigins("http://localhost:5173")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
-                          .AllowCredentials(); 
+                          .AllowCredentials();
                 });
             });
 
@@ -50,7 +69,7 @@ namespace SWP391_CareSkin_BE
                 .AddJwtBearer(options =>
                 {
                     options.SaveToken = true;
-                    options.RequireHttpsMetadata = false; 
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -63,10 +82,6 @@ namespace SWP391_CareSkin_BE
                     };
                 });
 
-
-            builder.Services.AddDbContext<MyDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"))
-            );
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -87,7 +102,7 @@ namespace SWP391_CareSkin_BE
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
-            
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -102,10 +117,10 @@ namespace SWP391_CareSkin_BE
 
             app.UseHttpsRedirection();
 
-            app.UseCors("AllowAll"); 
+            app.UseCors("AllowAll");
 
-            app.UseAuthentication(); 
-            app.UseAuthorization();  
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
 

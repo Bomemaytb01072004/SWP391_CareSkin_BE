@@ -439,3 +439,15 @@ C:\Users\Administrator\Source\Repos\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391
 C:\Users\Administrator\Source\Repos\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net8.0\SWP391_CareSkin_BE.pdb
 C:\Users\Administrator\Source\Repos\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net8.0\SWP391_CareSkin_BE.genruntimeconfig.cache
 C:\Users\Administrator\Source\Repos\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net8.0\ref\SWP391_CareSkin_BE.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\MimeMapping.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.Core.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.Functions.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.Gotrue.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.Postgrest.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.Realtime.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Supabase.Storage.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\System.Reactive.dll
+D:\SWP391_CareSkin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Websocket.Client.dll
