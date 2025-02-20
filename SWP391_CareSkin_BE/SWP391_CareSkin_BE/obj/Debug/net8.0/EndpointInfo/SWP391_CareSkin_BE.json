@@ -419,19 +419,81 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ProductCreateRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductCreateRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductCreateRequestDTO"
+                "type": "object",
+                "properties": {
+                  "ProductName": {
+                    "type": "string"
+                  },
+                  "BrandId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Category": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Variations": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
+                    }
+                  },
+                  "MainIngredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductMainIngredientCreateRequestDTO"
+                    }
+                  },
+                  "DetailIngredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductDetailIngredientCreateRequestDTO"
+                    }
+                  },
+                  "Usages": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductUsageCreateRequestDTO"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "ProductName": {
+                  "style": "form"
+                },
+                "BrandId": {
+                  "style": "form"
+                },
+                "Category": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                },
+                "Variations": {
+                  "style": "form"
+                },
+                "MainIngredients": {
+                  "style": "form"
+                },
+                "DetailIngredients": {
+                  "style": "form"
+                },
+                "Usages": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -482,19 +544,63 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ProductUpdateRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductUpdateRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductUpdateRequestDTO"
+                "type": "object",
+                "properties": {
+                  "ProductName": {
+                    "type": "string"
+                  },
+                  "BrandId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Category": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Variations": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
+                    }
+                  },
+                  "MainIngredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductMainIngredientDTO"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "ProductName": {
+                  "style": "form"
+                },
+                "BrandId": {
+                  "style": "form"
+                },
+                "Category": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                },
+                "Variations": {
+                  "style": "form"
+                },
+                "MainIngredients": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -682,56 +788,6 @@
         },
         "additionalProperties": false
       },
-      "ProductCreateRequestDTO": {
-        "type": "object",
-        "properties": {
-          "ProductName": {
-            "type": "string",
-            "nullable": true
-          },
-          "BrandId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "Category": {
-            "type": "string",
-            "nullable": true
-          },
-          "Description": {
-            "type": "string",
-            "nullable": true
-          },
-          "Variations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "MainIngredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductMainIngredientCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "DetailIngredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductDetailIngredientCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "Usages": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductUsageCreateRequestDTO"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "ProductDetailIngredientCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -769,42 +825,6 @@
           },
           "Description": {
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ProductUpdateRequestDTO": {
-        "type": "object",
-        "properties": {
-          "ProductName": {
-            "type": "string",
-            "nullable": true
-          },
-          "BrandId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "Category": {
-            "type": "string",
-            "nullable": true
-          },
-          "Description": {
-            "type": "string",
-            "nullable": true
-          },
-          "Variations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "MainIngredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductMainIngredientDTO"
-            },
             "nullable": true
           }
         },

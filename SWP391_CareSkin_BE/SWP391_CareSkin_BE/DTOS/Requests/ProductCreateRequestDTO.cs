@@ -12,9 +12,6 @@ namespace SWP391_CareSkin_BE.DTOS.Requests
         // File ảnh gửi từ client
         public IFormFile PictureFile { get; set; }
 
-        // Controller sẽ gán URL vào đây sau khi upload
-        public string PictureUrl { get; set; }
-
         // Dữ liệu cho variation khi tạo sản phẩm
         public List<ProductVariationCreateRequestDTO> Variations { get; set; }
 

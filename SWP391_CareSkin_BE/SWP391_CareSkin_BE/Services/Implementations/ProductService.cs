@@ -29,52 +29,26 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return ProductMapper.ToDTO(product);
         }
 
-        public async Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request)
+        // Tạo sản phẩm với pictureUrl
+        public async Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request, string pictureUrl)
         {
-            // Kiểm tra nếu có file ảnh được gửi từ client
-            string pictureUrl = null;
-            if (request.PictureFile != null && request.PictureFile.Length > 0)
-            {
-                // Đặt tên file duy nhất để tránh trùng lặp
-                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
-                using var stream = request.PictureFile.OpenReadStream();
-                // Upload file lên Supabase và lấy URL trả về
-                pictureUrl = await _supabaseService.UploadImageAsync(stream, fileName);
-            }
-
-            // Chuyển từ DTO sang entity, truyền pictureUrl (có thể null nếu không có ảnh)
+            // Dùng mapper
             var productEntity = ProductMapper.ToEntity(request, pictureUrl);
-            await _productRepository.AddProductAsync(productEntity);
 
-            // Sau khi lưu, lấy lại sản phẩm (có thể load các quan hệ nếu cần)
+            await _productRepository.AddProductAsync(productEntity);
             var createdProduct = await _productRepository.GetProductByIdAsync(productEntity.ProductId);
+
             return ProductMapper.ToDTO(createdProduct);
         }
 
-        public async Task<ProductDTO> UpdateProductAsync(int productId, ProductUpdateRequestDTO request)
+
+        // Update sản phẩm với pictureUrl
+        public async Task<ProductDTO> UpdateProductAsync(int productId, ProductUpdateRequestDTO request, string pictureUrl)
         {
             var existingProduct = await _productRepository.GetProductByIdAsync(productId);
-            if (existingProduct == null)
-                return null;
+            if (existingProduct == null) return null;
 
-            string newPictureUrl = null;
-            if (request.PictureFile != null && request.PictureFile.Length > 0)
-            {
-                // Nếu có ảnh cũ, xóa ảnh đó khỏi Supabase
-                if (!string.IsNullOrEmpty(existingProduct.PictureUrl))
-                {
-                    var oldFileName = existingProduct.PictureUrl.Split('/').Last();
-                    await _supabaseService.DeleteImageAsync(oldFileName);
-                }
-
-                // Upload ảnh mới
-                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
-                using var stream = request.PictureFile.OpenReadStream();
-                newPictureUrl = await _supabaseService.UploadImageAsync(stream, fileName);
-            }
-
-            // Cập nhật thông tin sản phẩm, nếu newPictureUrl không null thì sẽ cập nhật lại trường PictureUrl
-            ProductMapper.UpdateEntity(existingProduct, request, newPictureUrl);
+            ProductMapper.UpdateEntity(existingProduct, request, pictureUrl);
             await _productRepository.UpdateProductAsync(existingProduct);
 
             var updatedProduct = await _productRepository.GetProductByIdAsync(productId);

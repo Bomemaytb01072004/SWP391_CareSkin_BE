@@ -41,22 +41,22 @@ namespace SWP391_CareSkin_BE.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] ProductCreateRequestDTO request)
         {
-            // 1. Upload ảnh lên Supabase (nếu có file)
+            // 1. Upload file nếu có
+            string uploadedUrl = null;
             if (request.PictureFile != null && request.PictureFile.Length > 0)
             {
                 var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
                 using var stream = request.PictureFile.OpenReadStream();
-                // Upload file lên Supabase và lấy URL
-                var uploadedUrl = await _supabaseService.UploadImageAsync(stream, fileName);
 
-                // Gán URL vừa upload vào DTO, để Service map sang Entity
-                request.PictureUrl = uploadedUrl;
+                // Lấy userId từ Supabase Auth (hoặc từ nguồn nào khác bạn đã triển khai)
+                var userId = _supabaseService.GetCurrentUserId();
+
+                uploadedUrl = await _supabaseService.UploadImageAsync(stream, fileName, userId);
             }
 
-            // 2. Gọi service, truyền DTO (đã có PictureUrl nếu có ảnh)
-            var createdProduct = await _productService.CreateProductAsync(request);
+            // 2. Gọi service, truyền request + uploadedUrl
+            var createdProduct = await _productService.CreateProductAsync(request, uploadedUrl);
 
-            // 3. Trả về DTO
             return CreatedAtAction(nameof(GetProductById),
                 new { id = createdProduct.ProductId },
                 createdProduct);
@@ -67,21 +67,21 @@ namespace SWP391_CareSkin_BE.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request)
         {
-            // 1. Upload ảnh mới nếu có
+            // 1. Nếu có file mới, upload file và lấy URL, kèm metadata owner
+            string newPictureUrl = null;
             if (request.PictureFile != null && request.PictureFile.Length > 0)
             {
                 var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
                 using var stream = request.PictureFile.OpenReadStream();
-                var newPictureUrl = await _supabaseService.UploadImageAsync(stream, fileName);
 
-                // Gán vào DTO để Service biết cập nhật
-                request.PictureUrl = newPictureUrl;
+                // Lấy userId từ Supabase Auth (hoặc từ nguồn nào khác bạn đã triển khai)
+                var userId = _supabaseService.GetCurrentUserId();
+
+                newPictureUrl = await _supabaseService.UploadImageAsync(stream, fileName, userId);
             }
 
-            // 2. Gọi Service cập nhật
-            var updatedProduct = await _productService.UpdateProductAsync(productId: id, request);
-
-            // 3. Nếu không tồn tại sản phẩm => 404
+            // 2. Gọi service update, truyền newPictureUrl (nếu có)
+            var updatedProduct = await _productService.UpdateProductAsync(id, request, newPictureUrl);
             if (updatedProduct == null)
                 return NotFound();
 

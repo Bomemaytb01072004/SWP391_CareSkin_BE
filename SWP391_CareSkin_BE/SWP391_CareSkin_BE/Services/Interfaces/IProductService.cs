@@ -7,8 +7,8 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     {
         Task<List<ProductDTO>> GetAllProductsAsync();
         Task<ProductDTO> GetProductByIdAsync(int productId);
-        Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request);
-        Task<ProductDTO> UpdateProductAsync(int productId, ProductUpdateRequestDTO request);
+        Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request, string pictureUrl);
+        Task<ProductDTO> UpdateProductAsync(int productId, ProductUpdateRequestDTO request, string pictureUrl);
         Task<bool> DeleteProductAsync(int productId);
     }
 }
