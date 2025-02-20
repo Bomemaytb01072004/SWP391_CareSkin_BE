@@ -5,6 +5,202 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Admin/User": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/UserId": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/{userId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/Staff": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Staff"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/StaffId": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/Staff{staffId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Auth/Login": {
       "post": {
         "tags": [
@@ -320,6 +516,84 @@
   },
   "components": {
     "schemas": {
+      "Answer": {
+        "type": "object",
+        "properties": {
+          "AnswerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "QuestionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "AnswersContext": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "PointForSkinType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Question": {
+            "$ref": "#/components/schemas/Question"
+          },
+          "Historys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/History"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BlogNew": {
+        "type": "object",
+        "properties": {
+          "BlogId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Title": {
+            "type": "string",
+            "nullable": true
+          },
+          "Content": {
+            "type": "string",
+            "nullable": true
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Brand": {
+        "type": "object",
+        "properties": {
+          "BrandId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "BrandCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -340,6 +614,176 @@
         },
         "additionalProperties": false
       },
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "CartId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Customer": {
+        "required": [
+          "Email",
+          "Password",
+          "UserName"
+        ],
+        "type": "object",
+        "properties": {
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserName": {
+            "maxLength": 20,
+            "minLength": 1,
+            "type": "string"
+          },
+          "Password": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
+          "FullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "maxLength": 100,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9._%+-]+@gmail\\.com$",
+            "type": "string"
+          },
+          "Phone": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Dob": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "ProfilePicture": {
+            "type": "string",
+            "nullable": true
+          },
+          "Address": {
+            "type": "string",
+            "nullable": true
+          },
+          "BlogNews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BlogNew"
+            },
+            "nullable": true
+          },
+          "Historys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/History"
+            },
+            "nullable": true
+          },
+          "Results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Result"
+            },
+            "nullable": true
+          },
+          "Carts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cart"
+            },
+            "nullable": true
+          },
+          "Orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            },
+            "nullable": true
+          },
+          "RatingFeedbacks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RatingFeedback"
+            },
+            "nullable": true
+          },
+          "Supports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Support"
+            },
+            "nullable": true
+          },
+          "PromotionCustomers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionCustomer"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "History": {
+        "type": "object",
+        "properties": {
+          "HistoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "QuestionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "AnswerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "Question": {
+            "$ref": "#/components/schemas/Question"
+          },
+          "Answer": {
+            "$ref": "#/components/schemas/Answer"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginDTO": {
         "type": "object",
         "properties": {
@@ -349,6 +793,201 @@
           },
           "Password": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "OrderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "OrderStatusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TotalPrice": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "OrderDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "Address": {
+            "type": "string",
+            "nullable": true
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "OrderStatus": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "PromotionOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionCustomer"
+            },
+            "nullable": true
+          },
+          "OrderProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderProduct"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderProduct": {
+        "type": "object",
+        "properties": {
+          "OrderProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "OrderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "Order": {
+            "$ref": "#/components/schemas/Order"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderStatus": {
+        "type": "object",
+        "properties": {
+          "OrderStatusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Status": {
+            "type": "string",
+            "nullable": true
+          },
+          "Orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductName": {
+            "type": "string",
+            "nullable": true
+          },
+          "BrandId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "Brand": {
+            "$ref": "#/components/schemas/Brand"
+          },
+          "Carts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Cart"
+            },
+            "nullable": true
+          },
+          "SkinCareRoutineProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkinCareRoutineProduct"
+            },
+            "nullable": true
+          },
+          "PromotionProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionProduct"
+            },
+            "nullable": true
+          },
+          "OrderProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderProduct"
+            },
+            "nullable": true
+          },
+          "RatingFeedbacks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RatingFeedback"
+            },
+            "nullable": true
+          },
+          "ProductVariations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariation"
+            },
+            "nullable": true
+          },
+          "ProductMainIngredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMainIngredient"
+            },
+            "nullable": true
+          },
+          "ProductDetailIngredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDetailIngredient"
+            },
+            "nullable": true
+          },
+          "ProductUsages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductUsage"
+            },
             "nullable": true
           }
         },
@@ -400,12 +1039,58 @@
         },
         "additionalProperties": false
       },
+      "ProductDetailIngredient": {
+        "type": "object",
+        "properties": {
+          "ProductDetailIngredientId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "IngredientName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "additionalProperties": false
+      },
       "ProductDetailIngredientCreateRequestDTO": {
         "type": "object",
         "properties": {
           "IngredientName": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductMainIngredient": {
+        "type": "object",
+        "properties": {
+          "ProductMainIngredientId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "IngredientName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
           }
         },
         "additionalProperties": false
@@ -474,6 +1159,31 @@
         },
         "additionalProperties": false
       },
+      "ProductUsage": {
+        "type": "object",
+        "properties": {
+          "ProductUsageId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Step": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Instruction": {
+            "type": "string",
+            "nullable": true
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "additionalProperties": false
+      },
       "ProductUsageCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -488,6 +1198,31 @@
         },
         "additionalProperties": false
       },
+      "ProductVariation": {
+        "type": "object",
+        "properties": {
+          "ProductVariationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Ml": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "additionalProperties": false
+      },
       "ProductVariationCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -498,6 +1233,181 @@
           "Price": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Promotion": {
+        "type": "object",
+        "properties": {
+          "PromotionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Start_Date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "End_Date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "PromotionProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionProduct"
+            },
+            "nullable": true
+          },
+          "PromotionCustomers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromotionCustomer"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PromotionCustomer": {
+        "type": "object",
+        "properties": {
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "PromotionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "Promotion": {
+            "$ref": "#/components/schemas/Promotion"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PromotionProduct": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "PromotionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "Promotion": {
+            "$ref": "#/components/schemas/Promotion"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "QuestionsId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "QuizId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "QuestionContext": {
+            "type": "string",
+            "nullable": true
+          },
+          "Quiz": {
+            "$ref": "#/components/schemas/Quiz"
+          },
+          "Answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Answer"
+            },
+            "nullable": true
+          },
+          "Historys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/History"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Quiz": {
+        "type": "object",
+        "properties": {
+          "QuizId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Title": {
+            "type": "string",
+            "nullable": true
+          },
+          "Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "Questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            },
+            "nullable": true
+          },
+          "Results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Result"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RatingFeedback": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "FeedBack": {
+            "type": "string",
+            "nullable": true
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
           }
         },
         "additionalProperties": false
@@ -540,6 +1450,198 @@
           "profilePicture": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Result": {
+        "type": "object",
+        "properties": {
+          "ResultId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "QuizId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "SkinTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "LastQuizTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "Quiz": {
+            "$ref": "#/components/schemas/Quiz"
+          },
+          "SkinType": {
+            "$ref": "#/components/schemas/SkinType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SkinCareRoutine": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Title": {
+            "type": "string",
+            "nullable": true
+          },
+          "Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "SkinTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "SkinType": {
+            "$ref": "#/components/schemas/SkinType"
+          },
+          "SkinCareRoutineProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkinCareRoutineProduct"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SkinCareRoutineProduct": {
+        "type": "object",
+        "properties": {
+          "SkinCareRoutineId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "SkinCareRoutine": {
+            "$ref": "#/components/schemas/SkinCareRoutine"
+          },
+          "Product": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SkinType": {
+        "type": "object",
+        "properties": {
+          "SkinTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TypeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "Results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Result"
+            },
+            "nullable": true
+          },
+          "SkinCareRoutines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkinCareRoutine"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Staff": {
+        "required": [
+          "Password",
+          "UserName"
+        ],
+        "type": "object",
+        "properties": {
+          "StaffId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "Password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "FullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "type": "string",
+            "nullable": true
+          },
+          "Phone": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "DoB": {
+            "type": "string",
+            "format": "date"
+          },
+          "ProfilePicture": {
+            "type": "string",
+            "nullable": true
+          },
+          "Supports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Support"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Support": {
+        "type": "object",
+        "properties": {
+          "SuppportId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CustomerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "StaffId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Staff": {
+            "$ref": "#/components/schemas/Staff"
+          },
+          "Customer": {
+            "$ref": "#/components/schemas/Customer"
           }
         },
         "additionalProperties": false
