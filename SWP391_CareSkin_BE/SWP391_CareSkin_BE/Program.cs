@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SWP391_CareSkin_BE.Helpers;
+using SWP391_CareSkin_BE.Services;
 
 namespace SWP391_CareSkin_BE
 {
@@ -30,7 +31,6 @@ namespace SWP391_CareSkin_BE
                           .AllowCredentials(); 
                 });
             });
-            //
 
 
             var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -80,6 +80,7 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+            builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
