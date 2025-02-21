@@ -620,7 +620,7 @@
       "LoginDTO": {
         "type": "object",
         "properties": {
-          "userName": {
+          "UserName": {
             "type": "string",
             "nullable": true
           },
@@ -841,19 +841,19 @@
       "RegisterDTO": {
         "type": "object",
         "properties": {
-          "userName": {
+          "UserName": {
             "type": "string",
             "nullable": true
           },
-          "password": {
+          "Password": {
             "type": "string",
             "nullable": true
           },
-          "email": {
+          "ConfirmPassword": {
             "type": "string",
             "nullable": true
           },
-          "confirmPassword": {
+          "Email": {
             "type": "string",
             "nullable": true
           }

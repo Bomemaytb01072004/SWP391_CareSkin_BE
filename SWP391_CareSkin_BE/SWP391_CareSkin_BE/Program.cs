@@ -93,6 +93,14 @@ namespace SWP391_CareSkin_BE
             var app = builder.Build();
 
             // Middleware Configuration
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+                dbContext.Database.Migrate();
+            }
+
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
