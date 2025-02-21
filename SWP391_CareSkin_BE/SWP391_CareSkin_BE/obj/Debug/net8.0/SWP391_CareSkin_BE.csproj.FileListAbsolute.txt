@@ -284,3 +284,10 @@ D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net
 D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net8.0\SWP391_CareSkin_BE.pdb
 D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net8.0\SWP391_CareSkin_BE.genruntimeconfig.cache
 D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\obj\Debug\net8.0\ref\SWP391_CareSkin_BE.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\prn_CS\Swp391_CareSKin_BE\SWP391_CareSkin_BE\SWP391_CareSkin_BE\bin\Debug\net8.0\System.ClientModel.dll

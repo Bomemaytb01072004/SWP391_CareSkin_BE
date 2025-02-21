@@ -30,7 +30,7 @@ namespace SWP391_CareSkin_BE.Controllers
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||
                 string.IsNullOrWhiteSpace(request.Email)|| 
-                request.Dob == default(DateTime) || 
+                request.Dob == default(DateOnly) || 
                 string.IsNullOrWhiteSpace(request.ProfilePicture) ||
                 string.IsNullOrWhiteSpace(request.Gender) ||
                 string.IsNullOrWhiteSpace(request.Address) ||
