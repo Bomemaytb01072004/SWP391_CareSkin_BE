@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SWP391_CareSkin_BE.Helpers;
+
 namespace SWP391_CareSkin_BE
 {
     public class Program
@@ -20,48 +20,53 @@ namespace SWP391_CareSkin_BE
 
             // Add services to the container.
 
-            // build CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-
-                    policy.WithOrigins("https://localhost:8080")
-                          .AllowAnyOrigin()
+                    policy.WithOrigins("http://localhost:5173") 
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
-                          
+                          .AllowAnyHeader()
+                          .AllowCredentials(); 
                 });
             });
             //
 
-            //build JWT
+
+            var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+            var jwtAudience = builder.Configuration["Jwt:Audience"];
+            var jwtKey = builder.Configuration["Jwt:Key"];
+
+            if (string.IsNullOrEmpty(jwtIssuer) || string.IsNullOrEmpty(jwtAudience) || string.IsNullOrEmpty(jwtKey))
+            {
+                throw new Exception("JWT configuration is missing. Please check appsettings.json or environment variables.");
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+
             builder.Services.AddSingleton<JwtHelper>();
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-               {     
-                  ValidateIssuer = true,
-                  ValidateAudience = true,
-                  ValidateLifetime = true,
-                  ValidateIssuerSigningKey = true,
-                  ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                  ValidAudience = builder.Configuration["Jwt:Audience"],
-                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-               };
-            });
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false; 
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtIssuer,
+                        ValidAudience = jwtAudience,
+                        IssuerSigningKey = key
+                    };
+                });
 
-
-            builder.Services.AddControllers().AddJsonOptions(options =>
-                 {
-                      options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                 });
 
             builder.Services.AddDbContext<MyDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));
-            });
+                options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"))
+            );
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -69,14 +74,25 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICartService, CartService>();
+
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
+
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
+
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Middleware Configuration
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -85,8 +101,10 @@ namespace SWP391_CareSkin_BE
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors("AllowAll"); 
 
+            app.UseAuthentication(); 
+            app.UseAuthorization();  
 
             app.MapControllers();
 

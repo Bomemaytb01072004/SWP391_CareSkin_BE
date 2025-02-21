@@ -13,6 +13,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public int BrandId { get; set; }
 
+        public string Category { get; set; }
+
         public string Description { get; set; }
 
         public virtual Brand Brand { get; set; }

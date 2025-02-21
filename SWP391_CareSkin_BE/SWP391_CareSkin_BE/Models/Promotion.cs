@@ -17,6 +17,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateTime End_Date { get; set; }
 
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
         public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
         public virtual ICollection<PromotionCustomer> PromotionCustomers { get; set; } = new List<PromotionCustomer>();
     }
