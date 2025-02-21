@@ -10,12 +10,12 @@ namespace SWP391_CareSkin_BE.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly ISupabaseService _supabaseService; // Dịch vụ upload ảnh
+        private readonly IFirebaseService _firebaseService;
 
-        public ProductController(IProductService productService, ISupabaseService supabaseService)
+        public ProductController(IProductService productService, IFirebaseService firebaseService)
         {
             _productService = productService;
-            _supabaseService = supabaseService;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/Product
@@ -37,7 +37,7 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         // POST: api/Product
-        // Lưu ý: Để nhận file, dùng [FromForm] thay vì [FromBody]
+        // Lưu ý: Để nhận file, dùng [FromForm]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] ProductCreateRequestDTO request)
         {
@@ -48,10 +48,8 @@ namespace SWP391_CareSkin_BE.Controllers
                 var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
                 using var stream = request.PictureFile.OpenReadStream();
 
-                // Lấy userId từ Supabase Auth (hoặc từ nguồn nào khác bạn đã triển khai)
-                var userId = _supabaseService.GetCurrentUserId();
-
-                uploadedUrl = await _supabaseService.UploadImageAsync(stream, fileName, userId);
+                // Gọi FirebaseService để upload
+                uploadedUrl = await _firebaseService.UploadImageAsync(stream, fileName);
             }
 
             // 2. Gọi service, truyền request + uploadedUrl
@@ -63,24 +61,20 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         // PUT: api/Product/{id}
-        // Nếu muốn cập nhật ảnh, cũng dùng [FromForm]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request)
         {
-            // 1. Nếu có file mới, upload file và lấy URL, kèm metadata owner
+            // 1. Nếu có file mới, upload file và lấy URL
             string newPictureUrl = null;
             if (request.PictureFile != null && request.PictureFile.Length > 0)
             {
                 var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
                 using var stream = request.PictureFile.OpenReadStream();
 
-                // Lấy userId từ Supabase Auth (hoặc từ nguồn nào khác bạn đã triển khai)
-                var userId = _supabaseService.GetCurrentUserId();
-
-                newPictureUrl = await _supabaseService.UploadImageAsync(stream, fileName, userId);
+                newPictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
             }
 
-            // 2. Gọi service update, truyền newPictureUrl (nếu có)
+            // 2. Gọi service update
             var updatedProduct = await _productService.UpdateProductAsync(id, request, newPictureUrl);
             if (updatedProduct == null)
                 return NotFound();

@@ -9,12 +9,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly ISupabaseService _supabaseService;
+        private readonly IFirebaseService _firebaseService;
 
-        public ProductService(IProductRepository productRepository, ISupabaseService supabaseService)
+        public ProductService(IProductRepository productRepository, IFirebaseService firebaseService)
         {
             _productRepository = productRepository;
-            _supabaseService = supabaseService;
+            _firebaseService = firebaseService;
         }
 
         public async Task<List<ProductDTO>> GetAllProductsAsync()
@@ -65,7 +65,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (!string.IsNullOrEmpty(product.PictureUrl))
             {
                 var fileName = product.PictureUrl.Split('/').Last();
-                await _supabaseService.DeleteImageAsync(fileName);
+                await _firebaseService.DeleteImageAsync(fileName);
             }
 
             await _productRepository.DeleteProductAsync(productId);
