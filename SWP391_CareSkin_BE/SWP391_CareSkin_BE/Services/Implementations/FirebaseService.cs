@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.Configuration;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -15,18 +16,19 @@ namespace SWP391_CareSkin_BE.Services
 
         public FirebaseService(IConfiguration configuration)
         {
-            // Lấy đường dẫn file JSON từ cấu hình hoặc dùng giá trị mặc định
+            // Đọc đường dẫn file JSON từ appsettings.json
             var credentialFilePath = configuration["Firebase:CredentialFilePath"]
-                                     ?? "C:\\Users\\Administrator\\Documents\\careskin-fb129-firebase-adminsdk-fbsvc-e5573965f0.json";
+                                     ?? "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\careskin-fb129-firebase-adminsdk-fbsvc-ff322826ed.json";
 
             // Tạo credential từ file JSON
             var credential = GoogleCredential.FromFile(credentialFilePath);
 
-            // Tạo StorageClient sử dụng credential
+            // Khởi tạo StorageClient
             _storageClient = StorageClient.Create(credential);
 
-            // Lấy tên bucket từ cấu hình hoặc dùng giá trị mặc định (thường có dạng "careskin-fb129.appspot.com")
-            _bucketName = configuration["Firebase:BucketName"] ?? "careskin-fb129.firebasestorage.app";
+            // Tên bucket: nên là "careskin-fb129.appspot.com"
+            // (dự phòng nếu đọc từ config không có)
+            _bucketName = configuration["Firebase:BucketName"] ?? "careskin-fb129.appspot.com";
 
             if (string.IsNullOrEmpty(_bucketName))
             {
@@ -35,18 +37,31 @@ namespace SWP391_CareSkin_BE.Services
         }
 
         /// <summary>
-        /// Upload file lên Firebase Storage và trả về URL công khai.
+        /// Upload file lên Firebase Storage kèm metadata và trả về URL công khai (?alt=media).
         /// </summary>
         /// <param name="fileStream">Luồng dữ liệu của file.</param>
-        /// <param name="fileName">Tên file (có thể chứa folder con nếu cần).</param>
+        /// <param name="fileName">Tên file (có thể kèm folder con).</param>
         /// <returns>URL công khai của file sau khi upload.</returns>
         public async Task<string> UploadImageAsync(Stream fileStream, string fileName)
         {
-            // Upload file lên bucket (contentType để null để Google tự đoán)
-            await _storageClient.UploadObjectAsync(_bucketName, fileName, null, fileStream);
+            // 1) Chuẩn bị metadata của file
+            //    - ContentType nên để chính xác (ví dụ: "image/jpeg")
+            //    - ContentDisposition = "inline" để hiển thị trực tiếp thay vì tải xuống
+            var storageObject = new Google.Apis.Storage.v1.Data.Object
+            {
+                Bucket = _bucketName,
+                Name = fileName,
+                ContentType = "image/jpeg",        // Hoặc tự động xác định dựa vào đuôi file
+                ContentDisposition = "inline"
+            };
 
-            // Tạo URL công khai cho file (bucket cần được cấu hình public)
-            string publicUrl = $"https://storage.googleapis.com/{_bucketName}/{fileName}";
+            // 2) Upload file kèm metadata
+            await _storageClient.UploadObjectAsync(storageObject, fileStream);
+
+            // 3) Tạo URL cho file dưới dạng Firebase Storage API với ?alt=media
+            //    => Xem được file thô (raw file) thay vì JSON
+            string encodedFileName = Uri.EscapeDataString(fileName);
+            string publicUrl = $"https://firebasestorage.googleapis.com/v0/b/{_bucketName}/o/{encodedFileName}?alt=media";
             return publicUrl;
         }
 
@@ -54,7 +69,7 @@ namespace SWP391_CareSkin_BE.Services
         /// Xóa file khỏi Firebase Storage.
         /// </summary>
         /// <param name="fileName">Tên file cần xóa.</param>
-        /// <returns>True nếu xóa thành công, false nếu file không tồn tại.</returns>
+        /// <returns>True nếu xóa thành công, False nếu file không tồn tại.</returns>
         public async Task<bool> DeleteImageAsync(string fileName)
         {
             try
