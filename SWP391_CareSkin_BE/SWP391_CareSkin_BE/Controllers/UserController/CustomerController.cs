@@ -7,6 +7,7 @@ using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
+using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers.UserController
 {
@@ -14,98 +15,68 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly MyDbContext _context;
+        private readonly ICustomerService _customerService;
 
-        public CustomerController(MyDbContext context)
+        public CustomerController(ICustomerService customerService)
         {
-            _context = context;
+            _customerService = customerService;
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
+        [HttpGet]
+        public async Task<IActionResult> GetAllCustomers()
         {
-            if (string.IsNullOrWhiteSpace(request.UserName) ||
-                string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.Email))
-
-            {
-                return BadRequest(new { message = "Username, password and email cannot be empty!" });
-            }
-
-            if (request.Password != request.ConfirmPassword)
-            {
-                return BadRequest(new { message = "Password is incorrect!" });
-            }
-
-            var existingUser = await _context.Customers
-                .FirstOrDefaultAsync(u => u.UserName == request.UserName || u.Email == request.Email);
-
-            if (existingUser != null)
-            {
-                return Conflict(new { message = "UserName or Email already exists!" });
-            }
-
-            string hashedPassword = Validate.HashPassword(request.Password);
-            var newUser = CustomerMapper.ToCustomer(request,hashedPassword);
-            await _context.Customers.AddAsync(newUser);
-            await _context.SaveChangesAsync(); 
-            
-            return Ok(new { message = "Register successfully!", userId = newUser.CustomerId });
-
+            var customers = await _customerService.GetAllCustomersAsync();
+            return Ok(customers);
         }
 
-
-        [HttpPut("Update-Profile/{customerId}")]
-        public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] UpdateProfileCustomerDTO updatedCustomer)
-        {
-            var customer = await _context.Customers.FindAsync(customerId);
-            if (customer == null)
-            {
-                return NotFound(new { message = "UserName does not exsit!!" });
-            }
-            CustomerMapper.UpdateCustomer(customer, updatedCustomer);
-            _context.Customers.Update(customer);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Update successfully!" });
-        }
-
-
-
-        [HttpDelete("Delete-Account/{customerId}")]
-        public async Task<IActionResult> DeleteAccount(int customerId, [FromBody] DeleteAccountCustomerDTO request)
-        {
-            // Tìm khách hàng theo ID
-            var customer = await _context.Customers.FindAsync(customerId);
-            if (customer == null)
-            {
-                return NotFound(new { message = "UserName does not exsit!" });
-            }
-
-            // Kiểm tra mật khẩu nhập vào với mật khẩu hash trong database
-            if (!Validate.VerifyPassword(customer.Password, request.Password))
-            {
-                return BadRequest(new { message = "Password is incorrect!" });
-            }
-
-            // Xóa tài khoản
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "The account has been successfully deleted!" });
-        }
-
-        [HttpGet("GetById/{customerId}")]
+        [HttpGet("{customerId}")]
         public async Task<IActionResult> GetCustomerById(int customerId)
         {
-            var customer = await _context.Customers.FindAsync(customerId);
+            var customer = await _customerService.GetCustomerByIdAsync(customerId);
+            if (customer == null) return NotFound("Customer does not exist!!!");
+            return Ok(customer);
+        }
 
-            if (customer == null)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
+        {
+            try
             {
-                return NotFound(new { message = "User does not exsit!" });
+                var customer = await _customerService.RegisterCustomerAsync(request);
+                return Ok(new { message = "Register account successful", customer });
             }
-            var customerResponse = CustomerMapper.ToCustomerResponseDTO(customer);
-            return Ok(customerResponse);
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("update-profile/{customerId}")]
+        public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] UpdateProfileCustomerDTO request)
+        {
+            try
+            {
+                var updatedCustomer = await _customerService.UpdateProfileAsync(customerId, request);
+                return Ok(new { message = "Update account successful", updatedCustomer });
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("delete/{customerId}")]
+        public async Task<IActionResult> DeleteCustomer(int customerId, [FromBody] string password)
+        {
+            try
+            {
+                await _customerService.DeleteCustomerAsync(customerId, password);
+                return Ok(new { message = "Delete account successful" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
     }
