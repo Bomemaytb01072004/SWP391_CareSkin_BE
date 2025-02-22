@@ -11,7 +11,7 @@ namespace SWP391_CareSkin_BE.DTOs.Requests.Admin
 
         public string Email { get; set; }
 
-        public int Phone { get; set; }
+        public string Phone { get; set; }
 
         public DateOnly DoB { get; set; }
 
