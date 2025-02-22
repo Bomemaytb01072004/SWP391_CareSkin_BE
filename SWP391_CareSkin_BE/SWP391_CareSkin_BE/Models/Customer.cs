@@ -23,9 +23,9 @@ namespace SWP391_CareSkin_BE.Models
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$")]
         public string Email { get; set; }
 
-        public int? Phone { get; set; }
+        public string? Phone { get; set; }
 
-        public DateOnly Dob { get; set; }
+        public DateOnly? Dob { get; set; }
 
         public string? Gender { get; set; }
 

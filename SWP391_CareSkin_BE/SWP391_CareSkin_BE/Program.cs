@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SWP391_CareSkin_BE.Helpers;
+using SWP391_CareSkin_BE.Repositories;
+using SWP391_CareSkin_BE.Services;
 
 namespace SWP391_CareSkin_BE
 {
@@ -83,6 +85,12 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
+
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
@@ -100,6 +108,11 @@ namespace SWP391_CareSkin_BE
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+                dbContext.Database.Migrate();
             }
 
             app.UseHttpsRedirection();
