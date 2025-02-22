@@ -5,60 +5,6 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/Admin": {
-      "get": {
-        "tags": [
-          "Admin"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Admin/{id}": {
-      "put": {
-        "tags": [
-          "Admin"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminUpdateRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminUpdateRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminUpdateRequestDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Auth/Login": {
       "post": {
         "tags": [
@@ -334,156 +280,6 @@
         }
       }
     },
-    "/api/Customer": {
-      "get": {
-        "tags": [
-          "Customer"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Customer/{customerId}": {
-      "get": {
-        "tags": [
-          "Customer"
-        ],
-        "parameters": [
-          {
-            "name": "customerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Customer/register": {
-      "post": {
-        "tags": [
-          "Customer"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Customer/update-profile/{customerId}": {
-      "put": {
-        "tags": [
-          "Customer"
-        ],
-        "parameters": [
-          {
-            "name": "customerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileCustomerDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileCustomerDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileCustomerDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Customer/delete/{customerId}": {
-      "delete": {
-        "tags": [
-          "Customer"
-        ],
-        "parameters": [
-          {
-            "name": "customerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "type": "string"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Order": {
       "post": {
         "tags": [
@@ -623,19 +419,81 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ProductCreateRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductCreateRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductCreateRequestDTO"
+                "type": "object",
+                "properties": {
+                  "ProductName": {
+                    "type": "string"
+                  },
+                  "BrandId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Category": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Variations": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
+                    }
+                  },
+                  "MainIngredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductMainIngredientCreateRequestDTO"
+                    }
+                  },
+                  "DetailIngredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductDetailIngredientCreateRequestDTO"
+                    }
+                  },
+                  "Usages": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductUsageCreateRequestDTO"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "ProductName": {
+                  "style": "form"
+                },
+                "BrandId": {
+                  "style": "form"
+                },
+                "Category": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                },
+                "Variations": {
+                  "style": "form"
+                },
+                "MainIngredients": {
+                  "style": "form"
+                },
+                "DetailIngredients": {
+                  "style": "form"
+                },
+                "Usages": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -686,19 +544,63 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ProductUpdateRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductUpdateRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductUpdateRequestDTO"
+                "type": "object",
+                "properties": {
+                  "ProductName": {
+                    "type": "string"
+                  },
+                  "BrandId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Category": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Variations": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
+                    }
+                  },
+                  "MainIngredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductMainIngredientDTO"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "ProductName": {
+                  "style": "form"
+                },
+                "BrandId": {
+                  "style": "form"
+                },
+                "Category": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                },
+                "Variations": {
+                  "style": "form"
+                },
+                "MainIngredients": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -731,133 +633,26 @@
         }
       }
     },
-    "/api/Staff/Register": {
+    "/api/Register/register": {
       "post": {
         "tags": [
-          "Staff"
+          "Register"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterStaffDTO"
+                "$ref": "#/components/schemas/RegisterDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterStaffDTO"
+                "$ref": "#/components/schemas/RegisterDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterStaffDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Staff/GetById/{staffId}": {
-      "get": {
-        "tags": [
-          "Staff"
-        ],
-        "parameters": [
-          {
-            "name": "staffId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Staff/Update-Profile/{staffId}": {
-      "put": {
-        "tags": [
-          "Staff"
-        ],
-        "parameters": [
-          {
-            "name": "staffId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileStaffDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileStaffDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileStaffDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Staff/Delete-Account/{staffId}": {
-      "delete": {
-        "tags": [
-          "Staff"
-        ],
-        "parameters": [
-          {
-            "name": "staffId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "type": "string"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "type": "string"
+                "$ref": "#/components/schemas/RegisterDTO"
               }
             }
           }
@@ -872,39 +667,6 @@
   },
   "components": {
     "schemas": {
-      "AdminUpdateRequestDTO": {
-        "required": [
-          "Password"
-        ],
-        "type": "object",
-        "properties": {
-          "Password": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          },
-          "Phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "DoB": {
-            "type": "string",
-            "format": "date"
-          },
-          "ProfilePicture": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "BrandCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -1026,56 +788,6 @@
         },
         "additionalProperties": false
       },
-      "ProductCreateRequestDTO": {
-        "type": "object",
-        "properties": {
-          "ProductName": {
-            "type": "string",
-            "nullable": true
-          },
-          "BrandId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "Category": {
-            "type": "string",
-            "nullable": true
-          },
-          "Description": {
-            "type": "string",
-            "nullable": true
-          },
-          "Variations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "MainIngredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductMainIngredientCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "DetailIngredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductDetailIngredientCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "Usages": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductUsageCreateRequestDTO"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "ProductDetailIngredientCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -1113,42 +825,6 @@
           },
           "Description": {
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ProductUpdateRequestDTO": {
-        "type": "object",
-        "properties": {
-          "ProductName": {
-            "type": "string",
-            "nullable": true
-          },
-          "BrandId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "Category": {
-            "type": "string",
-            "nullable": true
-          },
-          "Description": {
-            "type": "string",
-            "nullable": true
-          },
-          "Variations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductVariationCreateRequestDTO"
-            },
-            "nullable": true
-          },
-          "MainIngredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductMainIngredientDTO"
-            },
             "nullable": true
           }
         },
@@ -1198,90 +874,6 @@
             "nullable": true
           },
           "Email": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RegisterStaffDTO": {
-        "type": "object",
-        "properties": {
-          "UserName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Password": {
-            "type": "string",
-            "nullable": true
-          },
-          "ConfirmPassword": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateProfileCustomerDTO": {
-        "type": "object",
-        "properties": {
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          },
-          "Phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "Dob": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "Gender": {
-            "type": "string",
-            "nullable": true
-          },
-          "ProfilePicture": {
-            "type": "string",
-            "nullable": true
-          },
-          "Address": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateProfileStaffDTO": {
-        "type": "object",
-        "properties": {
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          },
-          "Phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "Dob": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "ProfilePicture": {
             "type": "string",
             "nullable": true
           }

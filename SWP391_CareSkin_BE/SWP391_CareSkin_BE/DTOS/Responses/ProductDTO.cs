@@ -8,6 +8,8 @@
         public string Category { get; set; }
         public string BrandName { get; set; }
 
+        public string PictureUrl { get; set; }
+
         // Danh sách các Variation của sản phẩm
         public List<ProductVariationDTO> Variations { get; set; }
 

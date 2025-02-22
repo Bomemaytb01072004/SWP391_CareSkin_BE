@@ -54,6 +54,18 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "FirebaseAdmin": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.69.0, )"
+            },
+            "Google.Cloud.Storage.V1": {
+              "target": "Package",
+              "version": "[4.10.0, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.12, )"
@@ -77,6 +89,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.12, )"
+            },
+            "Supabase": {
+              "target": "Package",
+              "version": "[1.1.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

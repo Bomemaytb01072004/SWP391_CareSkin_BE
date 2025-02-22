@@ -19,6 +19,10 @@ namespace SWP391_CareSkin_BE.Mappers
                 Description = product.Description,
                 Category = product.Category,
                 BrandName = product.Brand?.Name,
+
+                // Trả về URL ảnh
+                PictureUrl = product.PictureUrl,
+
                 Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
                 {
                     ProductVariationId = v.ProductVariationId,
@@ -46,17 +50,22 @@ namespace SWP391_CareSkin_BE.Mappers
         }
 
         // Chuyển từ ProductCreateRequestDTO sang Product Entity
-        public static Product ToEntity(ProductCreateRequestDTO request)
+        // Có thể truyền vào tham số pictureUrl (sau khi upload xong) nếu muốn set luôn
+        public static Product ToEntity(ProductCreateRequestDTO request, string pictureUrl = null)
         {
             if (request == null)
                 return null;
 
-            return new Product
+            var product = new Product
             {
                 ProductName = request.ProductName,
                 BrandId = request.BrandId,
                 Category = request.Category,
                 Description = request.Description,
+
+                // Sau khi upload ảnh, bạn có thể gán pictureUrl vào đây
+                PictureUrl = pictureUrl,
+
                 ProductVariations = request.Variations?.Select(v => new ProductVariation
                 {
                     Ml = v.Ml,
@@ -77,10 +86,12 @@ namespace SWP391_CareSkin_BE.Mappers
                     Instruction = m.Instruction
                 }).ToList()
             };
+
+            return product;
         }
 
         // Cập nhật một Product Entity dựa trên ProductUpdateRequestDTO
-        public static void UpdateEntity(Product product, ProductUpdateRequestDTO request)
+        public static void UpdateEntity(Product product, ProductUpdateRequestDTO request, string pictureUrl = null)
         {
             if (product == null || request == null)
                 return;
@@ -90,7 +101,13 @@ namespace SWP391_CareSkin_BE.Mappers
             product.Category = request.Category;
             product.Description = request.Description;
 
-            // Ví dụ đơn giản: xoá toàn bộ Variation cũ và thêm Variation mới từ request.
+            // Nếu có ảnh mới, set lại
+            if (!string.IsNullOrEmpty(pictureUrl))
+            {
+                product.PictureUrl = pictureUrl;
+            }
+
+            // Ví dụ đơn giản: xoá toàn bộ Variation cũ và thêm Variation mới
             if (request.Variations != null)
             {
                 product.ProductVariations.Clear();
@@ -103,6 +120,7 @@ namespace SWP391_CareSkin_BE.Mappers
                     });
                 }
             }
+
             if (request.MainIngredients != null)
             {
                 product.ProductMainIngredients.Clear();

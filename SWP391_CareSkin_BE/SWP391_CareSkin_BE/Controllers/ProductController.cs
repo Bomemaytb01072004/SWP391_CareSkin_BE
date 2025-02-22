@@ -10,10 +10,12 @@ namespace SWP391_CareSkin_BE.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IFirebaseService _firebaseService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IFirebaseService firebaseService)
         {
             _productService = productService;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/Product
@@ -35,20 +37,48 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         // POST: api/Product
+        // Lưu ý: Để nhận file, dùng [FromForm]
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateRequestDTO request)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductCreateRequestDTO request)
         {
-            var createdProduct = await _productService.CreateProductAsync(request);
-            return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.ProductId }, createdProduct);
+            // 1. Upload file nếu có
+            string uploadedUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                // Gọi FirebaseService để upload
+                uploadedUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
+
+            // 2. Gọi service, truyền request + uploadedUrl
+            var createdProduct = await _productService.CreateProductAsync(request, uploadedUrl);
+
+            return CreatedAtAction(nameof(GetProductById),
+                new { id = createdProduct.ProductId },
+                createdProduct);
         }
 
         // PUT: api/Product/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO request)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request)
         {
-            var updatedProduct = await _productService.UpdateProductAsync(id, request);
+            // 1. Nếu có file mới, upload file và lấy URL
+            string newPictureUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                newPictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
+
+            // 2. Gọi service update
+            var updatedProduct = await _productService.UpdateProductAsync(id, request, newPictureUrl);
             if (updatedProduct == null)
                 return NotFound();
+
             return Ok(updatedProduct);
         }
 
@@ -59,6 +89,7 @@ namespace SWP391_CareSkin_BE.Controllers
             var result = await _productService.DeleteProductAsync(id);
             if (!result)
                 return NotFound();
+
             return Ok(new { message = "Product deleted successfully" });
         }
     }

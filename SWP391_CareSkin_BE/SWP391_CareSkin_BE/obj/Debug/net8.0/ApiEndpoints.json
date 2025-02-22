@@ -366,9 +366,49 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOS.Requests.ProductCreateRequestDTO",
-        "IsRequired": true
+        "Name": "ProductName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BrandId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Variations",
+        "Type": "System.Collections.Generic.List\u00601[[SWP391_CareSkin_BE.DTOS.Requests.ProductVariationCreateRequestDTO, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "MainIngredients",
+        "Type": "System.Collections.Generic.List\u00601[[SWP391_CareSkin_BE.DTOS.Requests.ProductMainIngredientCreateRequestDTO, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DetailIngredients",
+        "Type": "System.Collections.Generic.List\u00601[[SWP391_CareSkin_BE.DTOS.Requests.ProductDetailIngredientCreateRequestDTO, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Usages",
+        "Type": "System.Collections.Generic.List\u00601[[SWP391_CareSkin_BE.DTOS.Requests.ProductUsageCreateRequestDTO, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -403,9 +443,39 @@
         "IsRequired": true
       },
       {
-        "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOS.Requests.ProductUpdateRequestDTO",
-        "IsRequired": true
+        "Name": "ProductName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BrandId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Variations",
+        "Type": "System.Collections.Generic.List\u00601[[SWP391_CareSkin_BE.DTOS.Requests.ProductVariationCreateRequestDTO, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "MainIngredients",
+        "Type": "System.Collections.Generic.List\u00601[[SWP391_CareSkin_BE.DTOS.Responses.ProductMainIngredientDTO, SWP391_CareSkin_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
