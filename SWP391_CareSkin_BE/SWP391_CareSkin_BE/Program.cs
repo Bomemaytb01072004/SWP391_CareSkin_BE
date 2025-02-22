@@ -70,6 +70,9 @@ namespace SWP391_CareSkin_BE
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"))
             );
 
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
 
@@ -101,6 +104,14 @@ namespace SWP391_CareSkin_BE
             var app = builder.Build();
 
             // Middleware Configuration
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+                dbContext.Database.Migrate();
+            }
+
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
