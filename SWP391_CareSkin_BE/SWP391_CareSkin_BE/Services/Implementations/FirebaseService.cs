@@ -18,7 +18,7 @@ namespace SWP391_CareSkin_BE.Services
         {
             // Đọc đường dẫn file JSON từ appsettings.json
             var credentialFilePath = configuration["Firebase:CredentialFilePath"]
-                                     ?? "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\careskin-fb129-firebase-adminsdk-fbsvc-ff322826ed.json";
+                                     ?? "D:\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\SWP391_CareSkin_BE\\firebasekey.json";
 
             // Tạo credential từ file JSON
             var credential = GoogleCredential.FromFile(credentialFilePath);

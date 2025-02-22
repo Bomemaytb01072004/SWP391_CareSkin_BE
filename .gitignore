@@ -313,4 +313,4 @@ project.assets.json
 .env
 .secrets/
 secrets.json
-SWP391_CareSkin_BE/SWP391_CareSkin_BE/careskin-fb129-firebase-adminsdk-fbsvc-ff322826ed.json
+firebasekey.json
