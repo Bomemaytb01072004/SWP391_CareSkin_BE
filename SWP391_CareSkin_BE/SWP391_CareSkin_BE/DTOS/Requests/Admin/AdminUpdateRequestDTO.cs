@@ -1,17 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SWP391_CareSkin_BE.Models
+namespace SWP391_CareSkin_BE.DTOs.Requests.Admin
 {
-
-    [Table("Admin")]
-    public class Admin
+    public class AdminUpdateRequestDTO
     {
-        public int AdminId {  get; set; }
-
-        [Required]
-        public string UserName { get; set; }
-
         [Required]
         public string Password { get; set; }
 
@@ -21,7 +13,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Phone { get; set; }
 
-        public DateOnly DoB {  get; set; }
+        public DateOnly DoB { get; set; }
 
         public string ProfilePicture { get; set; }
     }

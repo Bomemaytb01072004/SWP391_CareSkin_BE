@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SWP391_CareSkin_BE.Helpers;
+using SWP391_CareSkin_BE.Repositories;
+using SWP391_CareSkin_BE.Services;
 
 namespace SWP391_CareSkin_BE
 {
@@ -68,6 +70,9 @@ namespace SWP391_CareSkin_BE
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"))
             );
 
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
 
@@ -79,6 +84,12 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
 
 
             builder.Services.AddControllers().AddJsonOptions(options =>
@@ -105,6 +116,11 @@ namespace SWP391_CareSkin_BE
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+                dbContext.Database.Migrate();
             }
 
             app.UseHttpsRedirection();
