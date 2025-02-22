@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int Phone {  get; set; }
 
-        public DateTime DoB {  get; set; }
+        public DateOnly DoB {  get; set; }
 
         public string ProfilePicture { get; set; }
 

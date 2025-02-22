@@ -81,6 +81,8 @@ namespace SWP391_CareSkin_BE.Data
 
             //relationship
 
+
+
             modelBuilder.Entity<Answer>()
                 .HasMany(a => a.Historys)
                 .WithOne(h => h.Answer)

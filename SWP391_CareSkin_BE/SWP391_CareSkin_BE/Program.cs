@@ -68,6 +68,9 @@ namespace SWP391_CareSkin_BE
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"))
             );
 
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
 

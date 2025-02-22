@@ -29,7 +29,12 @@ namespace SWP391_CareSkin_BE.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.Email))
+                string.IsNullOrWhiteSpace(request.Email)|| 
+                request.Dob == default(DateOnly) || 
+                string.IsNullOrWhiteSpace(request.ProfilePicture) ||
+                string.IsNullOrWhiteSpace(request.Gender) ||
+                string.IsNullOrWhiteSpace(request.Address) ||
+                string.IsNullOrWhiteSpace(request.FullName))
 
             {
                 return BadRequest(new { message = "Tên đăng nhập, mật khẩu và email không được để trống!" });
