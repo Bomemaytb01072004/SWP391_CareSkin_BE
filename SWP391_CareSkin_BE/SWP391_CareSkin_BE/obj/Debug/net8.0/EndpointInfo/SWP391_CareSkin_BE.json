@@ -35,19 +35,54 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/AdminUpdateRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminUpdateRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AdminUpdateRequestDTO"
+                "required": [
+                  "Password"
+                ],
+                "type": "object",
+                "properties": {
+                  "Password": {
+                    "type": "string"
+                  },
+                  "FullName": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Phone": {
+                    "type": "string"
+                  },
+                  "DoB": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Password": {
+                  "style": "form"
+                },
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Phone": {
+                  "style": "form"
+                },
+                "DoB": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -367,40 +402,7 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Customer/register": {
-      "post": {
-        "tags": [
-          "Customer"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Customer/update-profile/{customerId}": {
+      },
       "put": {
         "tags": [
           "Customer"
@@ -418,19 +420,57 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProfileCustomerDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileCustomerDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileCustomerDTO"
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Phone": {
+                    "type": "string"
+                  },
+                  "Dob": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "Gender": {
+                    "type": "string"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Address": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Phone": {
+                  "style": "form"
+                },
+                "Dob": {
+                  "style": "form"
+                },
+                "Gender": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -440,9 +480,7 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Customer/delete/{customerId}": {
+      },
       "delete": {
         "tags": [
           "Customer"
@@ -473,6 +511,92 @@
             "application/*+json": {
               "schema": {
                 "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Customer/Register": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UserName": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string"
+                  },
+                  "ConfirmPassword": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Phone": {
+                    "type": "string"
+                  },
+                  "FullName": {
+                    "type": "string"
+                  },
+                  "Dob": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "Gender": {
+                    "type": "string"
+                  },
+                  "Address": {
+                    "type": "string"
+                  },
+                  "PictureUrl": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "UserName": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                },
+                "ConfirmPassword": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Phone": {
+                  "style": "form"
+                },
+                "FullName": {
+                  "style": "form"
+                },
+                "Dob": {
+                  "style": "form"
+                },
+                "Gender": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                },
+                "PictureUrl": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -868,7 +992,7 @@
         }
       }
     },
-    "/api/Staff/GetById/{staffId}": {
+    "/api/Staff/{staffId}": {
       "get": {
         "tags": [
           "Staff"
@@ -889,9 +1013,7 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Staff/Update-Profile/{staffId}": {
+      },
       "put": {
         "tags": [
           "Staff"
@@ -909,19 +1031,45 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProfileStaffDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileStaffDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileStaffDTO"
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Phone": {
+                    "type": "string"
+                  },
+                  "Dob": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "PictureFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Phone": {
+                  "style": "form"
+                },
+                "Dob": {
+                  "style": "form"
+                },
+                "PictureFile": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -931,9 +1079,7 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Staff/Delete-Account/{staffId}": {
+      },
       "delete": {
         "tags": [
           "Staff"
@@ -978,39 +1124,6 @@
   },
   "components": {
     "schemas": {
-      "AdminUpdateRequestDTO": {
-        "required": [
-          "Password"
-        ],
-        "type": "object",
-        "properties": {
-          "Password": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          },
-          "Phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "DoB": {
-            "type": "string",
-            "format": "date"
-          },
-          "ProfilePicture": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "BrandCreateRequestDTO": {
         "type": "object",
         "properties": {
@@ -1202,28 +1315,6 @@
         },
         "additionalProperties": false
       },
-      "RegisterDTO": {
-        "type": "object",
-        "properties": {
-          "UserName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Password": {
-            "type": "string",
-            "nullable": true
-          },
-          "ConfirmPassword": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "RegisterStaffDTO": {
         "type": "object",
         "properties": {
@@ -1240,68 +1331,6 @@
             "nullable": true
           },
           "Email": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateProfileCustomerDTO": {
-        "type": "object",
-        "properties": {
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          },
-          "Phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "Dob": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "Gender": {
-            "type": "string",
-            "nullable": true
-          },
-          "ProfilePicture": {
-            "type": "string",
-            "nullable": true
-          },
-          "Address": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateProfileStaffDTO": {
-        "type": "object",
-        "properties": {
-          "FullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "Email": {
-            "type": "string",
-            "nullable": true
-          },
-          "Phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "Dob": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "ProfilePicture": {
             "type": "string",
             "nullable": true
           }

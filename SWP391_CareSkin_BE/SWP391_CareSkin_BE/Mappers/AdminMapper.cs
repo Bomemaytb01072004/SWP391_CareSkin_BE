@@ -25,7 +25,7 @@ namespace SWP391_CareSkin_BE.Mappers
         }
 
         // Cập nhật một Admin Entity dựa trên AdminUpdateRequestDTO
-        public static void UpdateEnity(AdminUpdateRequestDTO request, Admin admin)
+        public static void UpdateEnity(AdminUpdateRequestDTO request, Admin admin, string pictureUrl = null)
         {
             if (request == null || admin == null) return;
 
@@ -34,7 +34,7 @@ namespace SWP391_CareSkin_BE.Mappers
             admin.Email = request.Email;
             admin.Phone = request.Phone;
             admin.DoB = request.DoB;
-            admin.PictureUrl = request.PictureUrl;
+            admin.PictureUrl = pictureUrl;
         } 
     }
 }

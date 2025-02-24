@@ -10,10 +10,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IFirebaseService _firebaseService;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(ICustomerRepository customerRepository, IFirebaseService firebaseService)
         {
             _customerRepository = customerRepository;
+            _firebaseService = firebaseService;
         }
 
         public async Task<List<CustomerDTO>> GetAllCustomersAsync()
@@ -43,7 +45,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return CustomerMapper.ToCustomerResponseDTO(newCustomer);
         }
 
-        public async Task<CustomerDTO> UpdateProfileAsync(int customerId, UpdateProfileCustomerDTO request)
+        public async Task<CustomerDTO> UpdateProfileAsync(int customerId, UpdateProfileCustomerDTO request, string pictureUrl)
         {
             var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
             if (customer == null)
@@ -51,7 +53,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException("Khách hàng không tồn tại.");
             }
 
-            CustomerMapper.UpdateCustomer(customer, request);
+            CustomerMapper.UpdateCustomer(customer, request, pictureUrl);
             await _customerRepository.UpdateCustomerAsync(customer);
 
             return CustomerMapper.ToCustomerResponseDTO(customer);

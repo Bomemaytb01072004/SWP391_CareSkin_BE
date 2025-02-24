@@ -23,9 +23,34 @@
         "IsRequired": true
       },
       {
-        "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOs.Requests.Admin.AdminUpdateRequestDTO",
-        "IsRequired": true
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DoB",
+        "Type": "System.DateOnly",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -222,8 +247,59 @@
   },
   {
     "ContainingType": "SWP391_CareSkin_BE.Controllers.UserController.CustomerController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/Customer/{customerId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "customerId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Dob",
+        "Type": "System.Nullable\u00601[[System.DateOnly, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Gender",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_CareSkin_BE.Controllers.UserController.CustomerController",
     "Method": "DeleteCustomer",
-    "RelativePath": "api/Customer/delete/{customerId}",
+    "RelativePath": "api/Customer/{customerId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -244,36 +320,60 @@
   {
     "ContainingType": "SWP391_CareSkin_BE.Controllers.UserController.CustomerController",
     "Method": "Register",
-    "RelativePath": "api/Customer/register",
+    "RelativePath": "api/Customer/Register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOS.Responses.RegisterDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_CareSkin_BE.Controllers.UserController.CustomerController",
-    "Method": "UpdateProfile",
-    "RelativePath": "api/Customer/update-profile/{customerId}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "customerId",
-        "Type": "System.Int32",
-        "IsRequired": true
+        "Name": "UserName",
+        "Type": "System.String",
+        "IsRequired": false
       },
       {
-        "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOs.Requests.UpdateProfileCustomerDTO",
-        "IsRequired": true
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConfirmPassword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Dob",
+        "Type": "System.Nullable\u00601[[System.DateOnly, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Gender",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureUrl",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -498,8 +598,65 @@
   },
   {
     "ContainingType": "SWP391_CareSkin_BE.Controllers.StaffController.StaffController",
+    "Method": "GetStaffById",
+    "RelativePath": "api/Staff/{staffId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "staffId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_CareSkin_BE.Controllers.StaffController.StaffController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/Staff/{staffId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "staffId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Dob",
+        "Type": "System.Nullable\u00601[[System.DateOnly, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_CareSkin_BE.Controllers.StaffController.StaffController",
     "Method": "DeleteAccount",
-    "RelativePath": "api/Staff/Delete-Account/{staffId}",
+    "RelativePath": "api/Staff/{staffId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -519,22 +676,6 @@
   },
   {
     "ContainingType": "SWP391_CareSkin_BE.Controllers.StaffController.StaffController",
-    "Method": "GetStaffById",
-    "RelativePath": "api/Staff/GetById/{staffId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "staffId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_CareSkin_BE.Controllers.StaffController.StaffController",
     "Method": "Register",
     "RelativePath": "api/Staff/Register",
     "HttpMethod": "POST",
@@ -544,27 +685,6 @@
       {
         "Name": "request",
         "Type": "SWP391_CareSkin_BE.DTOS.Responses.RegisterStaffDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_CareSkin_BE.Controllers.StaffController.StaffController",
-    "Method": "UpdateProfile",
-    "RelativePath": "api/Staff/Update-Profile/{staffId}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "staffId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "request",
-        "Type": "SWP391_CareSkin_BE.DTOS.Requests.UpdateProfileStaffDTO",
         "IsRequired": true
       }
     ],

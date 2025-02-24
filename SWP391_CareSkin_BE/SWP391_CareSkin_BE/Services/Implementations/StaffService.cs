@@ -11,10 +11,12 @@ namespace SWP391_CareSkin_BE.Services
     public class StaffService : IStaffService
     {
         private readonly IStaffRepository _staffRepository;
+        private readonly IFirebaseService _firebaseService;
 
-        public StaffService(IStaffRepository staffRepository)
+        public StaffService(IStaffRepository staffRepository, IFirebaseService firebaseService)
         {
             _staffRepository = staffRepository;
+            _firebaseService = firebaseService;
         }
 
         public async Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request)
@@ -42,13 +44,13 @@ namespace SWP391_CareSkin_BE.Services
             return staff != null ? StaffMapper.ToStaffResponseDTO(staff) : null;
         }
 
-        public async Task<StaffDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request)
+        public async Task<StaffDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request, string pictureUrl)
         {
             var staff = await _staffRepository.GetStaffByIdAsync(staffId);
             if (staff == null)
                 throw new ArgumentException("Nhân viên không tồn tại.");
 
-            StaffMapper.UpdateStaff(staff, request);
+            StaffMapper.UpdateStaff(staff, request, pictureUrl);
             await _staffRepository.UpdateStaffAsync(staff);
 
             return StaffMapper.ToStaffResponseDTO(staff);

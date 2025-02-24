@@ -42,7 +42,7 @@ namespace SWP391_CareSkin_BE.Mappers
         }
 
         // cập nhật dữ liệu từ DTO vào Model
-        public static void UpdateCustomer( Customer customer, UpdateProfileCustomerDTO dto)
+        public static void UpdateCustomer( Customer customer, UpdateProfileCustomerDTO dto, string pictureUrl = null)
         {
             if (!string.IsNullOrEmpty(dto.FullName))
                 customer.FullName = dto.FullName;
@@ -59,8 +59,8 @@ namespace SWP391_CareSkin_BE.Mappers
             if (!string.IsNullOrEmpty(dto.Gender))
                 customer.Gender = dto.Gender;
 
-            if (!string.IsNullOrEmpty(dto.PictureFile))
-                customer.PictureUrl = dto.PictureFile;
+            if (!string.IsNullOrEmpty(pictureUrl))
+                customer.PictureUrl = pictureUrl;
 
             if (!string.IsNullOrEmpty(dto.Address))
                 customer.Address = dto.Address;
