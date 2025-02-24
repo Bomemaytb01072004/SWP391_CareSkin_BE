@@ -20,7 +20,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Email = admin.Email,
                 Phone = admin.Phone,
                 DoB = admin.DoB,
-                ProfilePicture = admin.ProfilePicture,
+                PictureUrl = admin.PictureUrl,
             };
         }
 
@@ -34,7 +34,7 @@ namespace SWP391_CareSkin_BE.Mappers
             admin.Email = request.Email;
             admin.Phone = request.Phone;
             admin.DoB = request.DoB;
-            admin.ProfilePicture = request.ProfilePicture;
+            admin.PictureUrl = request.PictureUrl;
         } 
     }
 }

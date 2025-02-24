@@ -16,19 +16,19 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _customerRepository = customerRepository;
         }
 
-        public async Task<List<CustomerResponseDTO>> GetAllCustomersAsync()
+        public async Task<List<CustomerDTO>> GetAllCustomersAsync()
         {
             var customers = await _customerRepository.GetAllCustomersAsync();
             return customers.Select(CustomerMapper.ToCustomerResponseDTO).ToList();
         }
 
-        public async Task<CustomerResponseDTO?> GetCustomerByIdAsync(int customerId)
+        public async Task<CustomerDTO?> GetCustomerByIdAsync(int customerId)
         {
             var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
             return customer != null ? CustomerMapper.ToCustomerResponseDTO(customer) : null;
         }
 
-        public async Task<CustomerResponseDTO> RegisterCustomerAsync(RegisterDTO request)
+        public async Task<CustomerDTO> RegisterCustomerAsync(RegisterCustomerDTO request)
         {
             var existingCustomer = await _customerRepository.GetCustomerByEmailOrUsernameAsync(request.Email, request.UserName);
             if (existingCustomer != null)
@@ -43,7 +43,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return CustomerMapper.ToCustomerResponseDTO(newCustomer);
         }
 
-        public async Task<CustomerResponseDTO> UpdateProfileAsync(int customerId, UpdateProfileCustomerDTO request)
+        public async Task<CustomerDTO> UpdateProfileAsync(int customerId, UpdateProfileCustomerDTO request)
         {
             var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
             if (customer == null)

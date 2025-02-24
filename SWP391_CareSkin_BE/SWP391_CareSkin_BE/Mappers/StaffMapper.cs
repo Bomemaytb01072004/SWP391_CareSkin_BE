@@ -23,9 +23,9 @@ namespace SWP391_CareSkin_BE.Mappers
         }
 
         //chuyển đổi từ staff model sang staffresponseDTO
-        public static StaffResponseDTO ToStaffResponseDTO(Staff staff)
+        public static StaffDTO ToStaffResponseDTO(Staff staff)
         {
-            return new StaffResponseDTO
+            return new StaffDTO
             {
                 StaffId = staff.StaffId,
                 UserName = staff.UserName,

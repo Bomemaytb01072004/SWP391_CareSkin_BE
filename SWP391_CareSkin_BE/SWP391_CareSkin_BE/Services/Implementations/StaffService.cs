@@ -17,7 +17,7 @@ namespace SWP391_CareSkin_BE.Services
             _staffRepository = staffRepository;
         }
 
-        public async Task<StaffResponseDTO> RegisterStaffAsync(RegisterStaffDTO request)
+        public async Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request)
         {
             if (await _staffRepository.GetStaffByUsernameOrEmailAsync(request.UserName, request.Email) != null)
             {
@@ -36,13 +36,13 @@ namespace SWP391_CareSkin_BE.Services
             return StaffMapper.ToStaffResponseDTO(newStaff);
         }
 
-        public async Task<StaffResponseDTO?> GetStaffByIdAsync(int staffId)
+        public async Task<StaffDTO?> GetStaffByIdAsync(int staffId)
         {
             var staff = await _staffRepository.GetStaffByIdAsync(staffId);
             return staff != null ? StaffMapper.ToStaffResponseDTO(staff) : null;
         }
 
-        public async Task<StaffResponseDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request)
+        public async Task<StaffDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request)
         {
             var staff = await _staffRepository.GetStaffByIdAsync(staffId);
             if (staff == null)

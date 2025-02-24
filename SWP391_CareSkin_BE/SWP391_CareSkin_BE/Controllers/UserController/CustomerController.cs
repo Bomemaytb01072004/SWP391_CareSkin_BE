@@ -38,7 +38,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
+        public async Task<IActionResult> Register([FromBody] RegisterCustomerDTO request)
         {
             try
             {

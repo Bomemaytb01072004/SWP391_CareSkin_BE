@@ -2,7 +2,7 @@
 
 namespace SWP391_CareSkin_BE.DTOS.Responses
 {
-    public class RegisterDTO
+    public class RegisterCustomerDTO
     {
         [JsonPropertyName("UserName")]
         public string UserName { get; set; }
@@ -23,6 +23,6 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         [JsonIgnore] public DateOnly? Dob { get; set; }
         [JsonIgnore] public string? Gender { get; set; }
         [JsonIgnore] public string? Address { get; set; }
-        [JsonIgnore] public string? ProfilePicture { get; set; }
+        [JsonIgnore] public string? PictureUrl { get; set; }
     }
 }
