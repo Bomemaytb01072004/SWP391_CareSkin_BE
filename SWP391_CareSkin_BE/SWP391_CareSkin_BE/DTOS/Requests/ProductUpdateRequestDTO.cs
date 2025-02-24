@@ -6,6 +6,7 @@ namespace SWP391_CareSkin_BE.DTOS.Requests
     {
         public string ProductName { get; set; }
         public int BrandId { get; set; }
+        public string Category { get; set; }
         public string Description { get; set; }
         public List<ProductVariationCreateRequestDTO> Variations { get; set; }
 

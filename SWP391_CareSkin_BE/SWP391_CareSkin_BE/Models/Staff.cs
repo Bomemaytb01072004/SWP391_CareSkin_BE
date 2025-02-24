@@ -13,15 +13,15 @@ namespace SWP391_CareSkin_BE.Models
         [Required]
         public string Password { get; set; }
 
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
-        public int Phone {  get; set; }
+        public string? Phone {  get; set; }
 
-        public DateOnly DoB {  get; set; }
+        public DateOnly? DoB {  get; set; }
 
-        public string ProfilePicture { get; set; }
+        public string? ProfilePicture { get; set; }
 
         public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
 

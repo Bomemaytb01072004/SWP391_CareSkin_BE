@@ -163,10 +163,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Dob")
+                    b.Property<DateTime?>("Dob")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -175,23 +174,20 @@ namespace SWP391_CareSkin_BE.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Phone")
+                    b.Property<int?>("Phone")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfilePicture")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -282,6 +278,9 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PromotionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
@@ -290,6 +289,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderStatusId");
+
+                    b.HasIndex("PromotionId");
 
                     b.ToTable("Order");
                 });
@@ -328,7 +329,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderStatusId"));
 
-                    b.Property<string>("Status")
+                    b.Property<string>("OrderStatusName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -347,6 +348,10 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -491,12 +496,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("PromotionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.HasKey("CustomerId", "PromotionId");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("PromotionId");
 
@@ -828,9 +828,17 @@ namespace SWP391_CareSkin_BE.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SWP391_CareSkin_BE.Models.Promotion", "Promotion")
+                        .WithMany("Orders")
+                        .HasForeignKey("PromotionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Customer");
 
                     b.Navigation("OrderStatus");
+
+                    b.Navigation("Promotion");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.OrderProduct", b =>
@@ -914,10 +922,6 @@ namespace SWP391_CareSkin_BE.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("SWP391_CareSkin_BE.Models.Order", null)
-                        .WithMany("PromotionOrders")
-                        .HasForeignKey("OrderId");
 
                     b.HasOne("SWP391_CareSkin_BE.Models.Promotion", "Promotion")
                         .WithMany("PromotionCustomers")
@@ -1087,8 +1091,6 @@ namespace SWP391_CareSkin_BE.Migrations
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
-
-                    b.Navigation("PromotionOrders");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.OrderStatus", b =>
@@ -1119,6 +1121,8 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Promotion", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("PromotionCustomers");
 
                     b.Navigation("PromotionProducts");
