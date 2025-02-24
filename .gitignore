@@ -59,3 +59,4 @@ __pycache__/
 *.svclog
 *.cr
 .ntvs_analysis.dat
+firebasekey.json
