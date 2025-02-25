@@ -19,17 +19,17 @@ namespace SWP391_CareSkin_BE.MiddleWare
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var jwtToken = tokenHandler.ReadJwtToken(token);
-                var roleClaim = jwtToken.Claims.FirstOrDefault(x => x.Type == "role")?.Value;
-
-                if (roleClaim == "Admin")
+                var roleClaim = jwtToken.Claims.FirstOrDefault(x => x.Type == "role");
+                string role = roleClaim.Value;
+                if (role == "Admin")
                 {
                     context.Items["Role"] = "Admin";
                 }
-                else if (roleClaim == "Staff")
+                else if (role == "Staff")
                 {
                     context.Items["Role"] = "Staff";
                 }
-                else if (roleClaim == "Customer")
+                else if (role == "Customer")
                 {
                     context.Items["Role"] = "Customer";
                 }

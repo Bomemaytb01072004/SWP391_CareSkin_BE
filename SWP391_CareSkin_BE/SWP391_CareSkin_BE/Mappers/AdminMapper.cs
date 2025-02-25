@@ -25,16 +25,25 @@ namespace SWP391_CareSkin_BE.Mappers
         }
 
         // Cập nhật một Admin Entity dựa trên AdminUpdateRequestDTO
-        public static void UpdateEnity(AdminUpdateRequestDTO request, Admin admin)
+        public static void UpdateEntity(AdminUpdateRequestDTO request, Admin admin)
         {
             if (request == null || admin == null) return;
 
-            admin.Password = request.Password;
-            admin.FullName = request.FullName;
-            admin.Email = request.Email;
-            admin.Phone = request.Phone;
-            admin.DoB = request.DoB;
-            admin.ProfilePicture = request.ProfilePicture;
+            foreach (var prop in typeof(AdminUpdateRequestDTO).GetProperties())
+            {
+                if (prop.Name == "ProfilePicture") continue;
+
+                var requestValue = prop.GetValue(request);
+                if (requestValue != null)
+                {
+                    var adminProp = typeof(Admin).GetProperty(prop.Name);
+
+                    if (adminProp != null && adminProp.CanWrite)
+                    {
+                        adminProp.SetValue(admin, requestValue);
+                    }
+                }
+            }
         } 
     }
 }

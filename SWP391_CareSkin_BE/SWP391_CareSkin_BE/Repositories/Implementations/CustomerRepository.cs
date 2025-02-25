@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
+using SWP391_CareSkin_BE.Services;
 
 namespace SWP391_CareSkin_BE.Repositories.Implementations
 {
@@ -47,6 +49,11 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             return await _context.Customers
                 .FirstOrDefaultAsync(c => c.Email == email || c.UserName == username);
+        }
+
+        public Task<LoginResult> LoginCustomer(LoginDTO request)
+        {
+            throw new NotImplementedException();
         }
     }
 }
