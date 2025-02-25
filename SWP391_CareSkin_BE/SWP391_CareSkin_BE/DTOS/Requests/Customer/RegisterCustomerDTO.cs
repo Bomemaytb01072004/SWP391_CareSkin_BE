@@ -23,6 +23,6 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         [JsonIgnore] public DateOnly? Dob { get; set; }
         [JsonIgnore] public string? Gender { get; set; }
         [JsonIgnore] public string? Address { get; set; }
-        [JsonIgnore] public string? PictureUrl { get; set; }
+        [JsonIgnore] public IFormFile PictureFile { get; set; }
     }
 }

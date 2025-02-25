@@ -42,9 +42,20 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] RegisterCustomerDTO request)
         {
+            // 1. Upload file nếu có
+            string uploadedUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                // Gọi FirebaseService để upload
+                uploadedUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
+
             try
             {
-                var customer = await _customerService.RegisterCustomerAsync(request);
+                var customer = await _customerService.RegisterCustomerAsync(request, uploadedUrl);
                 return Ok(new { message = "Register account successful", customer });
             }
             catch (ArgumentException ex)

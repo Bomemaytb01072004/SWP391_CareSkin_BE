@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Services
             _firebaseService = firebaseService;
         }
 
-        public async Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request)
+        public async Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request, string pictureUrl)
         {
             if (await _staffRepository.GetStaffByUsernameOrEmailAsync(request.UserName, request.Email) != null)
             {
@@ -32,7 +32,7 @@ namespace SWP391_CareSkin_BE.Services
             }
 
             string hashedPassword = Validate.HashPassword(request.Password);
-            var newStaff = StaffMapper.ToStaff(request, hashedPassword);
+            var newStaff = StaffMapper.ToStaff(request, hashedPassword, pictureUrl);
             await _staffRepository.AddStaffAsync(newStaff);
 
             return StaffMapper.ToStaffResponseDTO(newStaff);

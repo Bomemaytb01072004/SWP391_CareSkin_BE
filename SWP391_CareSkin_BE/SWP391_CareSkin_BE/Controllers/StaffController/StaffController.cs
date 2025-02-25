@@ -26,11 +26,21 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterStaffDTO request)
+        public async Task<IActionResult> Register([FromForm] RegisterStaffDTO request)
         {
+            // 1. Upload file nếu có
+            string uploadedUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                // Gọi FirebaseService để upload
+                uploadedUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
             try
             {
-                var staff = await _staffService.RegisterStaffAsync(request);
+                var staff = await _staffService.RegisterStaffAsync(request, uploadedUrl);
                 return Ok(new { message = "Register account successful!", staff });
             }
             catch (ArgumentException ex)

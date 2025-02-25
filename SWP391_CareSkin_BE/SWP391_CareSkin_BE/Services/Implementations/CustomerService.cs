@@ -30,7 +30,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return customer != null ? CustomerMapper.ToCustomerResponseDTO(customer) : null;
         }
 
-        public async Task<CustomerDTO> RegisterCustomerAsync(RegisterCustomerDTO request)
+        public async Task<CustomerDTO> RegisterCustomerAsync(RegisterCustomerDTO request, string pictureUrl)
         {
             var existingCustomer = await _customerRepository.GetCustomerByEmailOrUsernameAsync(request.Email, request.UserName);
             if (existingCustomer != null)
@@ -39,7 +39,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            var newCustomer = CustomerMapper.ToCustomer(request, hashedPassword);
+            var newCustomer = CustomerMapper.ToCustomer(request, hashedPassword, pictureUrl);
             await _customerRepository.AddCustomerAsync(newCustomer);
 
             return CustomerMapper.ToCustomerResponseDTO(newCustomer);

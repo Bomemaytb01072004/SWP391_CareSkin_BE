@@ -64,23 +64,31 @@ namespace SWP391_CareSkin_BE.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request)
         {
-            // 1. Nếu có file mới, upload file và lấy URL
-            string newPictureUrl = null;
+            // 1. Kiểm tra id hợp lệ
+            if (id <= 0)
+                return BadRequest(new { error = "Invalid product ID." });
+
+            // 2. Nếu có file mới, upload file và lấy URL, nếu không thì giữ ảnh cũ
+            string? newPictureUrl = null;
             if (request.PictureFile != null && request.PictureFile.Length > 0)
             {
                 var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
                 using var stream = request.PictureFile.OpenReadStream();
-
                 newPictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
             }
 
-            // 2. Gọi service update
+            // 3. Xử lý giá trị mặc định cho Variations nếu null
+            request.Variations ??= new List<ProductVariationCreateRequestDTO>();
+
+            // 4. Gọi service update
             var updatedProduct = await _productService.UpdateProductAsync(id, request, newPictureUrl);
+
             if (updatedProduct == null)
-                return NotFound();
+                return NotFound(new { error = "Product not found." });
 
             return Ok(updatedProduct);
         }
+
 
         // DELETE: api/Product/{id}
         [HttpDelete("{id}")]

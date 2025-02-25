@@ -8,7 +8,7 @@ namespace SWP391_CareSkin_BE.Mappers
     public class StaffMapper
     {
         //chuyển đổi RegisterStaffDTO sang Staff Model
-        public static Staff ToStaff (RegisterStaffDTO dto, string hashedPassword)
+        public static Staff ToStaff (RegisterStaffDTO dto, string hashedPassword, string pictureUrl = null)
         {
             return new Staff
             {
@@ -16,7 +16,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Password = hashedPassword,
                 Email = dto.Email,
                 DoB = dto.Dob,
-                PictureUrl = dto.ProfilePicture ?? "",
+                PictureUrl = pictureUrl ?? "",
                 FullName = dto.FullName ?? "No name",
                 Phone = dto.Phone ?? ""
             };

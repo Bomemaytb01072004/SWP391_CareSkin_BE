@@ -133,6 +133,31 @@ namespace SWP391_CareSkin_BE.Mappers
                     });
                 }
             }
+
+            if (request.DetailIngredients != null)
+            {
+                product.ProductDetailIngredients.Clear();
+                foreach (var m in request.DetailIngredients)
+                {
+                    product.ProductDetailIngredients.Add(new ProductDetailIngredient
+                    {
+                        IngredientName = m.IngredientName
+                    });
+                }
+            }
+
+            if (request.Usages != null)
+            {
+                product.ProductUsages.Clear();
+                foreach (var m in request.Usages)
+                {
+                    product.ProductUsages.Add(new ProductUsage
+                    {
+                        Step = m.Step,
+                        Instruction = m.Instruction
+                    });
+                }
+            }
         }
     }
 }

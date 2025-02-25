@@ -7,7 +7,7 @@ namespace SWP391_CareSkin_BE.Mappers
     public class CustomerMapper
     {
         // chuyển đổi từ RegisterDTO sang Customer Model
-        public static Customer ToCustomer( RegisterCustomerDTO dto, string hashedPassword)
+        public static Customer ToCustomer( RegisterCustomerDTO dto, string hashedPassword, string pictureUrl = null)
         {
             return new Customer
             {
@@ -16,7 +16,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Email = dto.Email,
                 Dob = dto.Dob,
                 Phone = dto.Phone ?? "",
-                PictureUrl = dto.PictureUrl ?? "",
+                PictureUrl = pictureUrl ?? "",
                 Gender = dto.Gender ?? "Unknown",
                 Address = dto.Address ?? "Not provided",
                 FullName = dto.FullName ?? "No name"
