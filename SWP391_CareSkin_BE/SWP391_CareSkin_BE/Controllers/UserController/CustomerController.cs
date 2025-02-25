@@ -43,7 +43,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             try
             {
                 var customer = await _customerService.RegisterCustomerAsync(request);
-                return Ok(new { message = "Register account successful", customer });
+                return Ok(new { message = "Register account successful!", customer });
             }
             catch (ArgumentException ex)
             {
@@ -57,7 +57,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             try
             {
                 var updatedCustomer = await _customerService.UpdateProfileAsync(customerId, request);
-                return Ok(new { message = "Update account successful", updatedCustomer });
+                return Ok(new { message = "Update account successful!", updatedCustomer });
             }
             catch (ArgumentException ex)
             {
@@ -71,7 +71,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             try
             {
                 await _customerService.DeleteCustomerAsync(customerId, password);
-                return Ok(new { message = "Delete account successful" });
+                return Ok(new { message = "Delete account successful!" });
             }
             catch (ArgumentException ex)
             {
