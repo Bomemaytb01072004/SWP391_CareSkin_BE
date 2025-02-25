@@ -1,6 +1,0 @@
-@SWP391_CareSkin_BE_HostAddress = http://localhost:5251
-
-GET {{SWP391_CareSkin_BE_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
