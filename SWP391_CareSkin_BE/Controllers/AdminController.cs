@@ -63,15 +63,10 @@ namespace SWP391_CareSkin_BE.Controllers
 
             if (!authResult.Success) 
             {
-                return Unauthorized("Login failed");
+                return BadRequest(authResult.Message);
             }
 
-            return Ok( new LoginResult
-            {
-                Success = authResult.Success,
-                Message = authResult.Message,
-                Data = authResult.Data
-            });
+            return Ok(authResult);
         }
     }
 }

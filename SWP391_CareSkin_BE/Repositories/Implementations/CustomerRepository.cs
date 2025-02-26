@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services;
@@ -11,10 +12,11 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
     public class CustomerRepository : ICustomerRepository
     {
         private readonly MyDbContext _context;
-
-        public CustomerRepository(MyDbContext context)
+        private readonly JwtHelper _jwtHelper;
+        public CustomerRepository(MyDbContext context, JwtHelper jwtHelper)
         {
             _context = context;
+            _jwtHelper = jwtHelper;
         }
 
         public async Task<List<Customer>> GetAllCustomersAsync()
@@ -51,9 +53,36 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .FirstOrDefaultAsync(c => c.Email == email || c.UserName == username);
         }
 
-        public Task<LoginResult> LoginCustomer(LoginDTO request)
+        public async Task<LoginResult> LoginCustomer(LoginDTO request)
         {
-            throw new NotImplementedException();
+            var admin = await _context.Customers.FirstOrDefaultAsync(a => a.UserName == request.UserName);
+
+            if (admin == null)
+            {
+                return new LoginResult
+                {
+                    Success = false,
+                    Message = "Invalid username",
+                };
+            }
+
+            if (!Validate.VerifyPassword(admin.Password, request.Password))
+            {
+                return new LoginResult
+                {
+                    Success = false,
+                    Message = "Invalid password.",
+                };
+            }
+
+            string role = "User";
+            var token = _jwtHelper.GenerateToken(request.UserName, role);
+            return new LoginResult
+            {
+                Success = true,
+                Message = "User is logged",
+                Data = token,
+            };
         }
     }
 }
