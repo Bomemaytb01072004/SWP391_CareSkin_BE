@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
@@ -24,6 +25,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllCustomers()
         {
             var customers = await _customerService.GetAllCustomersAsync();
@@ -31,6 +33,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         }
 
         [HttpGet("{customerId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetCustomerById(int customerId)
         {
             var customer = await _customerService.GetCustomerByIdAsync(customerId);
@@ -67,6 +70,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         }
 
         [HttpDelete("delete/{customerId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCustomer(int customerId, [FromBody] string password)
         {
             try

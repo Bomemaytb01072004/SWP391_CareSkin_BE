@@ -34,7 +34,7 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Admin/{id}
         [HttpPut("{id}")]
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAdmin(int id, [FromForm] AdminUpdateRequestDTO request)
         {
             var updateAdmin = await _adminService.UpdateAdminAsync(request, id);

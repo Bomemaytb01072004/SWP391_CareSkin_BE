@@ -97,7 +97,11 @@ namespace SWP391_CareSkin_BE
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
-            
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<CustomAuthorizeFilter>();
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
