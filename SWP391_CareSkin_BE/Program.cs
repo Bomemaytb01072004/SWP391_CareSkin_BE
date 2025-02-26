@@ -45,7 +45,7 @@ namespace SWP391_CareSkin_BE
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins("http://localhost:5173", "http://careskinbeauty.shop")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials();
