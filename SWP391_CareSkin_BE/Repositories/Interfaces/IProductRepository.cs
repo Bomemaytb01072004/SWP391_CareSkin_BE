@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
@@ -9,5 +9,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(int productId);
+        IQueryable<Product> GetQueryable();
     }
 }

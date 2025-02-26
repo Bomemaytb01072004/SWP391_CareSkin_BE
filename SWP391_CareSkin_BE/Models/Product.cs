@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
@@ -16,6 +16,8 @@ namespace SWP391_CareSkin_BE.Models
         public string Category { get; set; }
 
         public string Description { get; set; }
+
+        public string PictureUrl { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();

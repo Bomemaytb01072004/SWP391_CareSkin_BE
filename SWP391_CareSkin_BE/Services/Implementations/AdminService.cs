@@ -11,10 +11,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _adminRepository;
+        private readonly IFirebaseService _firebaseService;
 
-        public AdminService(IAdminRepository adminRepository)
+        public AdminService(IAdminRepository adminRepository, IFirebaseService firebaseService)
         {
             _adminRepository = adminRepository;
+            _firebaseService = firebaseService;
         } 
         public async Task<List<AdminDTO>> GetAdminAsync()
         {
@@ -22,12 +24,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return admin.Select(AdminMapper.ToDTO).ToList();
         }
 
-        public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id)
+        public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id, string pictureUrl)
         {
             var existingAdmin = await _adminRepository.GetAdminByIdAsync(id);
             if (existingAdmin == null) return null;
 
-            AdminMapper.UpdateEnity(request, existingAdmin);
+            AdminMapper.UpdateEnity(request, existingAdmin, pictureUrl);
             await _adminRepository.UpdateAdminAsync(existingAdmin);
 
             var updatedAdmin = await _adminRepository.GetAdminByIdAsync(id);

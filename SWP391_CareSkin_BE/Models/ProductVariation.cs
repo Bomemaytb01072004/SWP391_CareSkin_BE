@@ -11,7 +11,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int Ml { get; set; }
 
-        public int price { get; set; }
+        public int Price { get; set; }
 
         public virtual Product Product { get; set; }
     }
