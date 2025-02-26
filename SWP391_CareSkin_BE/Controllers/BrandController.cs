@@ -23,8 +23,6 @@ namespace SWP391_CareSkin_BE.Controllers
             var brands = await _brandService.GetAllBrandsAsync();
             return Ok(brands);
         }
-
-        // GET: api/Brand/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBrandById(int id)
         {
