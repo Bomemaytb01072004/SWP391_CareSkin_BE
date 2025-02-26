@@ -6,6 +6,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IStaffService
     {
+        Task<List<StaffResponseDTO>> GetAllStaffAsync();
         Task<StaffResponseDTO> RegisterStaffAsync(RegisterStaffDTO request);
         Task<StaffResponseDTO?> GetStaffByIdAsync(int staffId);
         Task<StaffResponseDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request);

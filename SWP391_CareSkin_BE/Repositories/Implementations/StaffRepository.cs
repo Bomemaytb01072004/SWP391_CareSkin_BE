@@ -14,7 +14,7 @@ namespace SWP391_CareSkin_BE.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Staff>> GetAllStaffsAsync()
+        public async Task<List<Staff>> GetAllStaffsAsync()
         {
             return await _context.Staffs.ToListAsync();
         }
@@ -47,5 +47,7 @@ namespace SWP391_CareSkin_BE.Repositories
             _context.Staffs.Remove(staff);
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }

@@ -3,6 +3,7 @@ using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Repositories.Implementations;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -16,7 +17,6 @@ namespace SWP391_CareSkin_BE.Services
         {
             _staffRepository = staffRepository;
         }
-
         public async Task<StaffResponseDTO> RegisterStaffAsync(RegisterStaffDTO request)
         {
             if (await _staffRepository.GetStaffByUsernameOrEmailAsync(request.UserName, request.Email) != null)
@@ -64,6 +64,12 @@ namespace SWP391_CareSkin_BE.Services
                 throw new ArgumentException("Mật khẩu không đúng.");
 
             await _staffRepository.DeleteStaffAsync(staff);
+        }
+
+        public async Task<List<StaffResponseDTO>> GetAllStaffAsync()
+        {
+            var customers = await _staffRepository.GetAllStaffsAsync();
+            return customers.Select(StaffMapper.ToStaffResponseDTO).ToList();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public string Password { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
-        public String Phone { get; set; }
+        public string Phone { get; set; }
         public DateOnly? DoB { get; set; }
         public string ProfilePicture { get; set; }
     }

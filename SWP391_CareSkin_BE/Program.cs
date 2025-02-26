@@ -88,6 +88,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
             builder.Services.AddScoped<IStaffService, StaffService>();
 
+            builder.Services.AddScoped<IFAQRepository, FAQRepository>();
+            builder.Services.AddScoped<IFAQService, FAQService>();
+
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {

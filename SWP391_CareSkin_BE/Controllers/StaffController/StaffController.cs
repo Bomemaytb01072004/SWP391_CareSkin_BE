@@ -8,6 +8,7 @@ using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
+using SWP391_CareSkin_BE.Services.Implementations;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers.StaffController
@@ -21,6 +22,13 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         public StaffController(IStaffService staffService)
         {
             _staffService = staffService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllStaff()
+        {
+            var staff = await _staffService.GetAllStaffAsync();
+            return Ok(staff);
         }
 
         [HttpPost("Register")]
