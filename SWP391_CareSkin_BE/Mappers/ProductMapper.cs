@@ -27,7 +27,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 {
                     ProductVariationId = v.ProductVariationId,
                     Ml = v.Ml,
-                    Price = v.price
+                    Price = v.Price
                 }).ToList(),
                 MainIngredients = product.ProductMainIngredients?.Select(m => new ProductMainIngredientDTO
                 {
@@ -69,7 +69,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 ProductVariations = request.Variations?.Select(v => new ProductVariation
                 {
                     Ml = v.Ml,
-                    price = v.Price
+                    Price = v.Price
                 }).ToList(),
                 ProductMainIngredients = request.MainIngredients?.Select(m => new ProductMainIngredient
                 {
@@ -116,7 +116,7 @@ namespace SWP391_CareSkin_BE.Mappers
                     product.ProductVariations.Add(new ProductVariation
                     {
                         Ml = variation.Ml,
-                        price = variation.Price
+                        Price = variation.Price
                     });
                 }
             }

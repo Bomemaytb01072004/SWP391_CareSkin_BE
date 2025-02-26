@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS.Responses;
 
 namespace SWP391_CareSkin_BE.DTOS.Requests
 {

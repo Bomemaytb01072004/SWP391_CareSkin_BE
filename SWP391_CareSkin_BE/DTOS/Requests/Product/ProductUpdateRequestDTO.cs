@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS.Responses;
 
 namespace SWP391_CareSkin_BE.DTOS.Requests
 {
@@ -12,7 +12,8 @@ namespace SWP391_CareSkin_BE.DTOS.Requests
         public IFormFile PictureFile { get; set; }
 
         public List<ProductVariationCreateRequestDTO> Variations { get; set; }
-
-        public List<ProductMainIngredientDTO> MainIngredients { get; set; }
+        public List<ProductMainIngredientCreateRequestDTO> MainIngredients { get; set; }
+        public List<ProductDetailIngredientCreateRequestDTO> DetailIngredients { get; set; }
+        public List<ProductUsageCreateRequestDTO> Usages { get; set; }
     }
 }
