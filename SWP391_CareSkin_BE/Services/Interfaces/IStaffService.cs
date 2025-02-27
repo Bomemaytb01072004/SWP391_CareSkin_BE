@@ -6,10 +6,10 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IStaffService
     {
-        Task<List<StaffResponseDTO>> GetAllStaffAsync();
-        Task<StaffResponseDTO> RegisterStaffAsync(RegisterStaffDTO request);
-        Task<StaffResponseDTO?> GetStaffByIdAsync(int staffId);
-        Task<StaffResponseDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request);
+        Task<List<StaffDTO>> GetAllStaffAsync();
+        Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request);
+        Task<StaffDTO?> GetStaffByIdAsync(int staffId);
+        Task<StaffDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request, string pictureUrl);
         Task DeleteStaffAsync(int staffId, string password);
     }
 }

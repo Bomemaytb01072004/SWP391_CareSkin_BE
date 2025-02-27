@@ -7,7 +7,7 @@ namespace SWP391_CareSkin_BE.Mappers
     public class CustomerMapper
     {
         // chuyển đổi từ RegisterDTO sang Customer Model
-        public static Customer ToCustomer( RegisterDTO dto, string hashedPassword)
+        public static Customer ToCustomer( RegisterCustomerDTO dto, string hashedPassword)
         {
             return new Customer
             {
@@ -16,7 +16,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Email = dto.Email,
                 Dob = dto.Dob,
                 Phone = dto.Phone ?? "",
-                ProfilePicture = dto.ProfilePicture ?? "",
+                PictureUrl = dto.PictureUrl ?? "",
                 Gender = dto.Gender ?? "Unknown",
                 Address = dto.Address ?? "Not provided",
                 FullName = dto.FullName ?? "No name"
@@ -25,9 +25,9 @@ namespace SWP391_CareSkin_BE.Mappers
 
 
         // chuyển đổi từ Customer Model sang CustomerResponseDTO
-        public static CustomerResponseDTO ToCustomerResponseDTO( Customer customer)
+        public static CustomerDTO ToCustomerResponseDTO( Customer customer)
         {
-            return new CustomerResponseDTO
+            return new CustomerDTO
             {
                 CustomerId = customer.CustomerId,
                 UserName = customer.UserName,
@@ -36,13 +36,13 @@ namespace SWP391_CareSkin_BE.Mappers
                 Phone = customer.Phone,
                 Dob = customer.Dob,
                 Gender = customer.Gender,
-                ProfilePicture = customer.ProfilePicture,
+                PictureUrl = customer.PictureUrl,
                 Address = customer.Address
             };
         }
 
         // cập nhật dữ liệu từ DTO vào Model
-        public static void UpdateCustomer( Customer customer, UpdateProfileCustomerDTO dto)
+        public static void UpdateCustomer( Customer customer, UpdateProfileCustomerDTO dto, string pictureUrl = null)
         {
             if (!string.IsNullOrEmpty(dto.FullName))
                 customer.FullName = dto.FullName;
@@ -59,8 +59,8 @@ namespace SWP391_CareSkin_BE.Mappers
             if (!string.IsNullOrEmpty(dto.Gender))
                 customer.Gender = dto.Gender;
 
-            if (!string.IsNullOrEmpty(dto.ProfilePicture))
-                customer.ProfilePicture = dto.ProfilePicture;
+            if (!string.IsNullOrEmpty(pictureUrl))
+                customer.PictureUrl = pictureUrl;
 
             if (!string.IsNullOrEmpty(dto.Address))
                 customer.Address = dto.Address;

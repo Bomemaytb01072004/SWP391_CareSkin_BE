@@ -23,11 +23,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateOnly DoB {  get; set; }
 
-        public string ProfilePicture { get; set; }
-
-
-
-
-
+        public string PictureUrl { get; set; }
     }
 }

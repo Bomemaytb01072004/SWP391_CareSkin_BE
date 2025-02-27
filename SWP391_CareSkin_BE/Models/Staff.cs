@@ -21,7 +21,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateOnly? DoB {  get; set; }
 
-        public string? ProfilePicture { get; set; }
+        public string? PictureUrl { get; set; }
 
         public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
 

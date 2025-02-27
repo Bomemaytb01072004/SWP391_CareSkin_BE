@@ -7,8 +7,8 @@ namespace SWP391_CareSkin_BE.Mappers
 {
     public class StaffMapper
     {
-        //chuyển đổi RegisterStaffDTO sang Staff Model
-        public static Staff ToStaff (RegisterStaffDTO dto, string hashedPassword)
+        // Chuyển đổi RegisterStaffDTO sang Staff Model
+        public static Staff ToStaff(RegisterStaffDTO dto, string hashedPassword)
         {
             return new Staff
             {
@@ -16,30 +16,35 @@ namespace SWP391_CareSkin_BE.Mappers
                 Password = hashedPassword,
                 Email = dto.Email,
                 DoB = dto.Dob,
-                ProfilePicture = dto.ProfilePicture ?? "",
+                PictureUrl = dto.ProfilePicture ?? "",
                 FullName = dto.FullName ?? "No name",
                 Phone = dto.Phone ?? ""
             };
         }
 
-        //chuyển đổi từ staff model sang staffresponseDTO
-        public static StaffResponseDTO ToStaffResponseDTO(Staff staff)
+        // Chuyển đổi từ Staff model sang StaffDTO
+        public static StaffDTO ToStaffResponseDTO(Staff staff)
         {
-            return new StaffResponseDTO
+            return new StaffDTO
             {
                 StaffId = staff.StaffId,
                 UserName = staff.UserName,
                 FullName = staff.FullName,
-                Email = staff.Email,  
+                Email = staff.Email,
                 Phone = staff.Phone,
                 DoB = staff.DoB,
-                ProfilePicture = staff.ProfilePicture
+                PictureUrl = staff.PictureUrl
             };
-
         }
 
-        //cập nhật dữ liệu từ DTO vào model
-        public static void UpdateStaff(Staff staff, UpdateProfileStaffDTO dto)
+        // Chuyển đổi danh sách Staff sang danh sách StaffDTO
+        public static List<StaffDTO> ToStaffResponseDTOList(List<Staff> staffList)
+        {
+            return staffList.Select(staff => ToStaffResponseDTO(staff)).ToList();
+        }
+
+        // Cập nhật dữ liệu từ DTO vào model
+        public static void UpdateStaff(Staff staff, UpdateProfileStaffDTO dto, string pictureUrl = null)
         {
             if (!string.IsNullOrEmpty(staff.FullName))
             {
@@ -57,12 +62,10 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 staff.DoB = dto.Dob;
             }
-            if (!string.IsNullOrEmpty(staff.ProfilePicture))
+            if (!string.IsNullOrEmpty(pictureUrl))
             {
-                staff.ProfilePicture = dto.ProfilePicture;
+                staff.PictureUrl = pictureUrl;
             }
         }
-        
-
     }
 }

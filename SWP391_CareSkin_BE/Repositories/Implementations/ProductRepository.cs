@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -55,6 +55,16 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public IQueryable<Product> GetQueryable()
+        {
+            return _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.ProductVariations)
+                .Include(p => p.ProductMainIngredients)
+                .Include(p => p.ProductDetailIngredients)
+                .Include(p => p.ProductUsages);
         }
     }
 }

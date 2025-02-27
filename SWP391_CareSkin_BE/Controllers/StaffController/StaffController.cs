@@ -18,10 +18,12 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
     public class StaffController : ControllerBase
     {
         private readonly IStaffService _staffService;
+        private readonly IFirebaseService _firebaseService;
 
-        public StaffController(IStaffService staffService)
+        public StaffController(IStaffService staffService, IFirebaseService firebaseService)
         {
             _staffService = staffService;
+            _firebaseService = firebaseService;
         }
 
         [HttpGet]
@@ -45,7 +47,7 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
             }
         }
 
-        [HttpGet("GetById/{staffId}")]
+        [HttpGet("{staffId}")]
         public async Task<IActionResult> GetStaffById(int staffId)
         {
             var staff = await _staffService.GetStaffByIdAsync(staffId);
@@ -53,12 +55,22 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
             return Ok(staff);
         }
 
-        [HttpPut("Update-Profile/{staffId}")]
-        public async Task<IActionResult> UpdateProfile(int staffId, [FromBody] UpdateProfileStaffDTO request)
+        [HttpPut("{staffId}")]
+        public async Task<IActionResult> UpdateProfile(int staffId, [FromForm] UpdateProfileStaffDTO request)
         {
+            // 1. Nếu có file mới, upload file và lấy URL
+            string newPictureUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                newPictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
+
             try
             {
-                var updatedStaff = await _staffService.UpdateProfileAsync(staffId, request);
+                var updatedStaff = await _staffService.UpdateProfileAsync(staffId, request, newPictureUrl);
                 return Ok(new { message = "Update account succesful!", updatedStaff });
             }
             catch (ArgumentException ex)
@@ -67,7 +79,7 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
             }
         }
 
-        [HttpDelete("Delete-Account/{staffId}")]
+        [HttpDelete("{staffId}")]
         public async Task<IActionResult> DeleteAccount(int staffId, [FromBody] string password)
         {
             try

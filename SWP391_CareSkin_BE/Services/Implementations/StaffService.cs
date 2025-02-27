@@ -3,7 +3,6 @@ using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Repositories.Implementations;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -12,12 +11,15 @@ namespace SWP391_CareSkin_BE.Services
     public class StaffService : IStaffService
     {
         private readonly IStaffRepository _staffRepository;
+        private readonly IFirebaseService _firebaseService;
 
-        public StaffService(IStaffRepository staffRepository)
+        public StaffService(IStaffRepository staffRepository, IFirebaseService firebaseService)
         {
             _staffRepository = staffRepository;
+            _firebaseService = firebaseService;
         }
-        public async Task<StaffResponseDTO> RegisterStaffAsync(RegisterStaffDTO request)
+
+        public async Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request)
         {
             if (await _staffRepository.GetStaffByUsernameOrEmailAsync(request.UserName, request.Email) != null)
             {
@@ -36,19 +38,19 @@ namespace SWP391_CareSkin_BE.Services
             return StaffMapper.ToStaffResponseDTO(newStaff);
         }
 
-        public async Task<StaffResponseDTO?> GetStaffByIdAsync(int staffId)
+        public async Task<StaffDTO?> GetStaffByIdAsync(int staffId)
         {
             var staff = await _staffRepository.GetStaffByIdAsync(staffId);
             return staff != null ? StaffMapper.ToStaffResponseDTO(staff) : null;
         }
 
-        public async Task<StaffResponseDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request)
+        public async Task<StaffDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request, string pictureUrl)
         {
             var staff = await _staffRepository.GetStaffByIdAsync(staffId);
             if (staff == null)
                 throw new ArgumentException("Nhân viên không tồn tại.");
 
-            StaffMapper.UpdateStaff(staff, request);
+            StaffMapper.UpdateStaff(staff, request, pictureUrl);
             await _staffRepository.UpdateStaffAsync(staff);
 
             return StaffMapper.ToStaffResponseDTO(staff);
@@ -66,10 +68,11 @@ namespace SWP391_CareSkin_BE.Services
             await _staffRepository.DeleteStaffAsync(staff);
         }
 
-        public async Task<List<StaffResponseDTO>> GetAllStaffAsync()
+        public async Task<List<StaffDTO>> GetAllStaffAsync()
         {
             var customers = await _staffRepository.GetAllStaffsAsync();
             return customers.Select(StaffMapper.ToStaffResponseDTO).ToList();
         }
+
     }
 }

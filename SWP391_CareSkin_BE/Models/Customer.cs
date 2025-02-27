@@ -29,7 +29,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public string? Gender { get; set; }
 
-        public string? ProfilePicture { get; set; }
+        public string? PictureUrl { get; set; }
 
         public string? Address { get; set; }
 
