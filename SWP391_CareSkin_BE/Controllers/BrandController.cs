@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -10,10 +10,12 @@ namespace SWP391_CareSkin_BE.Controllers
     public class BrandController : ControllerBase
     {
         private readonly IBrandService _brandService;
+        private readonly IFirebaseService _firebaseService;
 
-        public BrandController(IBrandService brandService)
+        public BrandController(IBrandService brandService, IFirebaseService firebaseService)
         {
             _brandService = brandService;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/Brand
@@ -36,11 +38,27 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // POST: api/Brand
         [HttpPost]
-        public async Task<IActionResult> CreateBrand([FromBody] BrandCreateRequestDTO request)
+        public async Task<IActionResult> CreateBrand([FromForm] BrandCreateRequestDTO request)
         {
-            var createdBrand = await _brandService.CreateBrandAsync(request);
-            return CreatedAtAction(nameof(GetBrandById),
-                new { id = createdBrand.BrandId }, createdBrand);
+            try
+            {
+                // Handle image upload
+                string pictureUrl = null;
+                if (request.PictureFile != null)
+                {
+                    var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                    using var stream = request.PictureFile.OpenReadStream();
+                    pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+                }
+
+                var createdBrand = await _brandService.CreateBrandAsync(request, pictureUrl);
+                return CreatedAtAction(nameof(GetBrandById),
+                    new { id = createdBrand.BrandId }, createdBrand);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while creating the brand: {ex.Message}");
+            }
         }
 
         // PUT: api/Brand/{id}

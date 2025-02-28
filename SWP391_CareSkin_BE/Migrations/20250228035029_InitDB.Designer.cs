@@ -12,7 +12,7 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250220161416_InitDB")]
+    [Migration("20250228035029_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -33,8 +33,8 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
 
-                    b.Property<DateTime>("DoB")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DoB")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -48,10 +48,11 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfilePicture")
+                    b.Property<string>("PictureUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -72,8 +73,9 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnswerId"));
 
-                    b.Property<int>("AnswersContext")
-                        .HasColumnType("int");
+                    b.Property<string>("AnswersContext")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PointForSkinType")
                         .HasColumnType("int");
@@ -103,6 +105,10 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PictureUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -123,6 +129,10 @@ namespace SWP391_CareSkin_BE.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandId"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PictureUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -168,8 +178,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Dob")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("Dob")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -187,10 +197,10 @@ namespace SWP391_CareSkin_BE.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfilePicture")
+                    b.Property<string>("PictureUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -271,8 +281,8 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("OrderDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("OrderStatusId")
                         .HasColumnType("int");
@@ -406,7 +416,6 @@ namespace SWP391_CareSkin_BE.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductMainIngredientId"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IngredientName")
@@ -421,6 +430,27 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductMainIngredient");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductPicture", b =>
+                {
+                    b.Property<int>("ProductPictureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductPictureId"));
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductPictureId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductPictures");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductUsage", b =>
@@ -459,10 +489,10 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("Ml")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("price")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductVariationId");
@@ -699,26 +729,23 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffId"));
 
-                    b.Property<DateTime>("DoB")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("DoB")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfilePicture")
-                        .IsRequired()
+                    b.Property<string>("PictureUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -737,6 +764,10 @@ namespace SWP391_CareSkin_BE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SuppportId"));
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -893,6 +924,17 @@ namespace SWP391_CareSkin_BE.Migrations
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Product", "Product")
                         .WithMany("ProductMainIngredients")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductPicture", b =>
+                {
+                    b.HasOne("SWP391_CareSkin_BE.Models.Product", "Product")
+                        .WithMany("ProductPictures")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1114,6 +1156,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("ProductDetailIngredients");
 
                     b.Navigation("ProductMainIngredients");
+
+                    b.Navigation("ProductPictures");
 
                     b.Navigation("ProductUsages");
 

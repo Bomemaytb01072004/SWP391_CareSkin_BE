@@ -16,7 +16,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int TotalPrice { get; set; }
 
-        public DateTime OrderDate { get; set; }
+        public DateOnly OrderDate { get; set; }
 
         public string Name { get; set; }
 

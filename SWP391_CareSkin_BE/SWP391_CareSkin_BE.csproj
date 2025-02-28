@@ -50,7 +50,6 @@
     <Folder Include="DTOs\Responses\Staff\" />
     <Folder Include="DTOs\Responses\Product\" />
     <Folder Include="DTOs\Responses\Order\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>
