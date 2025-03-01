@@ -11,7 +11,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public string PromotionName { get; set; }
 
-        public decimal DiscountPercent;
+        public double DiscountPercent;
 
         public DateTime Start_Date { get; set; }
 

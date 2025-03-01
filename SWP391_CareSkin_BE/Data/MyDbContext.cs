@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Models;
@@ -77,7 +77,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Question>().HasKey(q => q.QuestionsId);
             modelBuilder.Entity<Quiz>().HasKey(q => q.QuizId);
             modelBuilder.Entity<RatingFeedback>().HasKey(r => r.Id);
-            modelBuilder.Entity<Result>().HasKey(r => r.ResultId);
+            modelBuilder.Entity<Result>().HasKey(result => result.ResultId);
             modelBuilder.Entity<SkinCareRoutineProduct>().HasKey(s => new { s.SkinCareRoutineId, s.ProductId });
             modelBuilder.Entity<SkinCareRoutine>().HasKey(s => s.Id);
             modelBuilder.Entity<SkinType>().HasKey(s => s.SkinTypeId);
@@ -115,8 +115,8 @@ namespace SWP391_CareSkin_BE.Data
 
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.Results)
-                .WithOne(r => r.Customer)
-                .HasForeignKey(r => r.CustomerId);
+                .WithOne(result => result.Customer)
+                .HasForeignKey(result => result.CustomerId);
 
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.Carts)
@@ -203,6 +203,23 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(p => p.Product)
                 .HasForeignKey(p => p.ProductId);
 
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductForSkinTypes)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            modelBuilder.Entity<ProductVariation>()
+                .HasMany(p => p.Carts)
+                .WithOne(c => c.ProductVariation)
+                .HasForeignKey(c => c.ProductVariationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ProductVariation>()
+                .HasMany(p => p.OrderProducts)
+                .WithOne(o => o.ProductVariation)
+                .HasForeignKey(o => o.ProductVariationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Promotion>()
                 .HasMany(p => p.Orders)
                 .WithOne(o => o.Promotion)
@@ -236,8 +253,23 @@ namespace SWP391_CareSkin_BE.Data
 
             modelBuilder.Entity<Quiz>()
                 .HasMany(q => q.Results)
-                .WithOne(r => r.Quiz)
-                .HasForeignKey(r => r.QuizId);
+                .WithOne(result => result.Quiz)
+                .HasForeignKey(result => result.QuizId);
+
+            modelBuilder.Entity<Result>()
+                .HasOne(result => result.Customer)
+                .WithMany(c => c.Results)
+                .HasForeignKey(result => result.CustomerId);
+
+            modelBuilder.Entity<Result>()
+                .HasOne(result => result.Quiz)
+                .WithMany(q => q.Results)
+                .HasForeignKey(result => result.QuizId);
+
+            modelBuilder.Entity<Result>()
+                .HasOne(result => result.SkinType)
+                .WithMany(s => s.Results)
+                .HasForeignKey(result => result.SkinTypeId);
 
             modelBuilder.Entity<SkinCareRoutine>()
                 .HasMany(s => s.SkinCareRoutineProducts)
@@ -246,13 +278,18 @@ namespace SWP391_CareSkin_BE.Data
 
             modelBuilder.Entity<SkinType>()
                 .HasMany(s => s.Results)
-                .WithOne(r => r.SkinType)
-                .HasForeignKey(r => r.SkinTypeId);
+                .WithOne(result => result.SkinType)
+                .HasForeignKey(result => result.SkinTypeId);
 
             modelBuilder.Entity<SkinType>()
                 .HasMany(s => s.SkinCareRoutines)
                 .WithOne(s => s.SkinType)
                 .HasForeignKey(s => s.SkinTypeId);
+
+            modelBuilder.Entity<SkinType>()
+                .HasMany(s => s.ProductForSkinTypes)
+                .WithOne(p => p.SkinType)
+                .HasForeignKey(p => p.SkinTypeId);
 
             modelBuilder.Entity<Staff>()
                 .HasMany(s => s.Supports)

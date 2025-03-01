@@ -102,7 +102,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         public async Task<int> CalculateCartTotalPrice(int customerId)
         {
             var cartItems = await _cartRepository.GetCartItemsByCustomerIdAsync(customerId);
-            return cartItems.Sum(item => (item.ProductVariation?.Price ?? 0) * item.Quantity);
+            var total = cartItems.Sum(item => (item.ProductVariation?.Price ?? 0) * item.Quantity);
+            return (int)Math.Round(total);
         }
     }
 }

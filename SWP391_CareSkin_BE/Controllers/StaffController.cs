@@ -5,51 +5,44 @@ using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
+using SWP391_CareSkin_BE.Services.Implementations;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
-namespace SWP391_CareSkin_BE.Controllers.UserController
+namespace SWP391_CareSkin_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class StaffController : ControllerBase
     {
-        private readonly ICustomerService _customerService;
+        private readonly IStaffService _staffService;
         private readonly IFirebaseService _firebaseService;
 
-        public CustomerController(ICustomerService customerService, IFirebaseService firebaseService)
+        public StaffController(IStaffService staffService, IFirebaseService firebaseService)
         {
-            _customerService = customerService;
+            _staffService = staffService;
             _firebaseService = firebaseService;
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllCustomers()
+        public async Task<IActionResult> GetAllStaff()
         {
-            var customers = await _customerService.GetAllCustomersAsync();
-            return Ok(customers);
-        }
-
-        [HttpGet("{customerId}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetCustomerById(int customerId)
-        {
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            if (customer == null) return NotFound("Customer does not exist!!!");
-            return Ok(customer);
+            var staff = await _staffService.GetAllStaffAsync();
+            return Ok(staff);
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromForm] RegisterCustomerDTO request)
+        public async Task<IActionResult> Register([FromBody] RegisterStaffDTO request)
         {
             try
             {
-                var customer = await _customerService.RegisterCustomerAsync(request);
-                return Ok(new { message = "Register account successful", customer });
+                var staff = await _staffService.RegisterStaffAsync(request);
+                return Ok(new { message = "Register account successful!", staff });
             }
             catch (ArgumentException ex)
             {
@@ -57,9 +50,18 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             }
         }
 
-        [HttpPut("{customerId}")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateProfile(int customerId, [FromForm] UpdateProfileCustomerDTO request)
+        [HttpGet("{staffId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetStaffById(int staffId)
+        {
+            var staff = await _staffService.GetStaffByIdAsync(staffId);
+            if (staff == null) return NotFound(new { message = "Staff does not exist!" });
+            return Ok(staff);
+        }
+
+        [HttpPut("{staffId}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> UpdateProfile(int staffId, [FromForm] UpdateProfileStaffDTO request)
         {
             // 1. Nếu có file mới, upload file và lấy URL
             string newPictureUrl = null;
@@ -73,8 +75,8 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
 
             try
             {
-                var updatedCustomer = await _customerService.UpdateProfileAsync(customerId, request, newPictureUrl);
-                return Ok(new { message = "Update account successful", updatedCustomer });
+                var updatedStaff = await _staffService.UpdateProfileAsync(staffId, request, newPictureUrl);
+                return Ok(new { message = "Update account succesful!", updatedStaff });
             }
             catch (ArgumentException ex)
             {
@@ -82,14 +84,14 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             }
         }
 
-        [HttpDelete("delete/{customerId}")]
+        [HttpDelete("{staffId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCustomer(int customerId, [FromBody] string password)
+        public async Task<IActionResult> DeleteAccount(int staffId, [FromBody] string password)
         {
             try
             {
-                await _customerService.DeleteCustomerAsync(customerId, password);
-                return Ok(new { message = "Delete account successful" });
+                await _staffService.DeleteStaffAsync(staffId, password);
+                return Ok(new { message = "Delete account successful!" });
             }
             catch (ArgumentException ex)
             {
@@ -111,10 +113,9 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
                 Password = adminDTO.Password
             };
 
-            var authResult = await _customerService.Login(loginDto);
+            var authResult = await _staffService.Login(loginDto);
 
             return Ok(authResult);
         }
-
     }
 }

@@ -116,7 +116,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return true;
         }
 
-        public async Task<decimal> CalculateOrderDiscountAsync(int? promotionId, int customerId, decimal orderTotal)
+        public async Task<double> CalculateOrderDiscountAsync(int? promotionId, int customerId, double orderTotal)
         {
             if (!promotionId.HasValue)
                 return 0;
