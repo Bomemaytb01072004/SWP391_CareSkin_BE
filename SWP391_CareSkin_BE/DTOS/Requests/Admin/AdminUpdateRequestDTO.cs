@@ -14,6 +14,6 @@ namespace SWP391_CareSkin_BE.DTOs.Requests.Admin
 
         public DateOnly? DoB { get; set; }
 
-        public IFormFile? ProfilePicture { get; set; }
+        public IFormFile? PictureFile { get; set; }
     }
 }

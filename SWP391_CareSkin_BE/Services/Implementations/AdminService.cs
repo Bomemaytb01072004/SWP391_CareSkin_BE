@@ -37,7 +37,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return authResult;
         }
 
-        public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id)
+        public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id, string pictureUrl)
         {
             var existingAdmin = await _adminRepository.GetAdminByIdAsync(id);
             if (existingAdmin == null) return null;

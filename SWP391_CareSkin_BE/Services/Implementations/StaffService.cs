@@ -77,7 +77,7 @@ namespace SWP391_CareSkin_BE.Services
             return authResult;
         }
 
-        public async Task<List<StaffResponseDTO>> GetAllStaffAsync()
+        public async Task<List<StaffDTO>> GetAllStaffAsync()
         {
             var customers = await _staffRepository.GetAllStaffsAsync();
             return customers.Select(StaffMapper.ToStaffResponseDTO).ToList();

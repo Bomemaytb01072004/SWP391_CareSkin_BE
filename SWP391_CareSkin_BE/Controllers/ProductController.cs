@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -83,14 +84,62 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request)
+        {
+            try
             {
+                // Handle image upload if new image is provided
+                string pictureUrl = null;
+                if (request.PictureFile != null)
+                {
+                    var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                    using var stream = request.PictureFile.OpenReadStream();
+                    pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+                }
+
+                var product = await _productService.UpdateProductAsync(id, request, pictureUrl);
+                if (product == null)
+                    return NotFound($"Product with ID {id} not found");
+
+                return Ok(product);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while updating the product");
+            }
         }
 
-        // DELETE: api/Product/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            try
             {
                 var result = await _productService.DeleteProductAsync(id);
                 if (!result)
+                    return NotFound($"Product with ID {id} not found");
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while deleting the product");
+            }
+        }
+
+        [HttpGet("categories")]
+        public async Task<ActionResult<List<string>>> GetCategories()
+        {
+            var products = await _productService.GetAllProductsAsync();
+            var categories = products.Select(p => p.Category).Distinct().ToList();
+            return Ok(categories);
+        }
+
     }
 
     public class PaginatedResponse<T>

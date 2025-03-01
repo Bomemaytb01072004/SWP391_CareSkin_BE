@@ -13,6 +13,6 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<StaffDTO> UpdateProfileAsync(int staffId, UpdateProfileStaffDTO request, string pictureUrl);
         Task DeleteStaffAsync(int staffId, string password);
         Task<LoginResult> Login(LoginDTO loginDto);
-        Task<List<StaffResponseDTO>> GetAllStaffAsync();
+        Task<List<StaffDTO>> GetAllStaffAsync();
     }
 }
