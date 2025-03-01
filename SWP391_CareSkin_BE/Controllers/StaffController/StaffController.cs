@@ -115,11 +115,6 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
 
             var authResult = await _staffService.Login(loginDto);
 
-            if (!authResult.Success)
-            {
-                return BadRequest(authResult.Message); 
-            }
-
             return Ok(authResult);
         }
     }

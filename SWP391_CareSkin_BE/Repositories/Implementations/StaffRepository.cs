@@ -53,36 +53,23 @@ namespace SWP391_CareSkin_BE.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<LoginResult> LoginStaff(LoginDTO request)
+        public async Task<Staff> LoginStaff(LoginDTO request)
         {
-            var admin = await _context.Staffs.FirstOrDefaultAsync(a => a.UserName == request.UserName);
+            var staff = await _context.Staffs.FirstOrDefaultAsync(a => a.UserName == request.UserName);
 
-            if (admin == null)
+            if (staff == null)
             {
-                return new LoginResult
-                {
-                    Success = false,
-                    Message = "Invalid username",
-                };
+                return null;
             }
 
-            if (!Validate.VerifyPassword(admin.Password, request.Password))
+            if (!Validate.VerifyPassword(staff.Password, request.Password))
             {
-                return new LoginResult
-                {
-                    Success = false,
-                    Message = "Invalid password.",
-                };
+                return null;
             }
 
             string role = "Staff";
             var token = _jwtHelper.GenerateToken(request.UserName, role);
-            return new LoginResult
-            {
-                Success = true,
-                Message = "Staff is logged",
-                Data = token,
-            };
+            return staff;
         }
     }
 }

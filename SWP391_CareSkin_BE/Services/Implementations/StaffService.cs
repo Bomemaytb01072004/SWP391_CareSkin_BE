@@ -69,10 +69,10 @@ namespace SWP391_CareSkin_BE.Services
             await _staffRepository.DeleteStaffAsync(staff);
         }
 
-        public async Task<LoginResult> Login(LoginDTO loginDto)
+        public async Task<StaffDTO> Login(LoginDTO loginDto)
         {
             var authResult = await _staffRepository.LoginStaff(loginDto);
-            return authResult;
+            return StaffMapper.ToStaffResponseDTO(authResult);
         }
 
         public Task<List<StaffDTO>> GetAllStaffAsync()

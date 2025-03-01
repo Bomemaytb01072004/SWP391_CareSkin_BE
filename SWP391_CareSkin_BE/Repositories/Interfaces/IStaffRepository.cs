@@ -12,6 +12,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task AddStaffAsync(Staff staff);
         Task UpdateStaffAsync(Staff staff);
         Task DeleteStaffAsync(Staff staff);
-        Task<LoginResult> LoginStaff(LoginDTO request);
+        Task<Staff> LoginStaff(LoginDTO request);
     }
 }
