@@ -31,7 +31,7 @@ namespace SWP391_CareSkin_BE.Extensions
             return brandId.HasValue ? query.Where(p => p.BrandId == brandId.Value) : query;
         }
 
-        public static IQueryable<Product> ApplyPriceFilter(this IQueryable<Product> query, decimal? minPrice, decimal? maxPrice)
+        public static IQueryable<Product> ApplyPriceFilter(this IQueryable<Product> query, double? minPrice, double? maxPrice)
         {
             if (minPrice.HasValue || maxPrice.HasValue)
             {

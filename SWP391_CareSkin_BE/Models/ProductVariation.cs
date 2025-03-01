@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace SWP391_CareSkin_BE.Models
 {
@@ -11,8 +12,12 @@ namespace SWP391_CareSkin_BE.Models
 
         public int Ml { get; set; }
 
-        public int Price { get; set; }
+        public double Price { get; set; }
 
         public virtual Product Product { get; set; }
+
+        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();    
     }
 }

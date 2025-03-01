@@ -24,7 +24,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         private async Task<int> CalculateOrderTotalPrice(List<OrderProductRequestDTO> orderProducts, int? promotionId)
         {
-            int totalPrice = 0;
+            double totalPrice = 0;
 
             foreach (var orderProduct in orderProducts)
             {
@@ -43,12 +43,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
                 if (promotion != null && promotion.DiscountPercent > 0)
                 {
-                    decimal discount = Math.Round(totalPrice * (promotion.DiscountPercent / 100m));
-                    totalPrice -= (int)discount;
+                    double discount = Math.Round(totalPrice * (promotion.DiscountPercent / 100.0));
+                    totalPrice -= discount;
                 }
             }
 
-            return totalPrice;
+            return (int)Math.Round(totalPrice);
         }
 
 
