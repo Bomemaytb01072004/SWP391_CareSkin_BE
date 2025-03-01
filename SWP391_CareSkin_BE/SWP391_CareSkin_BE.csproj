@@ -43,13 +43,6 @@
     <Folder Include="DTOs\Requests\Staff\" />
     <Folder Include="DTOs\Requests\Product\" />
     <Folder Include="DTOs\Requests\Order\" />
-    <Folder Include="DTOs\Responses\Brand\" />
-    <Folder Include="DTOs\Responses\Admin\" />
-    <Folder Include="DTOs\Responses\Cart\" />
-    <Folder Include="DTOs\Responses\Customer\" />
-    <Folder Include="DTOs\Responses\Staff\" />
-    <Folder Include="DTOs\Responses\Product\" />
-    <Folder Include="DTOs\Responses\Order\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

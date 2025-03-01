@@ -78,10 +78,10 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return true;
         }
 
-        public async Task<LoginResult> Login(LoginDTO loginDto)
+        public async Task<CustomerDTO> Login(LoginDTO loginDto)
         {
             var authResult = await _customerRepository.LoginCustomer(loginDto);
-            return authResult;
+            return CustomerMapper.ToCustomerResponseDTO(authResult);
         }
     }
 }

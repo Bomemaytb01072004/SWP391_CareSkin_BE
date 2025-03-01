@@ -11,6 +11,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task UpdateAdminAsync(Admin admin);
         Task<string> UploadImageAsync(IFormFile image);
         void DeleteOldImage(string imageUrl);
-        Task<LoginResult> LoginAdmin(LoginDTO request);
+        Task<Admin> LoginAdmin(LoginDTO request);
     }
 }

@@ -36,6 +36,7 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Order/customer/{customerId}
         [HttpGet("customer/{customerId}")]
+        
         public async Task<IActionResult> GetOrdersByCustomerId(int customerId)
         {
             var orders = await _orderService.GetOrdersByCustomerIdAsync(customerId);

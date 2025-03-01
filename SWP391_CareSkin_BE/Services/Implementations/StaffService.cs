@@ -1,6 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests;
-using SWP391_CareSkin_BE.DTOs.Responses;
-using SWP391_CareSkin_BE.DTOS;
+﻿using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -77,11 +75,9 @@ namespace SWP391_CareSkin_BE.Services
             return authResult;
         }
 
-        public async Task<List<StaffResponseDTO>> GetAllStaffAsync()
+        public Task<List<StaffDTO>> GetAllStaffAsync()
         {
-            var customers = await _staffRepository.GetAllStaffsAsync();
-            return customers.Select(StaffMapper.ToStaffResponseDTO).ToList();
+            throw new NotImplementedException();
         }
-
     }
 }

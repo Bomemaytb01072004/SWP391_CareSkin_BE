@@ -58,6 +58,7 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         }
 
         [HttpPut("{customerId}")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateProfile(int customerId, [FromForm] UpdateProfileCustomerDTO request)
         {
             // 1. Nếu có file mới, upload file và lấy URL
@@ -111,11 +112,6 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             };
 
             var authResult = await _customerService.Login(loginDto);
-
-            if (!authResult.Success)
-            {
-                return BadRequest(authResult.Message);
-            }
 
             return Ok(authResult);
         }

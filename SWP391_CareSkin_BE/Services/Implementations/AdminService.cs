@@ -31,18 +31,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return admin.Select(AdminMapper.ToDTO).ToList();
         }
 
-        public async Task<LoginResult> Login(LoginDTO loginDto)
+        public async Task<AdminDTO> Login(LoginDTO loginDto)
         {
             var authResult = await _adminRepository.LoginAdmin(loginDto);
-            return authResult;
+            return AdminMapper.ToDTO(authResult);
         }
 
-        public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id)
+        public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id, string pictureUrl)
         {
             var existingAdmin = await _adminRepository.GetAdminByIdAsync(id);
             if (existingAdmin == null) return null;
 
-            AdminMapper.UpdateEnity(request, existingAdmin, pictureUrl);
+            AdminMapper.UpdateEntity(request, existingAdmin, pictureUrl);
             await _adminRepository.UpdateAdminAsync(existingAdmin);
 
             var updatedAdmin = await _adminRepository.GetAdminByIdAsync(id);

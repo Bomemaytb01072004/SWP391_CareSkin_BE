@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
@@ -28,6 +29,7 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllStaff()
         {
             var staff = await _staffService.GetAllStaffAsync();
@@ -49,6 +51,7 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         }
 
         [HttpGet("{staffId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetStaffById(int staffId)
         {
             var staff = await _staffService.GetStaffByIdAsync(staffId);
@@ -57,6 +60,7 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         }
 
         [HttpPut("{staffId}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> UpdateProfile(int staffId, [FromForm] UpdateProfileStaffDTO request)
         {
             // 1. Nếu có file mới, upload file và lấy URL
@@ -81,6 +85,7 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         }
 
         [HttpDelete("{staffId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAccount(int staffId, [FromBody] string password)
         {
             try

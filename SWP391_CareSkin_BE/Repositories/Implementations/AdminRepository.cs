@@ -29,27 +29,18 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return _context.Admins.FirstOrDefaultAsync(aId => aId.AdminId == adminId);
         }
 
-        public async Task<LoginResult> LoginAdmin(LoginDTO request)
+        public async Task<Admin> LoginAdmin(LoginDTO request)
         {
             var admin = _context.Admins.FirstOrDefault(a => a.UserName == request.UserName && a.Password == request.Password);
             string role = admin != null ? "Admin" : "User" ;
 
             if(admin == null)
             {
-                return new LoginResult
-                {
-                    Success = false,
-                    Message = "Invalid username or password.",
-                };
+                return null;
             }
 
             var token = _jwtHelper.GenerateToken(request.UserName, role);
-            return new LoginResult
-            {
-                Success = true,
-                Message = "Admin is logged",
-                Data = token,
-            };
+            return admin;
         }
         public async Task UpdateAdminAsync(Admin admin)
         {

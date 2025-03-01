@@ -72,11 +72,6 @@ namespace SWP391_CareSkin_BE.Controllers
 
             var authResult = await _adminService.Login(loginDto);
 
-            if (!authResult.Success) 
-            {
-                return BadRequest(authResult.Message);
-            }
-
             return Ok(authResult);
         }
     }
