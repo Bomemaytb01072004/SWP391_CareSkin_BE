@@ -11,7 +11,7 @@ using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
-namespace SWP391_CareSkin_BE.Controllers.UserController
+namespace SWP391_CareSkin_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -27,7 +27,6 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllCustomers()
         {
             var customers = await _customerService.GetAllCustomersAsync();

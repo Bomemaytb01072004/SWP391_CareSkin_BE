@@ -12,7 +12,7 @@ using SWP391_CareSkin_BE.Services;
 using SWP391_CareSkin_BE.Services.Implementations;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
-namespace SWP391_CareSkin_BE.Controllers.StaffController
+namespace SWP391_CareSkin_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
