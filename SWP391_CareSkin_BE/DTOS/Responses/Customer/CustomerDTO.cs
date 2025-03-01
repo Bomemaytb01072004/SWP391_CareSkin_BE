@@ -1,4 +1,6 @@
-﻿namespace SWP391_CareSkin_BE.DTOS.Responses
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SWP391_CareSkin_BE.DTOS.Responses
 {
     public class CustomerDTO
     {
@@ -11,5 +13,7 @@
         public string Gender { get; set; }
         public string PictureUrl { get; set; }
         public string Address { get; set; }
+
+        public string? Token { get; set; }
     }
 }

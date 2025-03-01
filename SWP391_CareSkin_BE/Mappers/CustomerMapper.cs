@@ -37,7 +37,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 Dob = customer.Dob,
                 Gender = customer.Gender,
                 PictureUrl = customer.PictureUrl,
-                Address = customer.Address
+                Address = customer.Address,
+               Token = customer.Token,
             };
         }
 

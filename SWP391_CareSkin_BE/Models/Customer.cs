@@ -32,6 +32,8 @@ namespace SWP391_CareSkin_BE.Models
         public string? PictureUrl { get; set; }
 
         public string? Address { get; set; }
+        [NotMapped] 
+        public string? Token { get; set; }
 
         public virtual ICollection<BlogNew>? BlogNews { get; set; } = new List<BlogNew>();
 
