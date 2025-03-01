@@ -10,6 +10,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Name { get; set; }
 
+        public string PictureUrl { get; set; }
+
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

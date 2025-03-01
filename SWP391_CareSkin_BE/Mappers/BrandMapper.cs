@@ -14,18 +14,20 @@ namespace SWP391_CareSkin_BE.Mappers
             return new BrandDTO
             {
                 BrandId = brand.BrandId,
-                Name = brand.Name
+                Name = brand.Name,
+                PictureUrl = brand.PictureUrl
             };
         }
 
         // Từ BrandCreateRequestDTO -> Entity
-        public static Brand ToEntity(BrandCreateRequestDTO request)
+        public static Brand ToEntity(BrandCreateRequestDTO request, string pictureUrl = null)
         {
             if (request == null) return null;
 
             return new Brand
             {
-                Name = request.Name
+                Name = request.Name,
+                PictureUrl = pictureUrl
             };
         }
 

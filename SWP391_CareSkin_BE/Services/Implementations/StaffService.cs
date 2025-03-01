@@ -75,7 +75,7 @@ namespace SWP391_CareSkin_BE.Services
             return StaffMapper.ToStaffResponseDTO(authResult);
         }
 
-        public Task<List<StaffDTO>> GetAllStaffAsync()
+        public async Task<List<StaffDTO>> GetAllStaffAsync()
         {
             throw new NotImplementedException();
         }

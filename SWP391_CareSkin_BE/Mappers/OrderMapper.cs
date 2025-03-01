@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
 using SWP391_CareSkin_BE.Models;
 
@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 OrderStatusId = order.OrderStatusId,
                 OrderStatusName = order.OrderStatus?.OrderStatusName,
                 PromotionId = order.PromotionId,
-                PromotionName = order.Promotion?.Name,
+                PromotionName = order.Promotion?.PromotionName,
                 TotalPrice = order.TotalPrice,
                 OrderDate = order.OrderDate,
                 Name = order.Name,
@@ -46,7 +46,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 OrderStatusId = request.OrderStatusId,
                 PromotionId = request.PromotionId,
                 TotalPrice = 0, // Sẽ tính toán sau (hoặc tính ngay tại thời điểm tạo nếu có logic riêng)
-                OrderDate = DateTime.UtcNow,
+                OrderDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = request.Name,
                 Phone = request.Phone,
                 Address = request.Address,
