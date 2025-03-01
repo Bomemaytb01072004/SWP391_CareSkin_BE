@@ -6,7 +6,7 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
         public int CustomerId { get; set; }
         public int OrderStatusId { get; set; }
         public string OrderStatusName { get; set; }  // Lấy từ OrderStatus
-        public int PromotionId { get; set; }
+        public int? PromotionId { get; set; }
         public string PromotionName { get; set; } 
         public int TotalPrice { get; set; }
         public DateOnly OrderDate { get; set; }

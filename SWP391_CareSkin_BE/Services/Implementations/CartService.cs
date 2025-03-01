@@ -1,6 +1,9 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using Microsoft.EntityFrameworkCore;
+using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
 using SWP391_CareSkin_BE.Mappers;
+using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -9,10 +12,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly MyDbContext _context;
 
-        public CartService(ICartRepository cartRepository)
+        public CartService(ICartRepository cartRepository, MyDbContext context)
         {
             _cartRepository = cartRepository;
+            _context = context;
         }
 
         public async Task<List<CartDTO>> GetCartItemsByCustomerIdAsync(int customerId)
@@ -23,34 +28,81 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<CartDTO> AddCartItemAsync(CartCreateRequestDTO request)
         {
-            // Chuyển từ DTO sang Entity
+            // Validate product variation exists
+            var productVariation = await _context.ProductVariations
+                .FirstOrDefaultAsync(pv => pv.ProductVariationId == request.ProductVariationId);
+
+            if (productVariation == null)
+            {
+                throw new ArgumentException("Invalid product variation");
+            }
+
+            // Check if the same product variation already exists in cart
+            var existingCart = await _context.Carts
+                .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId 
+                    && c.ProductId == request.ProductId 
+                    && c.ProductVariationId == request.ProductVariationId);
+
+            if (existingCart != null)
+            {
+                // Update quantity if exists
+                existingCart.Quantity += request.Quantity;
+                await _cartRepository.UpdateCartItemAsync(existingCart);
+                return CartMapper.ToDTO(existingCart);
+            }
+
+            // Add new cart item if doesn't exist
             var cartEntity = CartMapper.ToEntity(request);
             await _cartRepository.AddCartItemAsync(cartEntity);
 
-            // Lấy lại mục vừa được thêm (bao gồm thông tin Product nếu cần)
+            // Get the added cart item with all related data
             var addedCart = await _cartRepository.GetCartItemByIdAsync(cartEntity.CartId);
             return CartMapper.ToDTO(addedCart);
         }
 
         public async Task<CartDTO> UpdateCartItemAsync(CartUpdateRequestDTO request)
         {
-            // Lấy mục giỏ hàng hiện có
-            var existingCart = await _cartRepository.GetCartItemByIdAsync(request.CartId);
+            // Find existing cart item by customerId and productId
+            var existingCart = await _context.Carts
+                .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId && c.ProductId == request.ProductId);
+
             if (existingCart == null)
                 return null;
 
-            // Cập nhật số lượng
+            // Validate product variation exists
+            var productVariation = await _context.ProductVariations
+                .FirstOrDefaultAsync(pv => pv.ProductVariationId == request.ProductVariationId);
+
+            if (productVariation == null)
+            {
+                throw new ArgumentException("Invalid product variation");
+            }
+
+            // Update cart item
+            existingCart.ProductVariationId = request.ProductVariationId;
             existingCart.Quantity = request.Quantity;
             await _cartRepository.UpdateCartItemAsync(existingCart);
 
-            var updatedCart = await _cartRepository.GetCartItemByIdAsync(request.CartId);
+            // Get updated cart item with all related data
+            var updatedCart = await _cartRepository.GetCartItemByIdAsync(existingCart.CartId);
             return CartMapper.ToDTO(updatedCart);
         }
 
         public async Task<bool> RemoveCartItemAsync(int cartId)
         {
-            await _cartRepository.RemoveCartItemAsync(cartId);
-            return true;
+            var cart = await _cartRepository.GetCartItemByIdAsync(cartId);
+            if (cart != null)
+            {
+                await _cartRepository.RemoveCartItemAsync(cartId);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<int> CalculateCartTotalPrice(int customerId)
+        {
+            var cartItems = await _cartRepository.GetCartItemsByCustomerIdAsync(customerId);
+            return cartItems.Sum(item => (item.ProductVariation?.Price ?? 0) * item.Quantity);
         }
     }
 }

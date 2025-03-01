@@ -28,11 +28,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             foreach (var orderProduct in orderProducts)
             {
-                // Get the product variation with the lowest price for this product
                 var productVariation = await _context.ProductVariations
-                    .Where(pv => pv.ProductId == orderProduct.ProductId)
-                    .OrderBy(pv => pv.Price)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(pv => pv.ProductVariationId == orderProduct.ProductVariationId);
 
                 if (productVariation != null)
                 {
@@ -40,21 +37,20 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            //// Apply promotion discount if applicable
-            //if (promotionId.HasValue)
-            //{
-            //    var promotion = await _context.Promotions
-            //        .FirstOrDefaultAsync(p => p.PromotionId == promotionId.Value);
+            if (promotionId.HasValue)
+            {
+                var promotion = await _context.Promotions.FirstOrDefaultAsync(p => p.PromotionId == promotionId.Value);
 
-            //    if (promotion != null && promotion.DiscountPercent > 0)
-            //    {
-            //        decimal discount = totalPrice * (promotion.DiscountPercent / 100m);
-            //        totalPrice -= (int)discount;
-            //    }
-            //}
+                if (promotion != null && promotion.DiscountPercent > 0)
+                {
+                    decimal discount = Math.Round(totalPrice * (promotion.DiscountPercent / 100m));
+                    totalPrice -= (int)discount;
+                }
+            }
 
             return totalPrice;
         }
+
 
         public async Task<OrderDTO> CreateOrderAsync(OrderCreateRequestDTO request)
         {

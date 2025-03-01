@@ -9,9 +9,9 @@ namespace SWP391_CareSkin_BE.Models
         [Key]
         public int PromotionId { get; set; }
 
-        public string Name { get; set; }
+        public string PromotionName { get; set; }
 
-        public decimal Discount_percent;
+        public decimal DiscountPercent;
 
         public DateTime Start_Date { get; set; }
 

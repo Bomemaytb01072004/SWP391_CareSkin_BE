@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 OrderStatusId = order.OrderStatusId,
                 OrderStatusName = order.OrderStatus?.OrderStatusName,
                 PromotionId = order.PromotionId,
-                PromotionName = order.Promotion?.Name,
+                PromotionName = order.Promotion?.PromotionName,
                 TotalPrice = order.TotalPrice,
                 OrderDate = order.OrderDate,
                 Name = order.Name,

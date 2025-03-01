@@ -32,8 +32,8 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<ProductPicture> ProductPictures { get; set; }
         public DbSet<ProductUsage> ProductUsages { get; set; }
         public DbSet<ProductVariation> ProductVariations { get; set; }
-        public DbSet<PromotionCustomer> PromotionOrders { get; set; }
-        public DbSet<PromotionCustomer> PromotionProducts { get; set; }
+        public DbSet<PromotionCustomer> PromotionCustomers { get; set; }
+        public DbSet<PromotionProduct> PromotionProducts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Quiz> Quizs { get; set; }
