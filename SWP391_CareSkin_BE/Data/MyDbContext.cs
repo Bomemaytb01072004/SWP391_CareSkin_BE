@@ -27,8 +27,13 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<PromotionCustomer> PromotionOrders { get; set; }
-        public DbSet<PromotionCustomer> PromotionProducts { get; set; }
+        public DbSet<ProductDetailIngredient> productDetailIngredients { get; set; }
+        public DbSet<ProductMainIngredient> ProductMainIngredients { get; set; }
+        public DbSet<ProductPicture> ProductPictures { get; set; }
+        public DbSet<ProductUsage> ProductUsages { get; set; }
+        public DbSet<ProductVariation> ProductVariations { get; set; }
+        public DbSet<PromotionCustomer> PromotionCustomers { get; set; }
+        public DbSet<PromotionProduct> PromotionProducts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Quiz> Quizs { get; set; }
@@ -39,6 +44,8 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<SkinType> SkinTypes { get; set; }
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Support> Supports { get; set; }
+
+        public DbSet<MomoTransaction> MomoTransactions { get; set; }
 
 
         // end Dbset
@@ -61,6 +68,11 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Order>().HasKey(o => o.OrderId);
             modelBuilder.Entity<OrderStatus>().HasKey(o => o.OrderStatusId);
             modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
+            modelBuilder.Entity<ProductDetailIngredient>().HasKey(p => p.ProductDetailIngredientId);
+            modelBuilder.Entity<ProductMainIngredient>().HasKey(p => p.ProductMainIngredientId);
+            modelBuilder.Entity<ProductPicture>().HasKey(p => p.ProductPictureId);
+            modelBuilder.Entity<ProductUsage>().HasKey(p => p.ProductUsageId);
+            modelBuilder.Entity<ProductVariation>().HasKey(p => p.ProductVariationId);
             modelBuilder.Entity<PromotionCustomer>().HasKey(p => new { p.CustomerId, p.PromotionId });
             modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.ProductId, p.PromotionId });
             modelBuilder.Entity<Promotion>().HasKey(p => p.PromotionId);
@@ -185,6 +197,11 @@ namespace SWP391_CareSkin_BE.Data
 
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.ProductUsages)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ProductPictures)
                 .WithOne(p => p.Product)
                 .HasForeignKey(p => p.ProductId);
 

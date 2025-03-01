@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests.Order;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -42,6 +43,28 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(orders);
         }
 
+        // GET: api/Order/customer/{customerId}/status/{statusId}
+        [HttpGet("customer/{customerId}/status/{statusId}")]
+        public async Task<IActionResult> GetOrdersByCustomerAndStatus(int customerId, int statusId)
+        {
+            var orders = await _orderService.GetOrdersByCustomerAndStatusAsync(customerId, statusId);
+            return Ok(orders);
+        }
+
+        // PUT: api/Order/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderUpdateRequestDTO request)
+        {
+            if (id != request.OrderId)
+                return BadRequest("Order ID mismatch");
+
+            var updatedOrder = await _orderService.UpdateOrderAsync(id, request);
+            if (updatedOrder == null)
+                return NotFound();
+
+            return Ok(updatedOrder);
+        }
+
         // PUT: api/Order/{id}/status
         [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] int orderStatusId)
@@ -50,6 +73,24 @@ namespace SWP391_CareSkin_BE.Controllers
             if (updatedOrder == null)
                 return NotFound();
             return Ok(updatedOrder);
+        }
+
+        // PUT: api/Order/{id}/cancel
+        [HttpPut("{id}/cancel")]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            var result = await _orderService.CancelOrderAsync(id);
+            if (!result)
+                return BadRequest("Cannot cancel this order. Order may be already delivered or cancelled.");
+            return Ok();
+        }
+
+        // GET: api/Order/history
+        [HttpGet("history")]
+        public async Task<IActionResult> GetOrderHistory([FromQuery] OrderHistoryRequestDTO request)
+        {
+            var orders = await _orderService.GetOrderHistoryAsync(request);
+            return Ok(orders);
         }
     }
 }

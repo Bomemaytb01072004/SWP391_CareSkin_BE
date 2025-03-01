@@ -1,8 +1,11 @@
 ﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Responses;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Repositories.Implementations;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -66,6 +69,12 @@ namespace SWP391_CareSkin_BE.Services
                 throw new ArgumentException("Mật khẩu không đúng.");
 
             await _staffRepository.DeleteStaffAsync(staff);
+        }
+
+        public async Task<LoginResult> Login(LoginDTO loginDto)
+        {
+            var authResult = await _staffRepository.LoginStaff(loginDto);
+            return authResult;
         }
 
         public async Task<List<StaffDTO>> GetAllStaffAsync()

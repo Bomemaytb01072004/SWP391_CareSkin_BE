@@ -11,7 +11,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public string IngredientName { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public virtual Product Product { get; set; }
     }

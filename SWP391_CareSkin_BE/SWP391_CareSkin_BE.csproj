@@ -33,6 +33,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="RestSharp" Version="112.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
@@ -40,6 +41,7 @@
     <Folder Include="DTOs\Requests\Brand\" />
     <Folder Include="DTOs\Requests\Cart\" />
     <Folder Include="DTOs\Requests\Customer\" />
+    <Folder Include="DTOs\Requests\Momo\" />
     <Folder Include="DTOs\Requests\Staff\" />
     <Folder Include="DTOs\Requests\Product\" />
     <Folder Include="DTOs\Requests\Order\" />
@@ -47,11 +49,10 @@
     <Folder Include="DTOs\Responses\Admin\" />
     <Folder Include="DTOs\Responses\Cart\" />
     <Folder Include="DTOs\Responses\Customer\" />
-    <Folder Include="DTOs\Responses\FAQ\" />
+    <Folder Include="DTOs\Responses\Momo\" />
     <Folder Include="DTOs\Responses\Staff\" />
     <Folder Include="DTOs\Responses\Product\" />
     <Folder Include="DTOs\Responses\Order\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

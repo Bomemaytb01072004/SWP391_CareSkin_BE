@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -17,7 +17,8 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<List<Cart>> GetCartItemsByCustomerIdAsync(int customerId)
         {
             return await _context.Carts
-                .Include(c => c.Product)  // Để lấy thông tin Product (nếu cần)
+                .Include(c => c.Product)
+                .Include(c => c.ProductVariation)
                 .Where(c => c.CustomerId == customerId)
                 .ToListAsync();
         }
@@ -37,17 +38,15 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task RemoveCartItemAsync(int cartId)
         {
             var cart = await GetCartItemByIdAsync(cartId);
-            if (cart != null)
-            {
-                _context.Carts.Remove(cart);
-                await _context.SaveChangesAsync();
-            }
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Cart> GetCartItemByIdAsync(int cartId)
         {
             return await _context.Carts
                 .Include(c => c.Product)
+                .Include(c => c.ProductVariation)
                 .FirstOrDefaultAsync(c => c.CartId == cartId);
         }
     }

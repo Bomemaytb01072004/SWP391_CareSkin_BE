@@ -35,6 +35,6 @@ namespace SWP391_CareSkin_BE.Mappers
             admin.Phone = request.Phone;
             admin.DoB = request.DoB;
             admin.PictureUrl = pictureUrl;
-        } 
+        }
     }
 }

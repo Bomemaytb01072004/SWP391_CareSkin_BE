@@ -1,7 +1,9 @@
 ﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Repositories;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -74,6 +76,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             await _customerRepository.DeleteCustomerAsync(customer);
             return true;
+        }
+
+        public async Task<LoginResult> Login(LoginDTO loginDto)
+        {
+            var authResult = await _customerRepository.LoginCustomer(loginDto);
+            return authResult;
         }
     }
 }

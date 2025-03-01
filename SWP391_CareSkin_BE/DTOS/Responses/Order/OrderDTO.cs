@@ -1,4 +1,4 @@
-﻿namespace SWP391_CareSkin_BE.DTOs.Responses
+namespace SWP391_CareSkin_BE.DTOs.Responses
 {
     public class OrderDTO
     {
@@ -6,10 +6,10 @@
         public int CustomerId { get; set; }
         public int OrderStatusId { get; set; }
         public string OrderStatusName { get; set; }  // Lấy từ OrderStatus
-        public int PromotionId { get; set; }
+        public int? PromotionId { get; set; }
         public string PromotionName { get; set; } 
         public int TotalPrice { get; set; }
-        public DateTime OrderDate { get; set; }
+        public DateOnly OrderDate { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }

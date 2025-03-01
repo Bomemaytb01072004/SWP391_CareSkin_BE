@@ -9,8 +9,8 @@ namespace SWP391_CareSkin_BE.DTOS.Requests
         public decimal? MaxPrice { get; set; }
         public int? MinMl { get; set; }
         public int? MaxMl { get; set; }
-        public string? SortBy { get; set; } // name, price_asc, price_desc
-        public int? PageSize { get; set; } = 10;
-        public int? PageNumber { get; set; } = 1;
+        public string? SortBy { get; set; }
+        public int? PageNumber { get; set; }
+        public int? PageSize { get; set; }
     }
 }

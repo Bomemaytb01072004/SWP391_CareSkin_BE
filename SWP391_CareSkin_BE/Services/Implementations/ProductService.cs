@@ -5,6 +5,7 @@ using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
+using SWP391_CareSkin_BE.Extensions;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -133,66 +134,23 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<(List<ProductDTO> Products, int TotalCount)> SearchProductsAsync(ProductSearchRequestDTO request)
         {
-            // Get initial queryable
-            var query = _productRepository.GetQueryable();
+            var query = _productRepository.GetQueryable(); // Chỉ lấy sản phẩm đang hoạt động
 
-            // Apply keyword search
-            if (!string.IsNullOrWhiteSpace(request.Keyword))
-            {
-                var keyword = request.Keyword.ToLower();
-                query = query.Where(p => 
-                    p.ProductName.ToLower().Contains(keyword) ||
-                    p.Description.ToLower().Contains(keyword) ||
-                    p.Brand.Name.ToLower().Contains(keyword) ||
-                    p.ProductMainIngredients.Any(i => i.IngredientName.ToLower().Contains(keyword)) ||
-                    p.ProductDetailIngredients.Any(i => i.IngredientName.ToLower().Contains(keyword))
-                );
-            }
+            // Áp dụng các bộ lọc từ extension class
+            query = query
+                .ApplyKeywordFilter(request.Keyword)
+                .ApplyCategoryFilter(request.Category)
+                .ApplyBrandFilter(request.BrandId)
+                .ApplyPriceFilter(request.MinPrice, request.MaxPrice)
+                .ApplyMlFilter(request.MinMl, request.MaxMl)
+                .ApplySorting(request.SortBy);
 
-            // Apply category filter
-            if (!string.IsNullOrWhiteSpace(request.Category))
-            {
-                query = query.Where(p => p.Category == request.Category);
-            }
-
-            // Apply brand filter
-            if (request.BrandId.HasValue)
-            {
-                query = query.Where(p => p.BrandId == request.BrandId.Value);
-            }
-
-            // Apply price range filter
-            if (request.MinPrice.HasValue || request.MaxPrice.HasValue)
-            {
-                query = query.Where(p => p.ProductVariations.Any(v =>
-                    (!request.MinPrice.HasValue || v.Price >= request.MinPrice.Value) &&
-                    (!request.MaxPrice.HasValue || v.Price <= request.MaxPrice.Value)
-                ));
-            }
-
-            // Apply ml range filter
-            if (request.MinMl.HasValue || request.MaxMl.HasValue)
-            {
-                query = query.Where(p => p.ProductVariations.Any(v =>
-                    (!request.MinMl.HasValue || v.Ml >= request.MinMl.Value) &&
-                    (!request.MaxMl.HasValue || v.Ml <= request.MaxMl.Value)
-                ));
-            }
-
-            // Apply sorting
-            query = request.SortBy?.ToLower() switch
-            {
-                "name" => query.OrderBy(p => p.ProductName),
-                "price_asc" => query.OrderBy(p => p.ProductVariations.Min(v => v.Price)),
-                "price_desc" => query.OrderByDescending(p => p.ProductVariations.Min(v => v.Price)),
-                _ => query.OrderByDescending(p => p.ProductId) // Default sort by newest
-            };
-
-            // Get total count before pagination
+            // Lấy tổng số sản phẩm trước khi phân trang
             var totalCount = await query.CountAsync();
 
-            var pageNumber = request.PageNumber ?? 1; 
-            var pageSize = request.PageSize ?? 10; 
+            // Áp dụng phân trang (nếu không có giá trị thì mặc định)
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
 
             var products = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -200,8 +158,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 .Include(p => p.Brand)
                 .Include(p => p.ProductVariations)
                 .Include(p => p.ProductMainIngredients)
-                .Include(p => p.ProductDetailIngredients)
-                .Include(p => p.ProductUsages)
                 .ToListAsync();
 
             return (products.Select(ProductMapper.ToDTO).ToList(), totalCount);

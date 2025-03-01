@@ -7,8 +7,8 @@ namespace SWP391_CareSkin_BE.Mappers
 {
     public class StaffMapper
     {
-        // Chuyển đổi RegisterStaffDTO sang Staff Model
-        public static Staff ToStaff(RegisterStaffDTO dto, string hashedPassword)
+        //chuyển đổi RegisterStaffDTO sang Staff Model
+        public static Staff ToStaff (RegisterStaffDTO dto, string hashedPassword)
         {
             return new Staff
             {
@@ -22,7 +22,7 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
-        // Chuyển đổi từ Staff model sang StaffDTO
+        //chuyển đổi từ staff model sang staffresponseDTO
         public static StaffDTO ToStaffResponseDTO(Staff staff)
         {
             return new StaffDTO
@@ -30,20 +30,15 @@ namespace SWP391_CareSkin_BE.Mappers
                 StaffId = staff.StaffId,
                 UserName = staff.UserName,
                 FullName = staff.FullName,
-                Email = staff.Email,
+                Email = staff.Email,  
                 Phone = staff.Phone,
                 DoB = staff.DoB,
                 PictureUrl = staff.PictureUrl
             };
+
         }
 
-        // Chuyển đổi danh sách Staff sang danh sách StaffDTO
-        public static List<StaffDTO> ToStaffResponseDTOList(List<Staff> staffList)
-        {
-            return staffList.Select(staff => ToStaffResponseDTO(staff)).ToList();
-        }
-
-        // Cập nhật dữ liệu từ DTO vào model
+        //cập nhật dữ liệu từ DTO vào model
         public static void UpdateStaff(Staff staff, UpdateProfileStaffDTO dto, string pictureUrl = null)
         {
             if (!string.IsNullOrEmpty(staff.FullName))
@@ -67,5 +62,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 staff.PictureUrl = pictureUrl;
             }
         }
+        
+
     }
 }

@@ -28,6 +28,7 @@ namespace SWP391_CareSkin_BE.Models
         public virtual ICollection<ProductVariation> ProductVariations { get; set; } = new List<ProductVariation>();
         public virtual ICollection<ProductMainIngredient> ProductMainIngredients { get; set; } = new List<ProductMainIngredient>();
         public virtual ICollection<ProductDetailIngredient> ProductDetailIngredients { get; set; } = new List<ProductDetailIngredient>();
+        public virtual ICollection<ProductPicture> ProductPictures { get; set; } = new List<ProductPicture>();
         public virtual ICollection<ProductUsage> ProductUsages { get; set; } = new List<ProductUsage>();
     }
 }

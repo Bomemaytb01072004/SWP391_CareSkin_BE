@@ -1,4 +1,6 @@
-﻿using SWP391_CareSkin_BE.Models;
+﻿using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Services;
 
 namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
@@ -10,5 +12,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task UpdateCustomerAsync(Customer customer);
         Task DeleteCustomerAsync(Customer customer);
         Task<Customer?> GetCustomerByEmailOrUsernameAsync(string email, string username);
+        Task<LoginResult> LoginCustomer(LoginDTO request);
     }
 }
