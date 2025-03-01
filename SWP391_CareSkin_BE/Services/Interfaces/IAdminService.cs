@@ -8,7 +8,8 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     public interface IAdminService
     {
         Task<List<AdminDTO>> GetAdminAsync();
-        Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id);
+        Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id, string pictureUrl);
+        
         Task<LoginResult> Login(LoginDTO loginDto);
     }
 }

@@ -17,10 +17,12 @@ namespace SWP391_CareSkin_BE.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
+        private readonly IFirebaseService _firebaseService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(IAdminService adminService, IFirebaseService firebaseService)
         {
             _adminService = adminService;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/Admin 
@@ -34,11 +36,20 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Admin/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAdmin(int id, [FromForm] AdminUpdateRequestDTO request)
         {
-            var updateAdmin = await _adminService.UpdateAdminAsync(request, id);
-            if (updateAdmin == null)
+            // 1. Nếu có file mới, upload file và lấy URL
+            string newPictureUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                newPictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
+
+            var updateAdmin = await _adminService.UpdateAdminAsync(request, id, newPictureUrl);
+            if(updateAdmin == null)
             {
                 return NotFound();
             }

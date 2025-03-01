@@ -17,12 +17,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _adminRepository;
-        private readonly MyDbContext _context;
+        private readonly IFirebaseService _firebaseService;
 
-        public AdminService(IAdminRepository adminRepository, MyDbContext context)
+        public AdminService(IAdminRepository adminRepository, IFirebaseService firebaseService)
         {
             _adminRepository = adminRepository;
-            _context = context;
+            _firebaseService = firebaseService;
         } 
 
         public async Task<List<AdminDTO>> GetAdminAsync()
@@ -42,23 +42,11 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var existingAdmin = await _adminRepository.GetAdminByIdAsync(id);
             if (existingAdmin == null) return null;
 
-            AdminMapper.UpdateEntity(request, existingAdmin);
-
-            if (request.ProfilePicture != null)
-            {
-                if (!string.IsNullOrEmpty(existingAdmin.ProfilePicture))
-                {
-                    _adminRepository.DeleteOldImage(existingAdmin.ProfilePicture);
-                }
-                existingAdmin.ProfilePicture = await _adminRepository.UploadImageAsync(request.ProfilePicture);
-            }
+            AdminMapper.UpdateEnity(request, existingAdmin, pictureUrl);
             await _adminRepository.UpdateAdminAsync(existingAdmin);
 
             var updatedAdmin = await _adminRepository.GetAdminByIdAsync(id);
             return AdminMapper.ToDTO(updatedAdmin);
         }
-
-        
-
     }
 }

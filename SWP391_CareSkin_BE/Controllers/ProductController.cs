@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -10,15 +10,17 @@ namespace SWP391_CareSkin_BE.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IFirebaseService _firebaseService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IFirebaseService firebaseService)
         {
             _productService = productService;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/Product
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<ActionResult<List<ProductDTO>>> GetAllProducts()
         {
             var products = await _productService.GetAllProductsAsync();
             return Ok(products);
@@ -26,40 +28,80 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Product/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
-                return NotFound();
+                return NotFound($"Product with ID {id} not found");
+
             return Ok(product);
         }
 
-        // POST: api/Product
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateRequestDTO request)
+        [HttpGet("search")]
+        public async Task<ActionResult<PaginatedResponse<ProductDTO>>> SearchProducts([FromQuery] ProductSearchRequestDTO request)
         {
-            var createdProduct = await _productService.CreateProductAsync(request);
-            return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.ProductId }, createdProduct);
+            var (products, totalCount) = await _productService.SearchProductsAsync(request);
+
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
+
+            var response = new PaginatedResponse<ProductDTO>
+            {
+                Items = products,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize)
+            };
+
+            return Ok(response);
         }
 
-        // PUT: api/Product/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO request)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProductDTO>> CreateProduct([FromForm] ProductCreateRequestDTO request)
         {
-            var updatedProduct = await _productService.UpdateProductAsync(id, request);
-            if (updatedProduct == null)
-                return NotFound();
-            return Ok(updatedProduct);
+            try
+            {
+                // Handle image upload
+                string pictureUrl = null;
+                if (request.PictureFile != null)
+                {
+                    var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                    using var stream = request.PictureFile.OpenReadStream();
+                    pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+                }
+
+                var product = await _productService.CreateProductAsync(request, pictureUrl);
+                return CreatedAtAction(nameof(GetProductById), new { id = product.ProductId }, product);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while creating the product");
+            }
+        }
+
+        [HttpPut("{id}")]
+            {
         }
 
         // DELETE: api/Product/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
-        {
-            var result = await _productService.DeleteProductAsync(id);
-            if (!result)
-                return NotFound();
-            return Ok(new { message = "Product deleted successfully" });
-        }
+            {
+                var result = await _productService.DeleteProductAsync(id);
+                if (!result)
+    }
+
+    public class PaginatedResponse<T>
+    {
+        public List<T> Items { get; set; }
+        public int TotalCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
     }
 }

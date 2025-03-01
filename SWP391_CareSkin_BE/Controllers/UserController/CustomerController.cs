@@ -18,10 +18,12 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
+        private readonly IFirebaseService _firebaseService;
 
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService, IFirebaseService firebaseService)
         {
             _customerService = customerService;
+            _firebaseService = firebaseService;
         }
 
         [HttpGet]
@@ -41,8 +43,8 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             return Ok(customer);
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromForm] RegisterCustomerDTO request)
         {
             try
             {
@@ -55,12 +57,22 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             }
         }
 
-        [HttpPut("update-profile/{customerId}")]
-        public async Task<IActionResult> UpdateProfile(int customerId, [FromBody] UpdateProfileCustomerDTO request)
+        [HttpPut("{customerId}")]
+        public async Task<IActionResult> UpdateProfile(int customerId, [FromForm] UpdateProfileCustomerDTO request)
         {
+            // 1. Nếu có file mới, upload file và lấy URL
+            string newPictureUrl = null;
+            if (request.PictureFile != null && request.PictureFile.Length > 0)
+            {
+                var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                using var stream = request.PictureFile.OpenReadStream();
+
+                newPictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+            }
+
             try
             {
-                var updatedCustomer = await _customerService.UpdateProfileAsync(customerId, request);
+                var updatedCustomer = await _customerService.UpdateProfileAsync(customerId, request, newPictureUrl);
                 return Ok(new { message = "Update account successful", updatedCustomer });
             }
             catch (ArgumentException ex)

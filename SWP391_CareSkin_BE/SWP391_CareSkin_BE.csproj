@@ -19,15 +19,17 @@
 
   <ItemGroup>
 	  <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-	  <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.12" />
-	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
+	  <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
+	  <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
+	  <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.12">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -35,6 +37,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Requests\Brand\" />
+    <Folder Include="DTOs\Requests\Cart\" />
+    <Folder Include="DTOs\Requests\Customer\" />
+    <Folder Include="DTOs\Requests\Staff\" />
+    <Folder Include="DTOs\Requests\Product\" />
+    <Folder Include="DTOs\Requests\Order\" />
+    <Folder Include="DTOs\Responses\Brand\" />
+    <Folder Include="DTOs\Responses\Admin\" />
+    <Folder Include="DTOs\Responses\Cart\" />
+    <Folder Include="DTOs\Responses\Customer\" />
+    <Folder Include="DTOs\Responses\Staff\" />
+    <Folder Include="DTOs\Responses\Product\" />
+    <Folder Include="DTOs\Responses\Order\" />
     <Folder Include="Models\" />
   </ItemGroup>
 
