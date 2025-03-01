@@ -12,6 +12,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Content { get; set; }
 
+        public string PictureUrl { get; set; }
+
         public int CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }

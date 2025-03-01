@@ -1,8 +1,11 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -27,9 +30,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return BrandMapper.ToDTO(brand);
         }
 
-        public async Task<BrandDTO> CreateBrandAsync(BrandCreateRequestDTO request)
+        public async Task<BrandDTO> CreateBrandAsync(BrandCreateRequestDTO request, string pictureUrl)
         {
-            var brandEntity = BrandMapper.ToEntity(request);
+            var brandEntity = BrandMapper.ToEntity(request, pictureUrl);
             await _brandRepository.AddBrandAsync(brandEntity);
 
             // Lấy lại brand vừa thêm (nếu cần hiển thị ID ...)

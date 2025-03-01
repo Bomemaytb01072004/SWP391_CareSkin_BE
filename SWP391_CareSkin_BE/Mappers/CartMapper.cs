@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
 using SWP391_CareSkin_BE.Models;
 
@@ -17,9 +17,12 @@ namespace SWP391_CareSkin_BE.Mappers
                 CartId = cart.CartId,
                 CustomerId = cart.CustomerId,
                 ProductId = cart.ProductId,
+                ProductVariationId = cart.ProductVariationId,
                 Quantity = cart.Quantity,
-                // Nếu bạn đã Include Product, bạn có thể lấy tên sản phẩm
-                ProductName = cart.Product?.ProductName
+                ProductName = cart.Product?.ProductName,
+                Ml = cart.ProductVariation?.Ml ?? 0,
+                Price = cart.ProductVariation?.Price ?? 0,
+                TotalPrice = (cart.ProductVariation?.Price ?? 0) * cart.Quantity
             };
         }
 
@@ -33,6 +36,7 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 CustomerId = request.CustomerId,
                 ProductId = request.ProductId,
+                ProductVariationId = request.ProductVariationId,
                 Quantity = request.Quantity
             };
         }

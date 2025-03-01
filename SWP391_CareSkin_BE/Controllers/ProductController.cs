@@ -38,24 +38,21 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(product);
         }
 
+        /// <summary>
+        /// Tìm kiếm sản phẩm theo các tiêu chí lọc (Keyword, Category, Brand, Price, ML, Sort, Pagination)
+        /// </summary>
+        /// <param name="request">Các tham số lọc sản phẩm</param>
+        /// <returns>Danh sách sản phẩm và tổng số sản phẩm phù hợp</returns>
         [HttpGet("search")]
-        public async Task<ActionResult<PaginatedResponse<ProductDTO>>> SearchProducts([FromQuery] ProductSearchRequestDTO request)
+        public async Task<IActionResult> SearchProducts([FromQuery] ProductSearchRequestDTO request)
         {
             var (products, totalCount) = await _productService.SearchProductsAsync(request);
 
-            var pageNumber = request.PageNumber ?? 1;
-            var pageSize = request.PageSize ?? 10;
-
-            var response = new PaginatedResponse<ProductDTO>
+            return Ok(new
             {
-                Items = products,
                 TotalCount = totalCount,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize)
-            };
-
-            return Ok(response);
+                Products = products
+            });
         }
 
         [HttpPost]

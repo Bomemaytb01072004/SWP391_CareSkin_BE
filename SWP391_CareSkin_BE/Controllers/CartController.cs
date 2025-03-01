@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -29,15 +29,14 @@ namespace SWP391_CareSkin_BE.Controllers
         public async Task<IActionResult> AddCartItem([FromBody] CartCreateRequestDTO request)
         {
             var cartItem = await _cartService.AddCartItemAsync(request);
+            if (cartItem == null) return BadRequest();
             return Ok(cartItem);
         }
 
-        // PUT: api/Cart/update/{id}
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateCartItem(int id, [FromBody] CartUpdateRequestDTO request)
+        // PUT: api/Cart/update
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCartItem([FromBody] CartUpdateRequestDTO request)
         {
-            // Đảm bảo request.Id = id
-            request.CartId = id;
             var updatedCartItem = await _cartService.UpdateCartItemAsync(request);
             if (updatedCartItem == null)
                 return NotFound();
@@ -51,7 +50,15 @@ namespace SWP391_CareSkin_BE.Controllers
             var result = await _cartService.RemoveCartItemAsync(id);
             if (!result)
                 return NotFound();
-            return Ok(new { message = "Cart item removed successfully" });
+            return Ok();
+        }
+
+        // GET: api/Cart/total/{customerId}
+        [HttpGet("total/{customerId}")]
+        public async Task<IActionResult> GetCartTotal(int customerId)
+        {
+            var total = await _cartService.CalculateCartTotalPrice(customerId);
+            return Ok(total);
         }
     }
 }
