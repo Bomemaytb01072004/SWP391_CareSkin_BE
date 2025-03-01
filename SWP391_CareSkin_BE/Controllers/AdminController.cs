@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests.Admin;
 using SWP391_CareSkin_BE.DTOs.Responses;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -53,13 +55,29 @@ namespace SWP391_CareSkin_BE.Controllers
             }
             return Ok(updateAdmin);
         }
-      
 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO adminDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            LoginDTO loginDto = new LoginDTO
+            {
+                UserName = adminDTO.UserName,
+                Password = adminDTO.Password
+            };
 
+            var authResult = await _adminService.Login(loginDto);
 
+            if (!authResult.Success) 
+            {
+                return BadRequest(authResult.Message);
+            }
 
-
-
+            return Ok(authResult);
+        }
     }
 }

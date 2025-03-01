@@ -1,4 +1,5 @@
 ﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 
 namespace SWP391_CareSkin_BE.Services.Interfaces
@@ -10,5 +11,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<CustomerDTO> RegisterCustomerAsync(RegisterCustomerDTO request);
         Task<CustomerDTO> UpdateProfileAsync(int customerId, UpdateProfileCustomerDTO request, string pictureUrl);
         Task<bool> DeleteCustomerAsync(int customerId, string password);
+        Task<LoginResult> Login(LoginDTO loginDto);
+
     }
 }

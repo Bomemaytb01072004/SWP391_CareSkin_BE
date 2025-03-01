@@ -1,20 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
+using SWP391_CareSkin_BE.Services;
 
 namespace SWP391_CareSkin_BE.Repositories
 {
     public class StaffRepository : IStaffRepository
     {
         private readonly MyDbContext _context;
+        private readonly JwtHelper _jwtHelper;
 
-        public StaffRepository(MyDbContext context)
+        public StaffRepository(MyDbContext context, JwtHelper jwtHelper)
         {
             _context = context;
+            _jwtHelper = jwtHelper;
         }
 
-        public async Task<IEnumerable<Staff>> GetAllStaffsAsync()
+        public async Task<List<Staff>> GetAllStaffsAsync()
         {
             return await _context.Staffs.ToListAsync();
         }
@@ -46,6 +51,38 @@ namespace SWP391_CareSkin_BE.Repositories
         {
             _context.Staffs.Remove(staff);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<LoginResult> LoginStaff(LoginDTO request)
+        {
+            var admin = await _context.Staffs.FirstOrDefaultAsync(a => a.UserName == request.UserName);
+
+            if (admin == null)
+            {
+                return new LoginResult
+                {
+                    Success = false,
+                    Message = "Invalid username",
+                };
+            }
+
+            if (!Validate.VerifyPassword(admin.Password, request.Password))
+            {
+                return new LoginResult
+                {
+                    Success = false,
+                    Message = "Invalid password.",
+                };
+            }
+
+            string role = "Staff";
+            var token = _jwtHelper.GenerateToken(request.UserName, role);
+            return new LoginResult
+            {
+                Success = true,
+                Message = "Staff is logged",
+                Data = token,
+            };
         }
     }
 }

@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
+using SWP391_CareSkin_BE.Services.Implementations;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers.StaffController
@@ -23,6 +25,13 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
         {
             _staffService = staffService;
             _firebaseService = firebaseService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllStaff()
+        {
+            var staff = await _staffService.GetAllStaffAsync();
+            return Ok(staff);
         }
 
         [HttpPost("Register")]
@@ -83,6 +92,30 @@ namespace SWP391_CareSkin_BE.Controllers.StaffController
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO adminDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            LoginDTO loginDto = new LoginDTO
+            {
+                UserName = adminDTO.UserName,
+                Password = adminDTO.Password
+            };
+
+            var authResult = await _staffService.Login(loginDto);
+
+            if (!authResult.Success)
+            {
+                return BadRequest(authResult.Message); 
+            }
+
+            return Ok(authResult);
         }
     }
 }
