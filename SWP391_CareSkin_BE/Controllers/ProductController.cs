@@ -56,7 +56,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductDTO>> CreateProduct([FromForm] ProductCreateRequestDTO request)
         {
             try
@@ -84,7 +83,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request)
         {
             try
@@ -115,7 +113,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             try
