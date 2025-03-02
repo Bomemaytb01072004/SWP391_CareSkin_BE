@@ -20,6 +20,6 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
         public DateOnly? DoB { get; set; }
 
         public string PictureUrl { get; set; }
-        public string? Token { get; set; }
+        public string? token { get; set; }
     }
 }

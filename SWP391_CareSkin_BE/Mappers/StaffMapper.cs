@@ -34,7 +34,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 Email = staff.Email,  
                 Phone = staff.Phone,
                 DoB = staff.DoB,
-                PictureUrl = staff.PictureUrl
+                PictureUrl = staff.PictureUrl,
+                token = staff.Token
             };
 
         }

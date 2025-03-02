@@ -12,5 +12,6 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public String Phone { get; set; }
         public DateOnly? DoB { get; set; }
         public string PictureUrl { get; set; }
+        public string? token { get; set; }
     }
 }
