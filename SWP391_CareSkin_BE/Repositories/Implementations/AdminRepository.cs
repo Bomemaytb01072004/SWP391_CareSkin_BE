@@ -40,6 +40,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             }
 
             var token = _jwtHelper.GenerateToken(request.UserName, role);
+            admin.Token = token;
             return admin;
         }
         public async Task UpdateAdminAsync(Admin admin)

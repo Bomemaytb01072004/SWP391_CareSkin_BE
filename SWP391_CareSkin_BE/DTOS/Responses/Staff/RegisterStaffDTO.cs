@@ -22,5 +22,6 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         [JsonIgnore] public string? FullName { get; set; }
         [JsonIgnore] public DateOnly? Dob { get; set; }
         [JsonIgnore] public string? ProfilePicture { get; set; }
+        public string? Token { get; set; }
     }
 }
