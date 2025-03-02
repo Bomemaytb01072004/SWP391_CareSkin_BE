@@ -59,16 +59,17 @@ namespace SWP391_CareSkin_BE.Repositories
 
             if (staff == null)
             {
-                return null;
+                throw new Exception("Invalid user name");
             }
 
             if (!Validate.VerifyPassword(staff.Password, request.Password))
             {
-                return null;
+                throw new Exception("Invalid Password");
             }
 
             string role = "Staff";
             var token = _jwtHelper.GenerateToken(request.UserName, role);
+            staff.Token = token;
             return staff;
         }
     }

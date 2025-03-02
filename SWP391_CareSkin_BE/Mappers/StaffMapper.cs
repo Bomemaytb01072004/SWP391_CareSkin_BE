@@ -18,7 +18,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 DoB = dto.Dob,
                 PictureUrl = dto.ProfilePicture ?? "",
                 FullName = dto.FullName ?? "No name",
-                Phone = dto.Phone ?? ""
+                Phone = dto.Phone ?? "",
+                Token = dto.Token
             };
         }
 
