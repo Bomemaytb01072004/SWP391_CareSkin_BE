@@ -116,7 +116,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return true;
         }
 
-        public async Task<double> CalculateOrderDiscountAsync(int? promotionId, int customerId, double orderTotal)
+        public async Task<decimal> CalculateOrderDiscountAsync(int? promotionId, int customerId, decimal orderTotal)
         {
             if (!promotionId.HasValue)
                 return 0;
@@ -126,7 +126,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 return 0;
 
             // Check if promotion is active
-            var currentDate = DateTime.Now;
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
             if (currentDate < promotion.Start_Date || currentDate > promotion.End_Date)
                 return 0;
 

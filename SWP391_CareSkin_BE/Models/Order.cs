@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
@@ -15,7 +15,8 @@ namespace SWP391_CareSkin_BE.Models
    
         public int? PromotionId { get; set; }
 
-        public int TotalPrice { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TotalPrice { get; set; }
 
         public DateOnly OrderDate { get; set; }
 

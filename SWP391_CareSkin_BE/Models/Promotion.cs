@@ -10,12 +10,12 @@ namespace SWP391_CareSkin_BE.Models
         public int PromotionId { get; set; }
 
         public string PromotionName { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal DiscountPercent { get; set; }
 
-        public double DiscountPercent;
+        public DateOnly Start_Date { get; set; }
 
-        public DateTime Start_Date { get; set; }
-
-        public DateTime End_Date { get; set; }
+        public DateOnly End_Date { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
