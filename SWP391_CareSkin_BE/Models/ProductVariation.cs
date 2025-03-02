@@ -11,8 +11,8 @@ namespace SWP391_CareSkin_BE.Models
         public int ProductId { get; set; }
 
         public int Ml { get; set; }
-
-        public double Price { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
 
         public virtual Product Product { get; set; }
 

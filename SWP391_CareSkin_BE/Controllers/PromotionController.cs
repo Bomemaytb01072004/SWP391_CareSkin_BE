@@ -106,7 +106,7 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Promotion/calculate-discount
         [HttpGet("calculate-discount")]
-        public async Task<ActionResult<decimal>> CalculateDiscount(int? promotionId, int customerId, double orderTotal)
+        public async Task<ActionResult<decimal>> CalculateDiscount(int? promotionId, int customerId, decimal orderTotal)
         {
             if (!promotionId.HasValue)
                 return Ok(0);

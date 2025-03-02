@@ -4,6 +4,6 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
     {
         public int ProductVariationId { get; set; }
         public int Ml { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

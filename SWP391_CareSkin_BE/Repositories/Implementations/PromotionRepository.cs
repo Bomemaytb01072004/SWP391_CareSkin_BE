@@ -32,7 +32,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public async Task<List<Promotion>> GetActivePromotionsAsync()
         {
-            var currentDate = DateTime.Now;
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
             return await _context.Promotions
                 .Where(p => p.Start_Date <= currentDate && p.End_Date >= currentDate)
                 .Include(p => p.PromotionProducts)
@@ -109,7 +109,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public async Task<List<Promotion>> GetPromotionsForCustomerAsync(int customerId)
         {
-            var currentDate = DateTime.Now;
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
             return await _context.Promotions
                 .Where(p => p.Start_Date <= currentDate && p.End_Date >= currentDate)
                 .Where(p => p.PromotionCustomers.Any(pc => pc.CustomerId == customerId))
@@ -120,7 +120,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public async Task<List<Promotion>> GetPromotionsForProductAsync(int productId)
         {
-            var currentDate = DateTime.Now;
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
             return await _context.Promotions
                 .Where(p => p.Start_Date <= currentDate && p.End_Date >= currentDate)
                 .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == productId))

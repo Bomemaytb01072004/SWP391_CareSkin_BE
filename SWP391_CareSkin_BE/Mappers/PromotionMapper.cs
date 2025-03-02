@@ -17,7 +17,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 DiscountPercent = promotion.DiscountPercent,
                 StartDate = promotion.Start_Date,
                 EndDate = promotion.End_Date,
-                IsActive = DateTime.Now >= promotion.Start_Date && DateTime.Now <= promotion.End_Date,
+                IsActive = DateOnly.FromDateTime(DateTime.UtcNow) >= promotion.Start_Date && DateOnly.FromDateTime(DateTime.UtcNow) <= promotion.End_Date,
                 ProductIds = promotion.PromotionProducts?.Select(pp => pp.ProductId).ToList() ?? new List<int>(),
                 CustomerIds = promotion.PromotionCustomers?.Select(pc => pc.CustomerId).ToList() ?? new List<int>()
             };

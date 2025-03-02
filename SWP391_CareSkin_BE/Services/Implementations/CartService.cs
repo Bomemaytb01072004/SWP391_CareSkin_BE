@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
@@ -99,11 +99,25 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return false;
         }
 
-        public async Task<int> CalculateCartTotalPrice(int customerId)
+        public async Task<decimal> CalculateCartTotalPrice(int customerId)
         {
+            // Lấy danh sách cart items của customer
             var cartItems = await _cartRepository.GetCartItemsByCustomerIdAsync(customerId);
-            var total = cartItems.Sum(item => (item.ProductVariation?.Price ?? 0) * item.Quantity);
-            return (int)Math.Round(total);
+
+            // Sử dụng decimal để tính toán tiền tệ
+            decimal total = 0m;
+            foreach (var item in cartItems)
+            {
+                // Giá có thể null => dùng null-coalescing (??) trả về 0m nếu null
+                decimal price = item.ProductVariation?.Price ?? 0m;
+
+                // Cộng dồn
+                total += price * item.Quantity;
+            }
+
+            // Làm tròn về 2 chữ số thập phân (MidpointRounding tuỳ bạn chọn)
+            return decimal.Round(total, 2, MidpointRounding.AwayFromZero);
         }
+
     }
 }
