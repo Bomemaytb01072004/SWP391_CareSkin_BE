@@ -39,10 +39,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var faq = await _faqRepository.GetFAQByIdAsync(faqId);
             if (faq == null) return false;
 
-            FAQMapper.UpdateFAQ(faq, dto);
+            // Giữ nguyên dữ liệu cũ nếu không nhập giá trị mới
+            faq.Question = string.IsNullOrWhiteSpace(dto.Question) ? faq.Question : dto.Question;
+            faq.Answer = string.IsNullOrWhiteSpace(dto.Answer) ? faq.Answer : dto.Answer;
+
             await _faqRepository.UpdateFAQAsync(faq);
             return true;
         }
+
+
+
 
         public async Task<bool> DeleteFAQAsync(int faqId)
         {

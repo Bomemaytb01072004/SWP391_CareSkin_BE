@@ -108,6 +108,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IFAQRepository, FAQRepository>();
             builder.Services.AddScoped<IFAQService, FAQService>();
 
+            builder.Services.AddScoped<IMomoRepository, MomoRepository>();
+            builder.Services.AddScoped<IMomoService, MomoService>();
+
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>

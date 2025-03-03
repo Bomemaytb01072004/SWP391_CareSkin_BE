@@ -1,8 +1,10 @@
-﻿namespace SWP391_CareSkin_BE.DTOs.Requests.FAQ
+﻿using System.ComponentModel;
+
+namespace SWP391_CareSkin_BE.DTOs.Requests.FAQ
 {
     public class UpdateFAQDTO
     {
-        public string Question { get; set; }
-        public string Answer { get; set; }
+        public string Question { get; set; } = string.Empty;
+        public string Answer { get; set; } = string.Empty;
     }
 }

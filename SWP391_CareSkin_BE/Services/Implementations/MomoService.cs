@@ -3,10 +3,11 @@ using RestSharp;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
 using SWP391_CareSkin_BE.Helpers;
+using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
-    public class MomoService
+    public class MomoService : IMomoService
    {
     private readonly string _partnerCode;
     private readonly string _accessKey;

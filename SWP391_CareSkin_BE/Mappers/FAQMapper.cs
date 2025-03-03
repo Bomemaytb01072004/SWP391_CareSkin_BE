@@ -37,14 +37,8 @@ namespace SWP391_CareSkin_BE.Mappers
         // Cập nhật dữ liệu từ DTO vào model FAQ
         public static void UpdateFAQ(FAQ faq, UpdateFAQDTO dto)
         {
-            if (!string.IsNullOrEmpty(dto.Question))
-            {
-                faq.Question = dto.Question;
-            }
-            if (!string.IsNullOrEmpty(dto.Answer))
-            {
-                faq.Answer = dto.Answer;
-            }
+            faq.Question = !string.IsNullOrEmpty(dto.Question) ? dto.Question : faq.Question;
+            faq.Answer = !string.IsNullOrEmpty(dto.Answer) ? dto.Answer : faq.Answer;
         }
     }
 }
