@@ -36,26 +36,10 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<PromotionDTO> CreatePromotionAsync(PromotionCreateRequestDTO request)
         {
-            var promotion = PromotionMapper.ToEntity(request);
+            bool isActive = DateOnly.FromDateTime(DateTime.UtcNow) >= request.StartDate && DateOnly.FromDateTime(DateTime.UtcNow) <= request.EndDate;
+
+            var promotion = PromotionMapper.ToEntity(request, isActive);
             await _promotionRepository.AddPromotionAsync(promotion);
-
-            // Add products to promotion
-            if (request.ProductIds != null)
-            {
-                foreach (var productId in request.ProductIds)
-                {
-                    await _promotionRepository.AddPromotionProductAsync(promotion.PromotionId, productId);
-                }
-            }
-
-            // Add customers to promotion
-            if (request.CustomerIds != null)
-            {
-                foreach (var customerId in request.CustomerIds)
-                {
-                    await _promotionRepository.AddPromotionCustomerAsync(promotion.PromotionId, customerId);
-                }
-            }
 
             // Get the complete promotion with relationships
             var createdPromotion = await _promotionRepository.GetPromotionByIdAsync(promotion.PromotionId);
@@ -68,38 +52,10 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (promotion == null)
                 return null;
 
-            PromotionMapper.UpdateEntity(promotion, request);
+            bool isActive = DateOnly.FromDateTime(DateTime.UtcNow) >= request.StartDate && DateOnly.FromDateTime(DateTime.UtcNow) <= request.EndDate;
+
+            PromotionMapper.UpdateEntity(promotion, request, isActive);
             await _promotionRepository.UpdatePromotionAsync(promotion);
-
-            // Update products
-            var currentProductIds = promotion.PromotionProducts.Select(pp => pp.ProductId).ToList();
-            var productsToAdd = request.ProductIds.Except(currentProductIds);
-            var productsToRemove = currentProductIds.Except(request.ProductIds);
-
-            foreach (var productId in productsToAdd)
-            {
-                await _promotionRepository.AddPromotionProductAsync(promotionId, productId);
-            }
-
-            foreach (var productId in productsToRemove)
-            {
-                await _promotionRepository.RemovePromotionProductAsync(promotionId, productId);
-            }
-
-            // Update customers
-            var currentCustomerIds = promotion.PromotionCustomers.Select(pc => pc.CustomerId).ToList();
-            var customersToAdd = request.CustomerIds.Except(currentCustomerIds);
-            var customersToRemove = currentCustomerIds.Except(request.CustomerIds);
-
-            foreach (var customerId in customersToAdd)
-            {
-                await _promotionRepository.AddPromotionCustomerAsync(promotionId, customerId);
-            }
-
-            foreach (var customerId in customersToRemove)
-            {
-                await _promotionRepository.RemovePromotionCustomerAsync(promotionId, customerId);
-            }
 
             // Get the updated promotion
             var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(promotionId);
@@ -114,29 +70,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             await _promotionRepository.DeletePromotionAsync(promotionId);
             return true;
-        }
-
-        public async Task<decimal> CalculateOrderDiscountAsync(int? promotionId, int customerId, decimal orderTotal)
-        {
-            if (!promotionId.HasValue)
-                return 0;
-
-            var promotion = await _promotionRepository.GetPromotionByIdAsync(promotionId.Value);
-            if (promotion == null)
-                return 0;
-
-            // Check if promotion is active
-            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
-            if (currentDate < promotion.Start_Date || currentDate > promotion.End_Date)
-                return 0;
-
-            // Check if promotion applies to this customer
-            var customerPromotions = await _promotionRepository.GetPromotionsForCustomerAsync(customerId);
-            if (!customerPromotions.Any(p => p.PromotionId == promotionId))
-                return 0;
-
-            // Calculate discount
-            return orderTotal * (promotion.DiscountPercent / 100);
         }
 
         public async Task<List<PromotionDTO>> GetPromotionsForCustomerAsync(int customerId)

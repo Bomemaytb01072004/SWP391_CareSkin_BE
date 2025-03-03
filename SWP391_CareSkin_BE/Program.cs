@@ -105,6 +105,11 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IStaffRepository, StaffRepository>();
             builder.Services.AddScoped<IStaffService, StaffService>();
 
+            builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
+            builder.Services.AddScoped<IPromotionService, PromotionService>();
+
+            builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
+
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>

@@ -30,7 +30,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual OrderStatus OrderStatus { get; set; }
 
-        public virtual Promotion Promotion { get; set; }
+        public virtual Promotion? Promotion { get; set; }
 
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }

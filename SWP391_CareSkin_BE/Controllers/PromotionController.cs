@@ -61,7 +61,6 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // POST: api/Promotion
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromotionDTO>> CreatePromotion([FromBody] PromotionCreateRequestDTO request)
         {
             try
@@ -77,7 +76,6 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // PUT: api/Promotion/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromotionDTO>> UpdatePromotion(int id, [FromBody] PromotionUpdateRequestDTO request)
         {
             try
@@ -95,24 +93,12 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // DELETE: api/Promotion/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePromotion(int id)
         {
             var result = await _promotionService.DeletePromotionAsync(id);
             if (!result)
                 return NotFound();
             return Ok(new { message = "Promotion deleted successfully" });
-        }
-
-        // GET: api/Promotion/calculate-discount
-        [HttpGet("calculate-discount")]
-        public async Task<ActionResult<decimal>> CalculateDiscount(int? promotionId, int customerId, decimal orderTotal)
-        {
-            if (!promotionId.HasValue)
-                return Ok(0);
-
-            var discount = await _promotionService.CalculateOrderDiscountAsync(promotionId, customerId, orderTotal);
-            return Ok(discount);
         }
     }
 }

@@ -17,9 +17,11 @@ namespace SWP391_CareSkin_BE.Models
 
         public DateOnly End_Date { get; set; }
 
+        public bool IsActive { get; set; }
+
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-        public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
-        public virtual ICollection<PromotionCustomer> PromotionCustomers { get; set; } = new List<PromotionCustomer>();
+        public virtual ICollection<PromotionProduct>? PromotionProducts { get; set; } = new List<PromotionProduct>();
+        public virtual ICollection<PromotionCustomer>? PromotionCustomers { get; set; } = new List<PromotionCustomer>();
     }
 }

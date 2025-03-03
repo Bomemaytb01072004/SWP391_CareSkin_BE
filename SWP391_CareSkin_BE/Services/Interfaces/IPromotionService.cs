@@ -11,7 +11,6 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<PromotionDTO> CreatePromotionAsync(PromotionCreateRequestDTO request);
         Task<PromotionDTO> UpdatePromotionAsync(int promotionId, PromotionUpdateRequestDTO request);
         Task<bool> DeletePromotionAsync(int promotionId);
-        Task<decimal> CalculateOrderDiscountAsync(int? promotionId, int customerId, decimal orderTotal);
         Task<List<PromotionDTO>> GetPromotionsForCustomerAsync(int customerId);
         Task<List<PromotionDTO>> GetPromotionsForProductAsync(int productId);
     }

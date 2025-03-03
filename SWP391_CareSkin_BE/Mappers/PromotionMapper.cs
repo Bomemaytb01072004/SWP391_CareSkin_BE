@@ -18,28 +18,28 @@ namespace SWP391_CareSkin_BE.Mappers
                 StartDate = promotion.Start_Date,
                 EndDate = promotion.End_Date,
                 IsActive = DateOnly.FromDateTime(DateTime.UtcNow) >= promotion.Start_Date && DateOnly.FromDateTime(DateTime.UtcNow) <= promotion.End_Date,
-                ProductIds = promotion.PromotionProducts?.Select(pp => pp.ProductId).ToList() ?? new List<int>(),
-                CustomerIds = promotion.PromotionCustomers?.Select(pc => pc.CustomerId).ToList() ?? new List<int>()
             };
         }
 
-        public static Promotion ToEntity(PromotionCreateRequestDTO dto)
+        public static Promotion ToEntity(PromotionCreateRequestDTO dto, bool isActive)
         {
             return new Promotion
             {
                 PromotionName = dto.PromotionName,
                 DiscountPercent = dto.DiscountPercent,
                 Start_Date = dto.StartDate,
-                End_Date = dto.EndDate
+                End_Date = dto.EndDate,
+                IsActive = isActive
             };
         }
 
-        public static void UpdateEntity(Promotion promotion, PromotionUpdateRequestDTO dto)
+        public static void UpdateEntity(Promotion promotion, PromotionUpdateRequestDTO dto, bool isActive)
         {
             promotion.PromotionName = dto.PromotionName;
             promotion.DiscountPercent = dto.DiscountPercent;
             promotion.Start_Date = dto.StartDate;
             promotion.End_Date = dto.EndDate;
+            promotion.IsActive = isActive;
         }
     }
 }
