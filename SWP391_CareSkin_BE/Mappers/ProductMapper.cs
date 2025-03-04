@@ -26,6 +26,7 @@ namespace SWP391_CareSkin_BE.Mappers
 
                 ProductForSkinTypes = product.ProductForSkinTypes?.Select(s => new ProductForSkinTypeDTO
                 {
+                    ProductForSkinTypeId = s.ProductForSkinTypeId,
                     ProductId = s.ProductId,
                     SkinTypeId = s.SkinTypeId,
                     TypeName = s.SkinType.TypeName

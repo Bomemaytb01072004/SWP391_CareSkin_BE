@@ -22,6 +22,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(p => p.ProductDetailIngredients)
                 .Include(p => p.ProductUsages)
                 .Include(p => p.ProductForSkinTypes)
+                    .ThenInclude(ps => ps.SkinType)
                 .ToListAsync();
         }
 
@@ -34,6 +35,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(p => p.ProductDetailIngredients)
                 .Include(p => p.ProductUsages)
                 .Include(p => p.ProductForSkinTypes)
+                    .ThenInclude(ps => ps.SkinType)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
@@ -61,7 +63,10 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public IQueryable<Product> GetQueryable()
         {
-            return _context.Products.AsQueryable();
+            return _context.Products
+                .Include(p => p.ProductForSkinTypes)
+                    .ThenInclude(ps => ps.SkinType)
+                .AsQueryable();
         }
     }
 }
