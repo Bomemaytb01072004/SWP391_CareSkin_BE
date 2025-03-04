@@ -108,6 +108,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
             builder.Services.AddScoped<IPromotionService, PromotionService>();
 
+            builder.Services.AddScoped<ISkinTypeRepository, SkinTypeRepository>();
+            builder.Services.AddScoped<ISkinTypeService, SkinTypeService>();
+
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();

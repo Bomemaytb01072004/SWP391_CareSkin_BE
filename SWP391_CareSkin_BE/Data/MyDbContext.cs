@@ -32,6 +32,7 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<ProductPicture> ProductPictures { get; set; }
         public DbSet<ProductUsage> ProductUsages { get; set; }
         public DbSet<ProductVariation> ProductVariations { get; set; }
+        public DbSet<ProductForSkinType> productForSkinTypes { get; set; }
         public DbSet<PromotionCustomer> PromotionCustomers { get; set; }
         public DbSet<PromotionProduct> PromotionProducts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
@@ -71,6 +72,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<ProductPicture>().HasKey(p => p.ProductPictureId);
             modelBuilder.Entity<ProductUsage>().HasKey(p => p.ProductUsageId);
             modelBuilder.Entity<ProductVariation>().HasKey(p => p.ProductVariationId);
+            modelBuilder.Entity<ProductForSkinType>().HasKey(p => new { p.ProductForSkinTypeId });
             modelBuilder.Entity<PromotionCustomer>().HasKey(p => new { p.CustomerId, p.PromotionId });
             modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.ProductId, p.PromotionId });
             modelBuilder.Entity<Promotion>().HasKey(p => p.PromotionId);
