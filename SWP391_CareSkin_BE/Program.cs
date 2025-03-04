@@ -3,7 +3,6 @@ using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Implementations;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
-using SWP391_CareSkin_BE.Services.Implementations;
 using SWP391_CareSkin_BE.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +10,7 @@ using System.Text;
 using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Repositories;
 using SWP391_CareSkin_BE.Services;
+using SWP391_CareSkin_BE.Services.Implementations;
 
 namespace SWP391_CareSkin_BE
 {
@@ -108,9 +108,10 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IFAQRepository, FAQRepository>();
             builder.Services.AddScoped<IFAQService, FAQService>();
 
-            builder.Services.AddScoped<IMomoRepository, MomoRepository>();
-            builder.Services.AddScoped<IMomoService, MomoService>();
+            builder.Services.AddScoped<IVnpayRepository, VnpayRepository>();
+            builder.Services.AddScoped<IVnpayService, VnpayService >();
 
+  
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>

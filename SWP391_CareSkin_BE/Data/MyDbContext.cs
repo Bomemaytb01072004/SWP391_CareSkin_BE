@@ -45,7 +45,7 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Support> Supports { get; set; }
 
-        public DbSet<MomoTransaction> MomoTransactions { get; set; }
+        public DbSet<VnpayTransactions> VnpayTransactions { get; set; }
 
 
         // end Dbset
