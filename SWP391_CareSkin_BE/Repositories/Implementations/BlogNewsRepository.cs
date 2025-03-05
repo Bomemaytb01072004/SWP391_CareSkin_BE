@@ -19,12 +19,12 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return await _context.BlogNews.ToListAsync();
         }
 
-        public async Task<BlogNew> GetNewsById(int blogId)
+        public async Task<BlogNew> GetNewsByIdAsync(int blogId)
         {
             return await _context.BlogNews.FirstOrDefaultAsync(id  => id.BlogId == blogId);
         }
 
-        public async Task<BlogNew> GetNewsByName(string title)
+        public async Task<BlogNew> GetNewsByNameAsync(string title)
         {
             return await _context.BlogNews.FirstOrDefaultAsync(blg => blg.Title == title);
         }
@@ -43,7 +43,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public async Task DeleteNewsAsync(int blogId)
         {
-            var blog = await GetNewsById(blogId);
+            var blog = await GetNewsByIdAsync(blogId);
             if (blog != null)
             {
                 _context.BlogNews.Remove(blog);
