@@ -44,14 +44,6 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(promotion);
         }
 
-        // GET: api/Promotion/customer/{customerId}
-        [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<List<PromotionDTO>>> GetPromotionsForCustomer(int customerId)
-        {
-            var promotions = await _promotionService.GetPromotionsForCustomerAsync(customerId);
-            return Ok(promotions);
-        }
-
         // POST: api/Promotion/set-product-discount
         [HttpPost("set-product-discount")]
         public async Task<ActionResult<PromotionDTO>> SetProductDiscount([FromBody] SetProductDiscountRequestDTO request)

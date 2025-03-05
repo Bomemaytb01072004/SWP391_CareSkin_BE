@@ -6,7 +6,6 @@ namespace SWP391_CareSkin_BE.Models
     [Table("Promotion")]
     public class Promotion
     {
-        [Key]
         public int PromotionId { get; set; }
 
         public string PromotionName { get; set; }

@@ -74,7 +74,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<ProductVariation>().HasKey(p => p.ProductVariationId);
             modelBuilder.Entity<ProductForSkinType>().HasKey(p => new { p.ProductForSkinTypeId });
             modelBuilder.Entity<PromotionCustomer>().HasKey(p => new { p.CustomerId, p.PromotionId });
-            modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.ProductId, p.PromotionId });
+            modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.PromotionProductId });
             modelBuilder.Entity<Promotion>().HasKey(p => p.PromotionId);
             modelBuilder.Entity<Question>().HasKey(q => q.QuestionsId);
             modelBuilder.Entity<Quiz>().HasKey(q => q.QuizId);
