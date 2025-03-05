@@ -18,6 +18,8 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         // Danh sách các Variation của sản phẩm
         public List<ProductVariationDTO> Variations { get; set; }
 
+        public List<PromotionProductDTO> PromotionProducts { get; set; }
+
         // Danh sách các thành phần chính
         public List<ProductMainIngredientDTO> MainIngredients { get; set; }
 

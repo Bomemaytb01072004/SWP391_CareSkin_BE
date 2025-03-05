@@ -1,5 +1,6 @@
 using SWP391_CareSkin_BE.DTOS.Requests;
-using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS.Requests.Promotion;
+using SWP391_CareSkin_BE.DTOS.Responses.Promotion;
 
 namespace SWP391_CareSkin_BE.Services.Interfaces
 {
@@ -12,6 +13,8 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<PromotionDTO> UpdatePromotionAsync(int promotionId, PromotionUpdateRequestDTO request);
         Task<bool> DeletePromotionAsync(int promotionId);
         Task<List<PromotionDTO>> GetPromotionsForCustomerAsync(int customerId);
-        Task<List<PromotionDTO>> GetPromotionsForProductAsync(int productId);
+        Task<PromotionDTO> SetProductDiscountAsync(SetProductDiscountRequestDTO request);
+        Task<List<ProductDiscountDTO>> GetProductDiscountsAsync();
+        Task<PromotionDTO> UpdateProductDiscountStatusAsync(UpdateProductDiscountStatusDTO request);
     }
 }

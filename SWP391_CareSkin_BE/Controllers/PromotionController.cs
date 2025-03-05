@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
-using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS.Requests.Promotion;
+using SWP391_CareSkin_BE.DTOS.Responses.Promotion;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -51,12 +52,49 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(promotions);
         }
 
-        // GET: api/Promotion/product/{productId}
-        [HttpGet("product/{productId}")]
-        public async Task<ActionResult<List<PromotionDTO>>> GetPromotionsForProduct(int productId)
+        // POST: api/Promotion/set-product-discount
+        [HttpPost("set-product-discount")]
+        public async Task<ActionResult<PromotionDTO>> SetProductDiscount([FromBody] SetProductDiscountRequestDTO request)
         {
-            var promotions = await _promotionService.GetPromotionsForProductAsync(productId);
-            return Ok(promotions);
+            try
+            {
+                var result = await _promotionService.SetProductDiscountAsync(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // GET: api/Promotion/product-discounts
+        [HttpGet("product-discounts")]
+        public async Task<ActionResult<List<ProductDiscountDTO>>> GetProductDiscounts()
+        {
+            try
+            {
+                var discounts = await _promotionService.GetProductDiscountsAsync();
+                return Ok(discounts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // PUT: api/Promotion/product-discount-status
+        [HttpPut("product-discount-status")]
+        public async Task<ActionResult> UpdateProductDiscountStatus([FromBody] UpdateProductDiscountStatusDTO request)
+        {
+            try
+            {
+                var result = await _promotionService.UpdateProductDiscountStatusAsync(request);
+                return Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // POST: api/Promotion

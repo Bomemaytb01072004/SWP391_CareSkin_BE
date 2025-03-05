@@ -24,6 +24,17 @@ namespace SWP391_CareSkin_BE.Mappers
                 // Trả về URL ảnh
                 PictureUrl = product.PictureUrl,
 
+
+                PromotionProducts = product.PromotionProducts?.Select(p => new PromotionProductDTO
+                {
+                    PromotionProductId = p.PromotionProductId,
+                    PromotionId = p.PromotionId,
+                    ProductId = p.ProductId,
+                    DiscountPercent = p.Promotion.DiscountPercent,
+                    Start_Date = p.Promotion.Start_Date,
+                    End_Date = p.Promotion.End_Date,
+                    SalePrice = p.SalePrice
+                }).ToList(),
                 ProductForSkinTypes = product.ProductForSkinTypes?.Select(s => new ProductForSkinTypeDTO
                 {
                     ProductForSkinTypeId = s.ProductForSkinTypeId,

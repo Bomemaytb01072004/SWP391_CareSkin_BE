@@ -45,7 +45,7 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<SkinType> SkinTypes { get; set; }
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Support> Supports { get; set; }
-
+        public DbSet<VnpayTransactions> VnpayTransactions { get; set; }
 
         // end Dbset
 
@@ -168,7 +168,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.PromotionProducts)
                 .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ProductId);       
+                .HasForeignKey(p => p.ProductId);
 
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.OrderProducts)
@@ -297,7 +297,15 @@ namespace SWP391_CareSkin_BE.Data
                 .HasMany(s => s.Supports)
                 .WithOne(s => s.Staff)
                 .HasForeignKey(s => s.StaffId);
+            modelBuilder.Entity<VnpayTransactions>()
+                .HasOne(v => v.order)
+                .WithMany(o => o.VnpayTransactions)
+                .HasForeignKey(v => v.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<VnpayTransactions>()
+                .Property(v => v.Amount)
+                .HasColumnType("decimal(18, 4)");
             //end relationship
         }
     }

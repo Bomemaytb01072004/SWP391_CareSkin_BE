@@ -1,6 +1,6 @@
 using System;
 
-namespace SWP391_CareSkin_BE.DTOS.Requests
+namespace SWP391_CareSkin_BE.DTOS.Requests.Promotion
 {
     public class PromotionCreateRequestDTO
     {

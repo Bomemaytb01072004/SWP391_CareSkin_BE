@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
 
@@ -11,9 +12,11 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250304165719_UpdateDbv9")]
+    partial class UpdateDbv9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -590,9 +593,6 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("PromotionProductId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("SalePrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("ProductId", "PromotionId");
 
                     b.HasIndex("PromotionId");
@@ -827,45 +827,6 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasIndex("StaffId");
 
                     b.ToTable("Support");
-                });
-
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.VnpayTransactions", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 4)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PayUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ResultCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("VnpayTransactions");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
@@ -1225,17 +1186,6 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Staff");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.VnpayTransactions", b =>
-                {
-                    b.HasOne("SWP391_CareSkin_BE.Models.Order", "order")
-                        .WithMany("VnpayTransactions")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("order");
-                });
-
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
                 {
                     b.Navigation("Historys");
@@ -1268,8 +1218,6 @@ namespace SWP391_CareSkin_BE.Migrations
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
-
-                    b.Navigation("VnpayTransactions");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.OrderStatus", b =>

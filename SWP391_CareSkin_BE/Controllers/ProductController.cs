@@ -121,7 +121,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 if (!result)
                     return NotFound($"Product with ID {id} not found");
 
-                return NoContent();
+                return Ok("Delete product successful");
             }
             catch (Exception)
             {

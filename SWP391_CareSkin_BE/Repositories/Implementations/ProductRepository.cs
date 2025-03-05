@@ -21,12 +21,14 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(p => p.ProductMainIngredients)
                 .Include(p => p.ProductDetailIngredients)
                 .Include(p => p.ProductUsages)
+                .Include(p => p.PromotionProducts.Where(pp => pp.Promotion.IsActive))
+                    .ThenInclude(pp => pp.Promotion)
                 .Include(p => p.ProductForSkinTypes)
                     .ThenInclude(ps => ps.SkinType)
                 .ToListAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int productId)
+        public async Task<Product?> GetProductByIdAsync(int productId)
         {
             return await _context.Products
                 .Include(p => p.Brand)
@@ -34,6 +36,8 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(p => p.ProductMainIngredients)
                 .Include(p => p.ProductDetailIngredients)
                 .Include(p => p.ProductUsages)
+                .Include(p => p.PromotionProducts.Where(pp => pp.Promotion.IsActive))
+                    .ThenInclude(pp => pp.Promotion)
                 .Include(p => p.ProductForSkinTypes)
                     .ThenInclude(ps => ps.SkinType)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
