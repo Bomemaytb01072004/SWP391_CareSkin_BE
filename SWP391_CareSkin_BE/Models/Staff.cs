@@ -25,6 +25,9 @@ namespace SWP391_CareSkin_BE.Models
         [NotMapped]
         public string? Token { get; set; }
 
+        [NotMapped]
+        public string Role { get; set; }
+
         public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
 
     }

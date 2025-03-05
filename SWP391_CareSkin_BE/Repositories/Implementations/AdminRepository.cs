@@ -32,15 +32,18 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<Admin> LoginAdmin(LoginDTO request)
         {
             var admin = _context.Admins.FirstOrDefault(a => a.UserName == request.UserName && a.Password == request.Password);
-            string role = admin != null ? "Admin" : "User" ;
+            
 
             if(admin == null)
             {
                 return null;
+                throw new Exception("Invalid admin name or password");
             }
 
+            string role = "Admin";
             var token = _jwtHelper.GenerateToken(request.UserName, role);
             admin.Token = token;
+            admin.Role = role;
             return admin;
         }
         public async Task UpdateAdminAsync(Admin admin)

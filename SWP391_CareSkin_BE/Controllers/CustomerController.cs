@@ -34,7 +34,7 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet("{customerId}")]
-        [Authorize(Roles = "Admin")]
+        
         public async Task<IActionResult> GetCustomerById(int customerId)
         {
             var customer = await _customerService.GetCustomerByIdAsync(customerId);

@@ -26,5 +26,8 @@ namespace SWP391_CareSkin_BE.Models
         public string PictureUrl { get; set; }
         [NotMapped]
         public string? Token { get; set; }
+
+        [NotMapped]
+        public string Role { get; set; }
     }
 }

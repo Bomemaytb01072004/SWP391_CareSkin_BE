@@ -38,6 +38,10 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         public async Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, string pictureUrl)
         {
             var newsEntity = BlogNewsMapper.ToEntity(request, pictureUrl);
+            if(newsEntity == null)
+        {
+          throw new Exception("Failed to create entity from request"); 
+        }
             await _newsRepository.AddNewsAsync(newsEntity);
 
             var createdNews = _newsRepository.GetNewsByIdAsync(newsEntity.BlogId);

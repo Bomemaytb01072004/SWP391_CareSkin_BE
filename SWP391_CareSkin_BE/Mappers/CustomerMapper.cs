@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 PictureUrl = dto.PictureUrl ?? "",
                 Gender = dto.Gender ?? "Unknown",
                 Address = dto.Address ?? "Not provided",
-                FullName = dto.FullName ?? "No name"
+                FullName = dto.FullName ?? "No name",
             };
         }
 
@@ -27,6 +27,11 @@ namespace SWP391_CareSkin_BE.Mappers
         // chuyển đổi từ Customer Model sang CustomerResponseDTO
         public static CustomerDTO ToCustomerResponseDTO( Customer customer)
         {
+            if (customer == null) 
+            {
+                return null;
+            }
+
             return new CustomerDTO
             {
                 CustomerId = customer.CustomerId,
@@ -39,6 +44,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 PictureUrl = customer.PictureUrl,
                 Address = customer.Address,
                 token = customer.Token,
+                Role = customer.Role,
             };
         }
 

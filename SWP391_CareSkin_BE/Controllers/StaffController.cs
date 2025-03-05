@@ -51,7 +51,7 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet("{staffId}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetStaffById(int staffId)
         {
             var staff = await _staffService.GetStaffByIdAsync(staffId);

@@ -22,6 +22,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 DoB = admin.DoB,
                 PictureUrl = admin.PictureUrl,
                 token = admin.Token,
+                Role = admin.Role,
             };
         }
 
