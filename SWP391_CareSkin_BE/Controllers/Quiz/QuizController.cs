@@ -16,13 +16,13 @@ namespace SWP391_CareSkin_BE.Controllers.Quiz
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Quiz>>> GetAllQuizzes()
+        public async Task<ActionResult<List<QuizDTO>>> GetAllQuizzes()
         {
             return Ok(await _quizService.GetAllQuizzesAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Quiz>> GetQuizById(int id)
+        public async Task<ActionResult<QuizDTO>> GetQuizById(int id)
         {
             var quiz = await _quizService.GetQuizByIdAsync(id);
             if (quiz == null) return NotFound();
@@ -30,7 +30,7 @@ namespace SWP391_CareSkin_BE.Controllers.Quiz
         }
 
         [HttpPost]
-        public async Task<ActionResult<Quiz>> CreateQuiz(QuizDTO dto)
+        public async Task<ActionResult<QuizDTO>> CreateQuiz(QuizDTO dto)
         {
             var createdQuiz = await _quizService.CreateQuizAsync(dto);
             return CreatedAtAction(nameof(GetQuizById), new { id = createdQuiz.QuizId }, createdQuiz);

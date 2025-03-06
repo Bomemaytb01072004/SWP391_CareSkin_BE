@@ -16,13 +16,13 @@ namespace SWP391_CareSkin_BE.Controllers.Answer
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Answer>>> GetAllAnswers()
+        public async Task<ActionResult<List<AnswerDTO>>> GetAllAnswers()
         {
             return Ok(await _answerService.GetAllAnswersAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Answer>> GetAnswerById(int id)
+        public async Task<ActionResult<AnswerDTO>> GetAnswerById(int id)
         {
             var answer = await _answerService.GetAnswerByIdAsync(id);
             if (answer == null) return NotFound();
@@ -30,7 +30,7 @@ namespace SWP391_CareSkin_BE.Controllers.Answer
         }
 
         [HttpPost]
-        public async Task<ActionResult<Answer>> CreateAnswer(AnswerDTO dto)
+        public async Task<ActionResult<AnswerDTO>> CreateAnswer(AnswerDTO dto)
         {
             var createdAnswer = await _answerService.CreateAnswerAsync(dto);
             return CreatedAtAction(nameof(GetAnswerById), new { id = createdAnswer.AnswerId }, createdAnswer);
