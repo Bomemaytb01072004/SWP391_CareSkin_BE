@@ -1,4 +1,7 @@
-﻿namespace SWP391_CareSkin_BE.DTOS.Responses
+﻿using SWP391_CareSkin_BE.DTOs.Responses.Product;
+using SWP391_CareSkin_BE.Models;
+
+namespace SWP391_CareSkin_BE.DTOS.Responses
 {
     public class ProductDTO
     {
@@ -10,8 +13,12 @@
 
         public string PictureUrl { get; set; }
 
+        public List<ProductForSkinTypeDTO> ProductForSkinTypes { get; set; }
+
         // Danh sách các Variation của sản phẩm
         public List<ProductVariationDTO> Variations { get; set; }
+
+        public List<PromotionProductDTO> PromotionProducts { get; set; }
 
         // Danh sách các thành phần chính
         public List<ProductMainIngredientDTO> MainIngredients { get; set; }

@@ -1,4 +1,5 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOs.Responses.Product;
+using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 
@@ -23,11 +24,32 @@ namespace SWP391_CareSkin_BE.Mappers
                 // Trả về URL ảnh
                 PictureUrl = product.PictureUrl,
 
+
+                PromotionProducts = product.PromotionProducts?
+                    .Where(p => p.IsActive) // Only include active promotions
+                    .Select(p => new PromotionProductDTO
+                    {
+                        PromotionProductId = p.PromotionProductId,
+                        PromotionId = p.PromotionId,
+                        ProductId = p.ProductId,
+                        DiscountPercent = p.Promotion.DiscountPercent,
+                        Start_Date = p.Promotion.Start_Date,
+                        End_Date = p.Promotion.End_Date,
+                        IsActive = p.IsActive
+                    }).ToList(),
+                ProductForSkinTypes = product.ProductForSkinTypes?.Select(s => new ProductForSkinTypeDTO
+                {
+                    ProductForSkinTypeId = s.ProductForSkinTypeId,
+                    ProductId = s.ProductId,
+                    SkinTypeId = s.SkinTypeId,
+                    TypeName = s.SkinType.TypeName
+                }).ToList(),
                 Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
                 {
                     ProductVariationId = v.ProductVariationId,
                     Ml = v.Ml,
-                    Price = v.Price
+                    Price = v.Price,
+                    SalePrice = v.SalePrice
                 }).ToList(),
                 MainIngredients = product.ProductMainIngredients?.Select(m => new ProductMainIngredientDTO
                 {
@@ -66,10 +88,15 @@ namespace SWP391_CareSkin_BE.Mappers
                 // Sau khi upload ảnh, bạn có thể gán pictureUrl vào đây
                 PictureUrl = pictureUrl,
 
+                ProductForSkinTypes = request.ProductForSkinTypes?.Select(s => new ProductForSkinType
+                {
+                    SkinTypeId = s.SkinTypeId
+                }).ToList(),
                 ProductVariations = request.Variations?.Select(v => new ProductVariation
                 {
                     Ml = v.Ml,
-                    Price = v.Price
+                    Price = v.Price,
+                    SalePrice = 0 // Initialize SalePrice to 0 for new variations
                 }).ToList(),
                 ProductMainIngredients = request.MainIngredients?.Select(m => new ProductMainIngredient
                 {
@@ -107,7 +134,20 @@ namespace SWP391_CareSkin_BE.Mappers
                 product.PictureUrl = pictureUrl;
             }
 
-            // Ví dụ đơn giản: xoá toàn bộ Variation cũ và thêm Variation mới
+            // Cập nhật ProductForSkinTypes
+            if (request.ProductForSkinTypes != null)
+            {
+                product.ProductForSkinTypes.Clear();
+                foreach (var skinType in request.ProductForSkinTypes)
+                {
+                    product.ProductForSkinTypes.Add(new ProductForSkinType
+                    {
+                        SkinTypeId = skinType.SkinTypeId
+                    });
+                }
+            }
+
+            // Cập nhật ProductVariations
             if (request.Variations != null)
             {
                 product.ProductVariations.Clear();
@@ -116,20 +156,49 @@ namespace SWP391_CareSkin_BE.Mappers
                     product.ProductVariations.Add(new ProductVariation
                     {
                         Ml = variation.Ml,
-                        Price = variation.Price
+                        Price = variation.Price,
+                        SalePrice = 0 // Initialize SalePrice to 0 for new variations
                     });
                 }
             }
 
+            // Cập nhật ProductMainIngredients
             if (request.MainIngredients != null)
             {
                 product.ProductMainIngredients.Clear();
-                foreach (var m in request.MainIngredients)
+                foreach (var ingredient in request.MainIngredients)
                 {
                     product.ProductMainIngredients.Add(new ProductMainIngredient
                     {
-                        IngredientName = m.IngredientName,
-                        Description = m.Description
+                        IngredientName = ingredient.IngredientName,
+                        Description = ingredient.Description
+                    });
+                }
+            }
+
+            // Cập nhật ProductDetailIngredients
+            if (request.DetailIngredients != null)
+            {
+                product.ProductDetailIngredients.Clear();
+                foreach (var ingredient in request.DetailIngredients)
+                {
+                    product.ProductDetailIngredients.Add(new ProductDetailIngredient
+                    {
+                        IngredientName = ingredient.IngredientName
+                    });
+                }
+            }
+
+            // Cập nhật ProductUsages
+            if (request.Usages != null)
+            {
+                product.ProductUsages.Clear();
+                foreach (var usage in request.Usages)
+                {
+                    product.ProductUsages.Add(new ProductUsage
+                    {
+                        Step = usage.Step,
+                        Instruction = usage.Instruction
                     });
                 }
             }

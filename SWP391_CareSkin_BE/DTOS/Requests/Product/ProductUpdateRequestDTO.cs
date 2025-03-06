@@ -1,3 +1,4 @@
+using SWP391_CareSkin_BE.DTOs.Requests.Product;
 using SWP391_CareSkin_BE.DTOS.Responses;
 
 namespace SWP391_CareSkin_BE.DTOS.Requests
@@ -11,6 +12,7 @@ namespace SWP391_CareSkin_BE.DTOS.Requests
 
         public IFormFile PictureFile { get; set; }
 
+        public List<ProductForSkinTypeCreateRequestDTO> ProductForSkinTypes { get; set; }
         public List<ProductVariationCreateRequestDTO> Variations { get; set; }
         public List<ProductMainIngredientCreateRequestDTO> MainIngredients { get; set; }
         public List<ProductDetailIngredientCreateRequestDTO> DetailIngredients { get; set; }

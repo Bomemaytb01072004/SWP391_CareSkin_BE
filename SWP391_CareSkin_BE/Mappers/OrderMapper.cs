@@ -29,6 +29,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 {
                     ProductId = op.ProductId,
                     Quantity = op.Quantity,
+                    ProductVariationId = op.ProductVariationId,
                     ProductName = op.Product?.ProductName
                 }).ToList()
             };
@@ -45,16 +46,13 @@ namespace SWP391_CareSkin_BE.Mappers
                 CustomerId = request.CustomerId,
                 OrderStatusId = request.OrderStatusId,
                 PromotionId = request.PromotionId,
-                TotalPrice = 0, // Sẽ tính toán sau (hoặc tính ngay tại thời điểm tạo nếu có logic riêng)
+                TotalPrice = 0, // Sẽ tính toán sau trong OrderService
                 OrderDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = request.Name,
                 Phone = request.Phone,
                 Address = request.Address,
-                OrderProducts = request.OrderProducts?.Select(op => new OrderProduct
-                {
-                    ProductId = op.ProductId,
-                    Quantity = op.Quantity
-                }).ToList()
+                // OrderProducts will be created separately in OrderService using cart items
+                OrderProducts = new List<OrderProduct>()
             };
         }
     }

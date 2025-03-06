@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
-using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS.Requests.Promotion;
+using SWP391_CareSkin_BE.DTOS.Responses.Promotion;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -43,25 +44,53 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(promotion);
         }
 
-        // GET: api/Promotion/customer/{customerId}
-        [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<List<PromotionDTO>>> GetPromotionsForCustomer(int customerId)
+        // POST: api/Promotion/set-product-discount
+        [HttpPost("set-product-discount")]
+        public async Task<ActionResult<PromotionDTO>> SetProductDiscount([FromBody] SetProductDiscountRequestDTO request)
         {
-            var promotions = await _promotionService.GetPromotionsForCustomerAsync(customerId);
-            return Ok(promotions);
+            try
+            {
+                var result = await _promotionService.SetProductDiscountAsync(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // GET: api/Promotion/product/{productId}
-        [HttpGet("product/{productId}")]
-        public async Task<ActionResult<List<PromotionDTO>>> GetPromotionsForProduct(int productId)
+        // GET: api/Promotion/product-discounts
+        [HttpGet("product-discounts")]
+        public async Task<ActionResult<List<ProductDiscountDTO>>> GetProductDiscounts()
         {
-            var promotions = await _promotionService.GetPromotionsForProductAsync(productId);
-            return Ok(promotions);
+            try
+            {
+                var discounts = await _promotionService.GetProductDiscountsAsync();
+                return Ok(discounts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // PUT: api/Promotion/product-discount-status
+        [HttpPut("product-discount-status")]
+        public async Task<ActionResult> UpdateProductDiscountStatus([FromBody] UpdateProductDiscountStatusDTO request)
+        {
+            try
+            {
+                var result = await _promotionService.UpdateProductDiscountStatusAsync(request);
+                return Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // POST: api/Promotion
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromotionDTO>> CreatePromotion([FromBody] PromotionCreateRequestDTO request)
         {
             try
@@ -77,7 +106,6 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // PUT: api/Promotion/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PromotionDTO>> UpdatePromotion(int id, [FromBody] PromotionUpdateRequestDTO request)
         {
             try
@@ -95,7 +123,6 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // DELETE: api/Promotion/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePromotion(int id)
         {
             var result = await _promotionService.DeletePromotionAsync(id);
@@ -104,15 +131,21 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(new { message = "Promotion deleted successfully" });
         }
 
-        // GET: api/Promotion/calculate-discount
-        [HttpGet("calculate-discount")]
-        public async Task<ActionResult<decimal>> CalculateDiscount(int? promotionId, int customerId, decimal orderTotal)
+        // PUT: api/Promotion/{id}/deactivate
+        [HttpPut("{id}/deactivate")]
+        public async Task<ActionResult<PromotionDTO>> DeactivatePromotion(int id)
         {
-            if (!promotionId.HasValue)
-                return Ok(0);
-
-            var discount = await _promotionService.CalculateOrderDiscountAsync(promotionId, customerId, orderTotal);
-            return Ok(discount);
+            try
+            {
+                var promotion = await _promotionService.DeactivatePromotionAsync(id);
+                if (promotion == null)
+                    return NotFound();
+                return Ok(promotion);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while deactivating the promotion: {ex.Message}");
+            }
         }
     }
 }

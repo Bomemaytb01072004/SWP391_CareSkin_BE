@@ -11,7 +11,7 @@ namespace SWP391_CareSkin_BE.Mappers
         {
             if (cart == null)
                 return null;
-
+            
             return new CartDTO
             {
                 CartId = cart.CartId,
@@ -22,7 +22,10 @@ namespace SWP391_CareSkin_BE.Mappers
                 ProductName = cart.Product?.ProductName,
                 Ml = cart.ProductVariation?.Ml ?? 0,
                 Price = cart.ProductVariation?.Price ?? 0,
-                TotalPrice = (cart.ProductVariation?.Price ?? 0) * cart.Quantity
+                TotalPrice = 0, // Will be calculated in service
+                SalePrice = 0, // Will be calculated in service
+                TotalSalePrice = 0, // Will be calculated in service
+                IsOnSale = false // Will be calculated in service
             };
         }
 

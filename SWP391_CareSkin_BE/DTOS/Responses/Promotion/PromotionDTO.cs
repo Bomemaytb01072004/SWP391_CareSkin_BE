@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
+using SWP391_CareSkin_BE.Models;
 
-namespace SWP391_CareSkin_BE.DTOS.Responses
+namespace SWP391_CareSkin_BE.DTOS.Responses.Promotion
 {
     public class PromotionDTO
     {
@@ -10,7 +12,7 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public bool IsActive { get; set; }
+        public PromotionType PromotionType { get; set; }
         public List<int> ProductIds { get; set; } = new List<int>();
-        public List<int> CustomerIds { get; set; } = new List<int>();
     }
 }

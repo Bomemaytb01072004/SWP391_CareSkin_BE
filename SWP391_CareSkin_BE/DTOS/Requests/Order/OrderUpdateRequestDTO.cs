@@ -4,7 +4,6 @@ namespace SWP391_CareSkin_BE.DTOs.Requests.Order
 {
     public class OrderUpdateRequestDTO
     {
-        public int OrderId { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }

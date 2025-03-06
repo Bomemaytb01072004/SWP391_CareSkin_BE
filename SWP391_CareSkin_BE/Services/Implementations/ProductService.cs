@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -36,7 +36,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         {
             var productEntity = ProductMapper.ToEntity(request, pictureUrl);
             await _productRepository.AddProductAsync(productEntity);
-            // Sau khi lưu, lấy lại sản phẩm có đầy đủ quan hệ nếu cần
             var createdProduct = await _productRepository.GetProductByIdAsync(productEntity.ProductId);
             return ProductMapper.ToDTO(createdProduct);
         }
@@ -47,7 +46,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (existingProduct == null) 
                 return null;
 
-            // Only update fields if they are different from existing values
             if (request.ProductName != existingProduct.ProductName)
                 existingProduct.ProductName = request.ProductName;
 
@@ -60,10 +58,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (request.Description != existingProduct.Description)
                 existingProduct.Description = request.Description;
 
-            // Update picture URL only if a new picture is provided
             if (!string.IsNullOrEmpty(pictureUrl))
             {
-                // Delete old image if exists
                 if (!string.IsNullOrEmpty(existingProduct.PictureUrl))
                 {
                     var oldFileName = existingProduct.PictureUrl.Split('/').Last();
@@ -72,7 +68,19 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 existingProduct.PictureUrl = pictureUrl;
             }
 
-            // Update variations if provided
+            // Update SkinTypes if provided
+            if (request.ProductForSkinTypes != null)
+            {
+                existingProduct.ProductForSkinTypes.Clear();
+                foreach (var skinType in request.ProductForSkinTypes)
+                {
+                    existingProduct.ProductForSkinTypes.Add(new ProductForSkinType
+                    {
+                        SkinTypeId = skinType.SkinTypeId
+                    });
+                }
+            }
+
             if (request.Variations != null && request.Variations.Any())
             {
                 existingProduct.ProductVariations.Clear();
@@ -86,7 +94,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Update main ingredients if provided
             if (request.MainIngredients != null && request.MainIngredients.Any())
             {
                 existingProduct.ProductMainIngredients.Clear();
@@ -100,7 +107,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Update detail ingredients if provided
             if (request.DetailIngredients != null && request.DetailIngredients.Any())
             {
                 existingProduct.ProductDetailIngredients.Clear();
@@ -113,7 +119,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Update usages if provided
             if (request.Usages != null && request.Usages.Any())
             {
                 existingProduct.ProductUsages.Clear();
@@ -134,9 +139,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<(List<ProductDTO> Products, int TotalCount)> SearchProductsAsync(ProductSearchRequestDTO request)
         {
-            var query = _productRepository.GetQueryable(); // Chỉ lấy sản phẩm đang hoạt động
+            var query = _productRepository.GetQueryable();
 
-            // Áp dụng các bộ lọc từ extension class
             query = query
                 .ApplyKeywordFilter(request.Keyword)
                 .ApplyCategoryFilter(request.Category)
@@ -145,10 +149,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 .ApplyMlFilter(request.MinMl, request.MaxMl)
                 .ApplySorting(request.SortBy);
 
-            // Lấy tổng số sản phẩm trước khi phân trang
             var totalCount = await query.CountAsync();
 
-            // Áp dụng phân trang (nếu không có giá trị thì mặc định)
             var pageNumber = request.PageNumber ?? 1;
             var pageSize = request.PageSize ?? 10;
 
@@ -158,6 +160,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 .Include(p => p.Brand)
                 .Include(p => p.ProductVariations)
                 .Include(p => p.ProductMainIngredients)
+                .Include(p => p.ProductForSkinTypes)
                 .ToListAsync();
 
             return (products.Select(ProductMapper.ToDTO).ToList(), totalCount);
@@ -169,7 +172,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (product == null)
                 return false;
 
-            // Delete image from Firebase if exists
             if (!string.IsNullOrEmpty(product.PictureUrl))
             {
                 var fileName = product.PictureUrl.Split('/').Last();

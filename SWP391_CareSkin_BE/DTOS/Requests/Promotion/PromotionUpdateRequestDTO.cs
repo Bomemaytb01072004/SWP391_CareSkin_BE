@@ -1,4 +1,5 @@
 using System;
+using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.DTOS.Requests
 {
@@ -8,8 +9,6 @@ namespace SWP391_CareSkin_BE.DTOS.Requests
         public decimal DiscountPercent { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
-        public bool IsActive { get; set; }
-        public List<int> ProductIds { get; set; } = new List<int>();
-        public List<int> CustomerIds { get; set; } = new List<int>();
+        public PromotionType PromotionType { get; set; }
     }
 }
