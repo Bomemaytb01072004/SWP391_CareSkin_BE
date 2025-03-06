@@ -60,5 +60,3 @@ __pycache__/
 *.cr
 .ntvs_analysis.dat
 firebasekey.json
-SWP391_CareSkin_BE/Services/Implementations/FirebaseService.cs
-SWP391_CareSkin_BE/Program.cs
