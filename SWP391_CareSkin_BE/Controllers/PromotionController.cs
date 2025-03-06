@@ -130,5 +130,22 @@ namespace SWP391_CareSkin_BE.Controllers
                 return NotFound();
             return Ok(new { message = "Promotion deleted successfully" });
         }
+
+        // PUT: api/Promotion/{id}/deactivate
+        [HttpPut("{id}/deactivate")]
+        public async Task<ActionResult<PromotionDTO>> DeactivatePromotion(int id)
+        {
+            try
+            {
+                var promotion = await _promotionService.DeactivatePromotionAsync(id);
+                if (promotion == null)
+                    return NotFound();
+                return Ok(promotion);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while deactivating the promotion: {ex.Message}");
+            }
+        }
     }
 }

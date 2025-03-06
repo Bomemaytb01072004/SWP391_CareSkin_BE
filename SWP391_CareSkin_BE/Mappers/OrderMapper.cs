@@ -29,6 +29,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 {
                     ProductId = op.ProductId,
                     Quantity = op.Quantity,
+                    ProductVariationId = op.ProductVariationId,
                     ProductName = op.Product?.ProductName
                 }).ToList()
             };

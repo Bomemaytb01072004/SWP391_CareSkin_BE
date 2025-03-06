@@ -1,4 +1,4 @@
-﻿namespace SWP391_CareSkin_BE.DTOs.Responses.Product
+namespace SWP391_CareSkin_BE.DTOs.Responses.Product
 {
     public class PromotionProductDTO
     {
@@ -8,6 +8,6 @@
         public decimal DiscountPercent { get; set; }
         public DateOnly Start_Date { get; set; }
         public DateOnly End_Date { get; set; }
-        public decimal SalePrice { get; set; }
+        public bool IsActive { get; set; }
     }
 }

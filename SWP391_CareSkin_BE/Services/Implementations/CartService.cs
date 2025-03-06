@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
@@ -23,7 +23,15 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         public async Task<List<CartDTO>> GetCartItemsByCustomerIdAsync(int customerId)
         {
             var cartItems = await _cartRepository.GetCartItemsByCustomerIdAsync(customerId);
-            return cartItems.Select(CartMapper.ToDTO).ToList();
+            var cartDTOs = cartItems.Select(CartMapper.ToDTO).ToList();
+            
+            // Calculate prices for each cart item
+            foreach (var cartDTO in cartDTOs)
+            {
+                CalculateCartItemPrices(cartDTO);
+            }
+            
+            return cartDTOs;
         }
 
         public async Task<CartDTO> AddCartItemAsync(CartCreateRequestDTO request)
@@ -48,7 +56,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 // Update quantity if exists
                 existingCart.Quantity += request.Quantity;
                 await _cartRepository.UpdateCartItemAsync(existingCart);
-                return CartMapper.ToDTO(existingCart);
+                
+                // Get the updated cart item with all related data
+                var updatedCart = await _cartRepository.GetCartItemByIdAsync(existingCart.CartId);
+                var cartDTO = CartMapper.ToDTO(updatedCart);
+                CalculateCartItemPrices(cartDTO);
+                return cartDTO;
             }
 
             // Add new cart item if doesn't exist
@@ -57,7 +70,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             // Get the added cart item with all related data
             var addedCart = await _cartRepository.GetCartItemByIdAsync(cartEntity.CartId);
-            return CartMapper.ToDTO(addedCart);
+            var addedCartDTO = CartMapper.ToDTO(addedCart);
+            CalculateCartItemPrices(addedCartDTO);
+            return addedCartDTO;
         }
 
         public async Task<CartDTO> UpdateCartItemAsync(CartUpdateRequestDTO request)
@@ -85,7 +100,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             // Get updated cart item with all related data
             var updatedCart = await _cartRepository.GetCartItemByIdAsync(existingCart.CartId);
-            return CartMapper.ToDTO(updatedCart);
+            var cartDTO = CartMapper.ToDTO(updatedCart);
+            CalculateCartItemPrices(cartDTO);
+            return cartDTO;
         }
 
         public async Task<bool> RemoveCartItemAsync(int cartId)
@@ -118,6 +135,84 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             // Làm tròn về 2 chữ số thập phân (MidpointRounding tuỳ bạn chọn)
             return decimal.Round(total, 2, MidpointRounding.AwayFromZero);
         }
+        
+        public async Task<decimal> CalculateCartTotalSalePrice(int customerId)
+        {
+            // Lấy danh sách cart items của customer
+            var cartItems = await _cartRepository.GetCartItemsByCustomerIdAsync(customerId);
 
+            // Sử dụng decimal để tính toán tiền tệ
+            decimal totalSalePrice = 0m;
+            foreach (var item in cartItems)
+            {
+                decimal originalPrice = item.ProductVariation?.Price ?? 0m;
+                decimal salePrice = item.ProductVariation?.SalePrice ?? 0m;
+                bool isOnSale = salePrice > 0 && salePrice < originalPrice;
+                
+                // Sử dụng giá khuyến mãi nếu có, nếu không thì dùng giá gốc
+                decimal effectivePrice = isOnSale ? salePrice : originalPrice;
+
+                // Cộng dồn
+                totalSalePrice += effectivePrice * item.Quantity;
+            }
+
+            // Làm tròn về 2 chữ số thập phân
+            return decimal.Round(totalSalePrice, 2, MidpointRounding.AwayFromZero);
+        }
+        
+        public async Task<(decimal TotalPrice, decimal TotalSalePrice)> CalculateCartTotals(int customerId)
+        {
+            // Lấy danh sách cart items của customer
+            var cartItems = await _cartRepository.GetCartItemsByCustomerIdAsync(customerId);
+
+            // Sử dụng decimal để tính toán tiền tệ
+            decimal totalPrice = 0m;
+            decimal totalSalePrice = 0m;
+            
+            foreach (var item in cartItems)
+            {
+                decimal originalPrice = item.ProductVariation?.Price ?? 0m;
+                decimal salePrice = item.ProductVariation?.SalePrice ?? 0m;
+                bool isOnSale = salePrice > 0 && salePrice < originalPrice;
+                
+                // Tính tổng giá gốc
+                totalPrice += originalPrice * item.Quantity;
+                
+                // Tính tổng giá sau khuyến mãi
+                decimal effectivePrice = isOnSale ? salePrice : originalPrice;
+                totalSalePrice += effectivePrice * item.Quantity;
+            }
+
+            // Làm tròn về 2 chữ số thập phân
+            return (
+                decimal.Round(totalPrice, 2, MidpointRounding.AwayFromZero),
+                decimal.Round(totalSalePrice, 2, MidpointRounding.AwayFromZero)
+            );
+        }
+        
+        // Helper method to calculate prices for a cart item
+        private void CalculateCartItemPrices(CartDTO cartDTO)
+        {
+            if (cartDTO == null) return;
+            
+            decimal originalPrice = cartDTO.Price;
+            decimal salePrice = GetSalePriceForProductVariation(cartDTO.ProductVariationId);
+            bool isOnSale = salePrice > 0 && salePrice < originalPrice;
+            
+            cartDTO.Price = originalPrice;
+            cartDTO.TotalPrice = originalPrice * cartDTO.Quantity;
+            cartDTO.SalePrice = isOnSale ? salePrice : originalPrice;
+            cartDTO.TotalSalePrice = isOnSale ? salePrice * cartDTO.Quantity : originalPrice * cartDTO.Quantity;
+            cartDTO.IsOnSale = isOnSale;
+        }
+        
+        // Helper method to get the sale price for a product variation
+        private decimal GetSalePriceForProductVariation(int productVariationId)
+        {
+            var productVariation = _context.ProductVariations
+                .FirstOrDefault(pv => pv.ProductVariationId == productVariationId);
+                
+            return productVariation?.SalePrice ?? 0;
+        }
     }
 }

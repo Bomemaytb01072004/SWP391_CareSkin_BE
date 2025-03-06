@@ -10,5 +10,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<CartDTO> UpdateCartItemAsync(CartUpdateRequestDTO request);
         Task<bool> RemoveCartItemAsync(int cartId);
         Task<decimal> CalculateCartTotalPrice(int customerId);
+        Task<decimal> CalculateCartTotalSalePrice(int customerId);
+        Task<(decimal TotalPrice, decimal TotalSalePrice)> CalculateCartTotals(int customerId);
     }
 }

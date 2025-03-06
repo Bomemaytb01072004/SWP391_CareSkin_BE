@@ -11,11 +11,17 @@ using System.Text;
 using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Repositories;
 using SWP391_CareSkin_BE.Services;
+using Hangfire;
+using Hangfire.SqlServer;
+using SWP391_CareSkin_BE.Jobs;
+using Microsoft.Extensions.Logging;
+using Hangfire.Storage;
 
 namespace SWP391_CareSkin_BE
 {
     public class Program
     {
+        [Obsolete]
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -115,6 +121,26 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
+            // Configure Hangfire
+            builder.Services.AddHangfire(config => config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add Hangfire server
+            builder.Services.AddHangfireServer();
+
+            // Register the PromotionUpdaterJob
+            builder.Services.AddScoped<PromotionUpdaterJob>();
+
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -152,6 +178,46 @@ namespace SWP391_CareSkin_BE
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Configure Hangfire dashboard
+            app.UseHangfireDashboard();
+
+            // Schedule recurring job to update promotion statuses daily at midnight
+            RecurringJob.AddOrUpdate<PromotionUpdaterJob>(
+                "update-promotion-statuses",
+                job => job.UpdatePromotionStatusesAsync(),
+                "0 0 * * *");
+
+            // Check if we need to run a missed job when the application starts
+            using (var scope = app.Services.CreateScope())
+            {
+                var promotionUpdaterJob = scope.ServiceProvider.GetRequiredService<PromotionUpdaterJob>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                
+                // Get the current time
+                var now = DateTime.Now;
+                var lastMidnight = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+                
+                // If the app is started after midnight but before the next scheduled run,
+                // and if the job hasn't run today yet, run it immediately
+                var jobStorage = JobStorage.Current;
+                using (var connection = jobStorage.GetConnection())
+                {
+                    var recurringJob = connection.GetRecurringJobs(new[] { "update-promotion-statuses" }).FirstOrDefault();
+                    
+                    if (recurringJob != null)
+                    {
+                        // Check if the job has run today
+                        var lastExecution = recurringJob.LastExecution;
+                        
+                        if (lastExecution == null || lastExecution.Value.Date < now.Date)
+                        {
+                            logger.LogInformation("Detected missed promotion update job. Running it now...");
+                            BackgroundJob.Enqueue(() => promotionUpdaterJob.UpdatePromotionStatusesAsync());
+                        }
+                    }
+                }
+            }
 
             app.MapControllers();
 

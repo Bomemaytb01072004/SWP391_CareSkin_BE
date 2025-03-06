@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -43,6 +43,15 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return promotions.Select(PromotionMapper.ToDTO).ToList();
         }
 
+        public async Task<List<PromotionDTO>> GetActivePromotionsByTypeAsync(PromotionType promotionType)
+        {
+            var promotions = await _promotionRepository.GetActivePromotionsAsync();
+            return promotions
+                .Where(p => p.PromotionType == promotionType)
+                .Select(PromotionMapper.ToDTO)
+                .ToList();
+        }
+
         public async Task<PromotionDTO> CreatePromotionAsync(PromotionCreateRequestDTO request)
         {
             bool isActive = DateOnly.FromDateTime(DateTime.UtcNow) >= request.StartDate && DateOnly.FromDateTime(DateTime.UtcNow) <= request.EndDate;
@@ -61,10 +70,110 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (promotion == null)
                 return null;
 
+            // Determine if the promotion should be active based on current date and request dates
             bool isActive = DateOnly.FromDateTime(DateTime.UtcNow) >= request.StartDate && DateOnly.FromDateTime(DateTime.UtcNow) <= request.EndDate;
 
+            // Update the promotion entity
             PromotionMapper.UpdateEntity(promotion, request, isActive);
             await _promotionRepository.UpdatePromotionAsync(promotion);
+
+            // If this is a product promotion, update the associated promotion products
+            if (promotion.PromotionType == PromotionType.Product && promotion.PromotionProducts != null)
+            {
+                await UpdatePromotionProductsStatus(promotion, isActive);
+            }
+
+            // Get the updated promotion
+            var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(promotionId);
+            return PromotionMapper.ToDTO(updatedPromotion);
+        }
+
+        private async Task UpdatePromotionProductsStatus(Promotion promotion, bool promotionIsActive)
+        {
+            // If the promotion is not active, deactivate all its promotion products
+            if (!promotionIsActive)
+            {
+                foreach (var promotionProduct in promotion.PromotionProducts)
+                {
+                    if (promotionProduct.IsActive)
+                    {
+                        promotionProduct.IsActive = false;
+                        
+                        // Reset SalePrice for all variations of this product
+                        var product = await _context.Products
+                            .Include(p => p.ProductVariations)
+                            .FirstOrDefaultAsync(p => p.ProductId == promotionProduct.ProductId);
+
+                        if (product != null)
+                        {
+                            foreach (var variation in product.ProductVariations)
+                            {
+                                variation.SalePrice = 0;
+                            }
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return;
+            }
+
+            // If the promotion is active, we need to check each inactive promotion product
+            // to see if it can be activated
+            foreach (var promotionProduct in promotion.PromotionProducts.Where(pp => !pp.IsActive))
+            {
+                // Check if this product already has any active promotion
+                bool hasActivePromotion = await _context.PromotionProducts
+                    .AnyAsync(pp => pp.ProductId == promotionProduct.ProductId && 
+                              pp.IsActive);
+
+                // Only activate if no active promotions exist for this product
+                if (!hasActivePromotion)
+                {
+                    promotionProduct.IsActive = true;
+                    
+                    // Calculate and set SalePrice for all variations of this product
+                    await CalculateSalePrice(promotion.PromotionId, promotionProduct.ProductId);
+                }
+            }
+            
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<PromotionDTO> DeactivatePromotionAsync(int promotionId)
+        {
+            var promotion = await _promotionRepository.GetPromotionByIdAsync(promotionId);
+            if (promotion == null)
+                return null;
+
+            // Set the promotion to inactive
+            promotion.IsActive = false;
+            await _promotionRepository.UpdatePromotionAsync(promotion);
+
+            // If this is a product promotion, deactivate all its promotion products
+            if (promotion.PromotionType == PromotionType.Product && promotion.PromotionProducts != null)
+            {
+                foreach (var promotionProduct in promotion.PromotionProducts)
+                {
+                    if (promotionProduct.IsActive)
+                    {
+                        promotionProduct.IsActive = false;
+                        
+                        // Reset SalePrice for all variations of this product
+                        var product = await _context.Products
+                            .Include(p => p.ProductVariations)
+                            .FirstOrDefaultAsync(p => p.ProductId == promotionProduct.ProductId);
+
+                        if (product != null)
+                        {
+                            foreach (var variation in product.ProductVariations)
+                            {
+                                variation.SalePrice = 0;
+                            }
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
 
             // Get the updated promotion
             var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(promotionId);
@@ -82,7 +191,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var promotions = await _promotionRepository.GetAllPromotionsAsync();
             var productDiscounts = new List<ProductDiscountDTO>();
 
-            foreach (var promotion in promotions)
+            foreach (var promotion in promotions.Where(p => p.PromotionType == PromotionType.Product))
             {
                 if (promotion.PromotionProducts != null)
                 {
@@ -100,49 +209,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return productDiscounts;
         }
 
-        //public async Task<PromotionDTO> SetProductDiscountAsync(SetProductDiscountRequestDTO request)
-        //{
-        //    // Kiểm tra xem promotion có tồn tại không và khuyến mãi đang active
-        //    var promotion = await _promotionRepository.GetPromotionByIdAsync(request.PromotionId);
-        //    if (promotion == null || !promotion.IsActive)
-        //    {
-        //        throw new Exception("Promotion not found or is not active.");
-        //    }
-
-        //    // Kiểm tra xem sản phẩm đã có discount active chưa
-        //    var activeDiscounts = await _promotionRepository.GetPromotionsForProductAsync(request.ProductId);
-        //    if (activeDiscounts.Any(pp => pp.IsActive))
-        //    {
-        //        throw new Exception("Product already has an active discount");
-        //    }
-
-        //    // Lấy giá gốc của sản phẩm từ biến thể đầu tiên (giả sử chỉ có một biến thể)
-        //    var product = await _productRepository.GetProductByIdAsync(request.ProductId);
-        //    var originalPrice = product?.ProductVariations.FirstOrDefault()?.Price ?? 0;
-
-        //    // Lấy phần trăm giảm giá từ promotion
-        //    decimal discountPercent = promotion.DiscountPercent;
-
-        //    // Tính toán SalePrice sau khi áp dụng phần trăm giảm giá từ promotion
-        //    decimal salePrice = originalPrice - (originalPrice * discountPercent / 100);
-
-        //    // Tạo đối tượng PromotionProduct từ request và lưu thông tin
-        //    var promotionProduct = new PromotionProduct
-        //    {
-        //        ProductId = request.ProductId,
-        //        PromotionId = request.PromotionId,
-        //        SalePrice = salePrice, // Lưu giá sau giảm giá vào SalePrice
-        //        IsActive = true // Đánh dấu là active khi thêm mới
-        //    };
-
-        //    // Lưu đối tượng PromotionProduct vào cơ sở dữ liệu
-        //    await _promotionRepository.AddPromotionProductAsync(promotionProduct);
-
-        //    // Lấy lại khuyến mãi đã cập nhật (bao gồm danh sách sản phẩm) và chuyển đổi sang DTO để trả về
-        //    var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(request.PromotionId);
-        //    return PromotionMapper.ToDTO(updatedPromotion);
-        //}
-
         public async Task<PromotionDTO> SetProductDiscountAsync(SetProductDiscountRequestDTO request)
         {
             // Kiểm tra xem promotion có tồn tại không và khuyến mãi đang active
@@ -150,6 +216,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (promotion == null || !promotion.IsActive)
             {
                 throw new Exception("Promotion not found or is not active.");
+            }
+
+            // Kiểm tra promotion có phải là loại dành cho sản phẩm không
+            if (promotion.PromotionType != PromotionType.Product)
+            {
+                throw new Exception("This promotion is not for products. Please select a product promotion.");
             }
 
             // Kiểm tra xem sản phẩm đã có discount active chưa
@@ -163,48 +235,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var promotionProduct = PromotionMapper.ToEntity(request);
             promotionProduct.IsActive = promotion.IsActive;
 
-            // Tính toán giá salePrice dựa trên promotionId và productId
-            decimal salePrice = await CalculateSalePrice(request.PromotionId, request.ProductId);
-
             // Lưu đối tượng PromotionProduct vào cơ sở dữ liệu
-            promotionProduct.SalePrice = salePrice;
             await _promotionRepository.AddPromotionProductAsync(promotionProduct);
+
+            // Tính toán giá salePrice cho tất cả các variation của sản phẩm
+            await CalculateSalePrice(request.PromotionId, request.ProductId);
 
             // Lấy lại promotion đã cập nhật (bao gồm danh sách sản phẩm) và chuyển đổi sang DTO
             var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(request.PromotionId);
             return PromotionMapper.ToDTO(updatedPromotion);
         }
-
-        //public async Task<PromotionDTO> UpdateProductDiscountStatusAsync(UpdateProductDiscountStatusDTO request)
-        //{
-        //    // Kiểm tra xem promotion có tồn tại không
-        //    var promotion = await _promotionRepository.GetPromotionByIdAsync(request.PromotionId);
-        //    if (promotion == null)
-        //    {
-        //        throw new Exception("Promotion not found");
-        //    }
-
-        //    // Kiểm tra xem discount của sản phẩm đã tồn tại trong promotion chưa
-        //    var promotionProduct = promotion.PromotionProducts?.FirstOrDefault(pp => pp.ProductId == request.ProductId);
-        //    if (promotionProduct == null)
-        //    {
-        //        throw new Exception("Product discount not found");
-        //    }
-
-        //    // Cập nhật trạng thái discount theo request
-        //    promotionProduct.IsActive = request.IsActive;
-
-        //    // Tính toán lại giá salePrice dựa trên promotionId và productId
-        //    promotionProduct.SalePrice = await CalculateSalePrice(request.PromotionId, request.ProductId);
-
-        //    // Cập nhật thông tin promotion (bao gồm mảng PromotionProducts đã được cập nhật)
-        //    await _promotionRepository.UpdatePromotionAsync(promotion);
-
-        //    // Lấy lại promotion đã cập nhật và chuyển sang DTO để trả về
-        //    var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(request.PromotionId);
-        //    return PromotionMapper.ToDTO(updatedPromotion);
-        //}
-
 
         public async Task<PromotionDTO> UpdateProductDiscountStatusAsync(UpdateProductDiscountStatusDTO request)
         {
@@ -215,129 +255,152 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new Exception("Promotion not found");
             }
 
+            // Kiểm tra promotion có phải là loại dành cho sản phẩm không
+            if (promotion.PromotionType != PromotionType.Product)
+            {
+                throw new Exception("This promotion is not for products. Please select a product promotion.");
+            }
+
             // Kiểm tra xem discount của sản phẩm đã tồn tại trong promotion chưa
             var promotionProduct = promotion.PromotionProducts?.FirstOrDefault(pp => pp.ProductId == request.ProductId);
             if (promotionProduct == null)
             {
                 throw new Exception("Product discount not found");
             }
+            
+            // Nếu đang cố gắng kích hoạt một promotion (IsActive = true), kiểm tra xem sản phẩm đã có promotion active nào khác chưa
+            if (request.IsActive)
+            {
+                // Lấy tất cả các promotion product của sản phẩm này
+                var activePromotions = await _context.PromotionProducts
+                    .Where(pp => pp.ProductId == request.ProductId && pp.IsActive && pp.PromotionProductId != promotionProduct.PromotionProductId)
+                    .AnyAsync();
+                
+                if (activePromotions)
+                {
+                    throw new Exception("This product already has an active promotion. Please disable it first before activating another one.");
+                }
+            }
 
             // Cập nhật trạng thái discount theo request
             promotionProduct.IsActive = request.IsActive;
 
-            // Kiểm tra và tính lại giá SalePrice nếu trạng thái đã thay đổi
-            if (promotionProduct.IsActive != request.IsActive)
-            {
-                promotionProduct.SalePrice = await CalculateSalePrice(request.PromotionId, request.ProductId);
-                await _context.SaveChangesAsync();
-            }
-
             // Cập nhật thông tin promotion (bao gồm mảng PromotionProducts đã được cập nhật)
             await _promotionRepository.UpdatePromotionAsync(promotion);
+
+            // Nếu trạng thái là active, tính toán lại giá SalePrice cho tất cả các variation
+            // Nếu trạng thái là inactive, reset SalePrice về 0 cho tất cả các variation
+            if (request.IsActive)
+            {
+                await CalculateSalePrice(request.PromotionId, request.ProductId);
+            }
+            else
+            {
+                // Reset SalePrice về 0 cho tất cả các variation của sản phẩm
+                var product = await _context.Products
+                    .Include(p => p.ProductVariations)
+                    .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
+
+                if (product != null)
+                {
+                    foreach (var variation in product.ProductVariations)
+                    {
+                        variation.SalePrice = 0;
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             // Lấy lại promotion đã cập nhật và chuyển sang DTO để trả về
             var updatedPromotion = await _promotionRepository.GetPromotionByIdAsync(request.PromotionId);
             return PromotionMapper.ToDTO(updatedPromotion);
         }
 
+        public async Task<List<ProductDTO>> GetProductsWithDiscountAsync(int promotionId)
+        {
+            var promotion = await _promotionRepository.GetPromotionByIdAsync(promotionId);
+            if (promotion == null)
+            {
+                throw new Exception("Promotion not found");
+            }
 
+            // Kiểm tra promotion có phải là loại dành cho sản phẩm không
+            if (promotion.PromotionType != PromotionType.Product)
+            {
+                throw new Exception("This promotion is not for products.");
+            }
 
-        //public async Task<decimal> CalculateSalePrice(int promotionId, int productId)
-        //{
-        //    // Tìm khuyến mãi với PromotionId đã được cung cấp và chắc chắn khuyến mãi đang active.
-        //    var promotion = await _context.Promotions
-        //        .FirstOrDefaultAsync(p => p.PromotionId == promotionId && p.IsActive);
+            var productIds = promotion.PromotionProducts
+                .Where(pp => pp.IsActive)
+                .Select(pp => pp.ProductId)
+                .ToList();
 
-        //    // Nếu không tìm thấy khuyến mãi active, ném ra exception.
-        //    if (promotion == null)
-        //    {
-        //        throw new Exception("Promotion not found or is not active.");
-        //    }
+            var products = await _context.Products
+                .Include(p => p.ProductVariations)
+                .Include(p => p.ProductPictures)
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Where(p => productIds.Contains(p.ProductId))
+                .ToListAsync();
 
-        //    // Tìm PromotionProduct liên kết với ProductId và PromotionId
-        //    var promotionProduct = await _context.PromotionProducts
-        //        .Include(pp => pp.Product)
-        //            .ThenInclude(p => p.ProductVariations)
-        //        .FirstOrDefaultAsync(pp => pp.PromotionId == promotionId && pp.ProductId == productId && pp.IsActive);
+            // Convert to DTOs
+            var productDTOs = products.Select(p => ProductMapper.ToDTO(p)).ToList();
 
-        //    // Nếu không tìm thấy PromotionProduct (tức là sản phẩm không thuộc khuyến mãi này), trả về giá gốc.
-        //    if (promotionProduct == null)
-        //    {
-        //        var product = await _context.Products
-        //            .Include(p => p.ProductVariations)
-        //            .FirstOrDefaultAsync(p => p.ProductId == productId);
-
-        //        if (product == null)
-        //            throw new Exception("Product not found.");
-
-        //        // Nếu có nhiều ProductVariation, lấy giá của biến thể đầu tiên (hoặc một cách khác phù hợp)
-        //        var basePrice = product.ProductVariations.FirstOrDefault()?.Price ?? 0;
-        //        return basePrice;
-        //    }
-
-        //    // Nếu có PromotionProduct, sử dụng SalePrice trong PromotionProduct (nếu có) để tính toán giá
-        //    decimal originalPrice = promotionProduct.SalePrice > 0 ? promotionProduct.SalePrice : promotionProduct.Product.ProductVariations.FirstOrDefault()?.Price ?? 0;
-
-        //    // Lấy phần trăm giảm giá từ khuyến mãi
-        //    decimal discountPercent = promotion.DiscountPercent;
-
-        //    // Tính giá bán sau khi giảm giá: giá gốc * (1 - phần trăm giảm giá)
-        //    decimal calculatedSalePrice = originalPrice - (originalPrice * discountPercent / 100.0m);
-
-        //    return calculatedSalePrice;
-        //}
+            return productDTOs;
+        }
 
         public async Task<decimal> CalculateSalePrice(int promotionId, int productId)
         {
-            // Tìm khuyến mãi với PromotionId đã được cung cấp và chắc chắn khuyến mãi đang active.
+            // Tìm khuyến mãi với PromotionId đã được cung cấp
             var promotion = await _context.Promotions
-                .FirstOrDefaultAsync(p => p.PromotionId == promotionId && p.IsActive);
+                .FirstOrDefaultAsync(p => p.PromotionId == promotionId);
 
-            // Nếu không tìm thấy khuyến mãi active, ném ra exception.
+            // Nếu không tìm thấy khuyến mãi, ném ra exception.
             if (promotion == null)
             {
-                throw new Exception("Promotion not found or is not active.");
+                throw new Exception("Promotion not found.");
             }
 
-            // Tìm PromotionProduct liên kết với ProductId và PromotionId
-            var promotionProduct = await _context.PromotionProducts
-                .Include(pp => pp.Product)
-                    .ThenInclude(p => p.ProductVariations)
-                .FirstOrDefaultAsync(pp => pp.PromotionId == promotionId && pp.ProductId == productId && pp.IsActive);
-
-            // Nếu không tìm thấy PromotionProduct (tức là sản phẩm không thuộc khuyến mãi này), trả về giá gốc.
-            if (promotionProduct == null)
+            // Kiểm tra promotion có phải là loại dành cho sản phẩm không
+            if (promotion.PromotionType != PromotionType.Product)
             {
-                var product = await _context.Products
-                    .Include(p => p.ProductVariations)
-                    .FirstOrDefaultAsync(p => p.ProductId == productId);
-
-                if (product == null)
-                    throw new Exception("Product not found.");
-
-                var basePrice = product.ProductVariations.FirstOrDefault()?.Price ?? 0;
-                return basePrice;
+                throw new Exception("This promotion is not for products.");
             }
 
-            // Lấy giá gốc từ ProductVariation của sản phẩm (giả sử lấy variation đầu tiên)
-            var originalPrice = promotionProduct.Product.ProductVariations.FirstOrDefault()?.Price ?? 0;
+            // Tìm product và product variations
+            var product = await _context.Products
+                .Include(p => p.ProductVariations)
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            if (product == null)
+                throw new Exception("Product not found.");
 
             // Lấy phần trăm giảm giá từ khuyến mãi
             decimal discountPercent = promotion.DiscountPercent;
 
-            // Tính giá bán sau khi giảm giá: giá gốc * (1 - phần trăm giảm giá)
-            decimal calculatedSalePrice = originalPrice - (originalPrice * discountPercent / 100);
-
-            // Kiểm tra xem giá bán đã có trong PromotionProduct chưa và nếu khác nhau thì cập nhật lại
-            if (promotionProduct.SalePrice != calculatedSalePrice)
+            // Tính giá bán sau khi giảm giá cho từng variation
+            bool anyChanges = false;
+            foreach (var variation in product.ProductVariations)
             {
-                promotionProduct.SalePrice = calculatedSalePrice;
+                decimal originalPrice = variation.Price;
+                decimal calculatedSalePrice = originalPrice - (originalPrice * discountPercent / 100);
+                
+                // Cập nhật SalePrice cho variation
+                if (variation.SalePrice != calculatedSalePrice)
+                {
+                    variation.SalePrice = calculatedSalePrice;
+                    anyChanges = true;
+                }
+            }
+
+            // Lưu các thay đổi vào database nếu có
+            if (anyChanges)
+            {
                 await _context.SaveChangesAsync();
             }
 
-            return calculatedSalePrice;
-        }
-
-
+            // Trả về giá sale của variation đầu tiên (cho backward compatibility)
+            return product.ProductVariations.FirstOrDefault()?.SalePrice ?? 0;
+        } 
     }
 }

@@ -19,6 +19,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 StartDate = entity.Start_Date,
                 EndDate = entity.End_Date,
                 IsActive = entity.IsActive,
+                PromotionType = entity.PromotionType,
                 ProductIds = entity.PromotionProducts?.Select(pp => pp.ProductId).ToList() ?? new List<int>()
             };
         }
@@ -31,7 +32,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 DiscountPercent = dto.DiscountPercent,
                 Start_Date = dto.StartDate,
                 End_Date = dto.EndDate,
-                IsActive = isActive
+                IsActive = isActive,
+                PromotionType = dto.PromotionType
             };
         }
 
@@ -42,6 +44,7 @@ namespace SWP391_CareSkin_BE.Mappers
             promotion.Start_Date = dto.StartDate;
             promotion.End_Date = dto.EndDate;
             promotion.IsActive = isActive;
+            promotion.PromotionType = dto.PromotionType;
         }
 
         public static PromotionProduct ToEntity(SetProductDiscountRequestDTO dto)
@@ -60,16 +63,30 @@ namespace SWP391_CareSkin_BE.Mappers
         {
             if (promotionProduct == null || promotion == null) return null;
 
+            // Get the first product variation to get a representative SalePrice
+            // This is for backward compatibility with the DTO
+            var product = promotionProduct.Product;
+            decimal salePrice = 0;
+            
+            if (product != null && product.ProductVariations != null && product.ProductVariations.Any())
+            {
+                var firstVariation = product.ProductVariations.FirstOrDefault();
+                if (firstVariation != null)
+                {
+                    salePrice = firstVariation.SalePrice;
+                }
+            }
+
             return new ProductDiscountDTO
             {
                 ProductId = promotionProduct.ProductId,
                 PromotionId = promotionProduct.PromotionId,
                 PromotionName = promotion.PromotionName,
                 DiscountPercent = promotion.DiscountPercent,
-                SalePrice = promotionProduct.SalePrice,
                 Start_Date = promotion.Start_Date,
                 End_Date = promotion.End_Date,
-                IsActive = promotionProduct.IsActive
+                IsActive = promotionProduct.IsActive,
+                PromotionType = promotion.PromotionType
             };
         }
 

@@ -27,120 +27,31 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _productRepository = productRepository;
         }
 
-        //private async Task<decimal> CalculateCartTotalPrice(List<Cart> cartItems, int? promotionId)
-        //{
-        //    decimal totalPrice = 0;
-
-        //    foreach (var cartItem in cartItems)
-        //    {
-        //        var productVariation = await _context.ProductVariations
-        //            .FirstOrDefaultAsync(pv => pv.ProductVariationId == cartItem.ProductVariationId);
-
-        //        if (productVariation != null)
-        //        {
-        //            totalPrice += productVariation.Price * cartItem.Quantity;
-        //        }
-        //    }
-
-        //    if (promotionId.HasValue)
-        //    {
-        //        var promotion = await _context.Promotions.FirstOrDefaultAsync(p => p.PromotionId == promotionId.Value);
-
-        //        if (promotion != null && promotion.DiscountPercent > 0)
-        //        {
-        //            decimal discount = decimal.Round(totalPrice * (promotion.DiscountPercent / 100.0m), 2);
-        //            totalPrice -= discount;
-        //        }
-        //    }
-
-        //    return decimal.Round(totalPrice, 2);
-        //}
-
-        //private async Task<decimal> CalculateCartTotalPrice(List<Cart> cartItems, int? promotionId)
-        //{
-        //    decimal totalPrice = 0;
-
-        //    foreach (var cartItem in cartItems)
-        //    {
-        //        // Lấy thông tin sản phẩm (bao gồm PromotionProducts và ProductVariations)
-        //        var product = await _productRepository.GetProductByIdAsync(cartItem.ProductId);
-        //        if (product == null)
-        //            continue;
-
-        //        // Lấy variation tương ứng (giá gốc)
-        //        var variation = product.ProductVariations.FirstOrDefault(v => v.ProductVariationId == cartItem.ProductVariationId);
-        //        decimal basePrice = variation != null ? variation.Price : 0;
-        //        decimal finalPrice = basePrice;
-
-        //        // Nếu sản phẩm có giảm giá riêng (cấp sản phẩm), lấy SalePrice từ PromotionProduct active
-        //        if (product.PromotionProducts != null && product.PromotionProducts.Any())
-        //        {
-        //            var activePromotion = product.PromotionProducts
-        //                .FirstOrDefault(pp => pp.Promotion != null
-        //                                   && pp.Promotion.IsActive
-        //                                   && pp.Promotion.DiscountPercent != 0);
-        //            if (activePromotion != null)
-        //            {
-        //                finalPrice = activePromotion.SalePrice;
-        //            }
-        //        }
-
-        //        totalPrice += finalPrice * cartItem.Quantity;
-        //    }
-
-        //    // Áp dụng giảm giá tổng đơn hàng nếu có Promotion và DiscountPercent > 0
-        //    if (promotionId.HasValue)
-        //    {
-        //        var promotion = await _context.Promotions
-        //            .FirstOrDefaultAsync(p => p.PromotionId == promotionId.Value);
-        //        if (promotion != null && promotion.DiscountPercent > 0)
-        //        {
-        //            decimal discount = decimal.Round(totalPrice * (promotion.DiscountPercent / 100), 2);
-        //            totalPrice -= discount;
-        //        }
-        //    }
-
-        //    return decimal.Round(totalPrice, 2);
-        //}
-
         private async Task<decimal> CalculateCartTotalPrice(List<Cart> cartItems, int? promotionId)
         {
             decimal totalPrice = 0;
 
             foreach (var cartItem in cartItems)
             {
-                // Lấy thông tin sản phẩm (bao gồm PromotionProducts và ProductVariations)
+                // Lấy thông tin sản phẩm (bao gồm ProductVariations)
                 var product = await _productRepository.GetProductByIdAsync(cartItem.ProductId);
                 if (product == null)
                     continue;
 
-                // Lấy variation tương ứng (giá gốc)
+                // Lấy variation tương ứng
                 var variation = product.ProductVariations.FirstOrDefault(v => v.ProductVariationId == cartItem.ProductVariationId);
-                decimal basePrice = variation != null ? variation.Price : 0;
-                Console.WriteLine($"CartItem ID: {cartItem.CartId} - BasePrice: {basePrice}");
+                if (variation == null)
+                    continue;
 
-                decimal finalPrice = basePrice;
+                decimal basePrice = variation.Price;
 
-                // Kiểm tra nếu sản phẩm có được giảm giá riêng (cấp sản phẩm)
-                if (product.PromotionProducts != null && product.PromotionProducts.Any())
-                {
-                    var activePromotion = product.PromotionProducts
-                        .FirstOrDefault(pp => pp.Promotion != null
-                                           && pp.Promotion.IsActive
-                                           && pp.Promotion.DiscountPercent != 0);
-                    if (activePromotion != null)
-                    {
-                        finalPrice = activePromotion.SalePrice;
-                        Console.WriteLine($"CartItem ID: {cartItem.CartId} - ActivePromotion SalePrice: {finalPrice}");
-                    }
-                }
+                // Sử dụng SalePrice từ ProductVariation nếu có (> 0)
+                decimal finalPrice = variation.SalePrice > 0 ? variation.SalePrice : basePrice;
 
                 decimal itemTotal = finalPrice * cartItem.Quantity;
-                Console.WriteLine($"CartItem ID: {cartItem.CartId} - Quantity: {cartItem.Quantity}, ItemTotal: {itemTotal}");
                 totalPrice += itemTotal;
             }
 
-            Console.WriteLine($"Total before order-level discount: {totalPrice}");
 
             // Áp dụng giảm giá đơn hàng nếu có
             if (promotionId.HasValue)
@@ -150,15 +61,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 if (promotion != null && promotion.DiscountPercent > 0)
                 {
                     decimal discount = decimal.Round(totalPrice * (promotion.DiscountPercent / 100), 2);
-                    Console.WriteLine($"Order-level discount: {discount} (Promotion DiscountPercent: {promotion.DiscountPercent})");
                     totalPrice -= discount;
                 }
             }
 
-            Console.WriteLine($"Total after order-level discount: {totalPrice}");
             return decimal.Round(totalPrice, 2);
         }
-
 
         public async Task<OrderDTO> CreateOrderAsync(OrderCreateRequestDTO request)
         {
@@ -199,12 +107,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             // Tạo OrderProduct từ các cart item
             foreach (var cartItem in cartItems)
             {
+                // Lấy thông tin variation để lưu giá và sale price vào OrderProduct
+                var variation = await _context.ProductVariations
+                    .FirstOrDefaultAsync(pv => pv.ProductVariationId == cartItem.ProductVariationId);
+                
                 var orderProductEntity = new OrderProduct
                 {
                     OrderId = orderEntity.OrderId,
                     ProductId = cartItem.ProductId,
                     ProductVariationId = cartItem.ProductVariationId,
-                    Quantity = cartItem.Quantity
+                    Quantity = cartItem.Quantity,
+                    Price = variation?.Price ?? 0,
+                    SalePrice = variation?.SalePrice > 0 ? variation.SalePrice : (variation?.Price ?? 0)
                 };
                 _context.OrderProducts.Add(orderProductEntity);
             }
@@ -257,22 +171,36 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (request.PromotionId.HasValue && request.PromotionId != order.PromotionId)
             {
                 order.PromotionId = request.PromotionId.Value;
-                // Get current order products
+                
+                // Get current order products and convert to Cart objects for price calculation
                 var orderProducts = await _context.OrderProducts
                     .Where(op => op.OrderId == id)
-                    .Select(op => new OrderProductRequestDTO
-                    {
-                        ProductId = op.ProductId,
-                        Quantity = op.Quantity
-                    })
                     .ToListAsync();
 
-                // Recalculate total price with new promotion
-                order.TotalPrice = await CalculateCartTotalPrice(orderProducts.Select(op => new Cart
+                var cartItems = orderProducts.Select(op => new Cart
                 {
-                    ProductVariationId = op.ProductId,
+                    ProductId = op.ProductId,
+                    ProductVariationId = op.ProductVariationId,
                     Quantity = op.Quantity
-                }).ToList(), request.PromotionId);
+                }).ToList();
+
+                // Recalculate total price with new promotion
+                order.TotalPrice = await CalculateCartTotalPrice(cartItems, request.PromotionId);
+                
+                // Update SalePrice in OrderProducts if needed
+                foreach (var orderProduct in orderProducts)
+                {
+                    var variation = await _context.ProductVariations
+                        .FirstOrDefaultAsync(pv => pv.ProductVariationId == orderProduct.ProductVariationId);
+                    
+                    if (variation != null)
+                    {
+                        orderProduct.Price = variation.Price;
+                        orderProduct.SalePrice = variation.SalePrice > 0 ? variation.SalePrice : variation.Price;
+                    }
+                }
+                
+                await _context.SaveChangesAsync();
             }
 
             await _orderRepository.UpdateOrderAsync(order);

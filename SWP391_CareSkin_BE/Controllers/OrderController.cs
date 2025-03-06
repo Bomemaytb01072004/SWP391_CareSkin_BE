@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Requests.Order;
@@ -55,12 +55,14 @@ namespace SWP391_CareSkin_BE.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderUpdateRequestDTO request)
         {
-            if (id != request.OrderId)
-                return BadRequest("Order ID mismatch");
+            // Check if order exists before updating
+            var existingOrder = await _orderService.GetOrderByIdAsync(id);
+            if (existingOrder == null)
+                return NotFound("Order not found");
 
             var updatedOrder = await _orderService.UpdateOrderAsync(id, request);
             if (updatedOrder == null)
-                return NotFound();
+                return BadRequest("Failed to update order");
 
             return Ok(updatedOrder);
         }
