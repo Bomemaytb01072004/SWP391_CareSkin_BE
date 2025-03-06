@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SWP391_CareSkin_BE.DTOS
 {
@@ -10,5 +12,6 @@ namespace SWP391_CareSkin_BE.DTOS
 
         [JsonPropertyName("Password")]
         public string Password { get; set; }
+
     }
 }

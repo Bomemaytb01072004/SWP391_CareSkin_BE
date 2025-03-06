@@ -107,6 +107,9 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
+            builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
+            builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
+
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;

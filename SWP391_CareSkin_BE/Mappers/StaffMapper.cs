@@ -18,13 +18,18 @@ namespace SWP391_CareSkin_BE.Mappers
                 DoB = dto.Dob,
                 PictureUrl = dto.ProfilePicture ?? "",
                 FullName = dto.FullName ?? "No name",
-                Phone = dto.Phone ?? ""
+                Phone = dto.Phone ?? "",
             };
         }
 
         //chuyển đổi từ staff model sang staffresponseDTO
         public static StaffDTO ToStaffResponseDTO(Staff staff)
         {
+            if (staff == null)
+            {
+                return null;
+            }
+
             return new StaffDTO
             {
                 StaffId = staff.StaffId,
@@ -33,7 +38,9 @@ namespace SWP391_CareSkin_BE.Mappers
                 Email = staff.Email,  
                 Phone = staff.Phone,
                 DoB = staff.DoB,
-                PictureUrl = staff.PictureUrl
+                PictureUrl = staff.PictureUrl,
+                token = staff.Token,
+                Role = staff.Role
             };
 
         }

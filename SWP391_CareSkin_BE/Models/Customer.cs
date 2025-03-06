@@ -35,6 +35,9 @@ namespace SWP391_CareSkin_BE.Models
         [NotMapped] 
         public string? Token { get; set; }
 
+        [NotMapped]
+        public string Role { get; set; }
+
         public virtual ICollection<BlogNew>? BlogNews { get; set; } = new List<BlogNew>();
 
         public virtual ICollection<History>? Historys { get; set; } = new List<History>();

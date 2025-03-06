@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.DTOs.Responses
 {
@@ -20,5 +21,8 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
         public DateOnly? DoB { get; set; }
 
         public string PictureUrl { get; set; }
+        public string? token { get; set; }
+
+        public string Role { get; set; }
     }
 }

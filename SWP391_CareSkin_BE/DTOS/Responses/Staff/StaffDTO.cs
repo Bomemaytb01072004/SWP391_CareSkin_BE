@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SWP391_CareSkin_BE.DTOS.Responses
 {
@@ -12,5 +14,7 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public String Phone { get; set; }
         public DateOnly? DoB { get; set; }
         public string PictureUrl { get; set; }
+        public string? token { get; set; }
+        public string Role { get; set; }
     }
 }

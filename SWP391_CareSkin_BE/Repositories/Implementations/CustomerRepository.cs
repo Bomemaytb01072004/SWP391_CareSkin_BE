@@ -58,18 +58,21 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             var user = await _context.Customers.FirstOrDefaultAsync(a => a.UserName == request.UserName);
 
             if (user == null)
-            {
+            {                
+                return null;
                 throw new Exception("Invalid user name");
             }
 
             if (!Validate.VerifyPassword(user.Password, request.Password))
             {
+                return null;
                 throw new Exception("Invalid Password");
             }
 
             string role = "User";
             var token = _jwtHelper.GenerateToken(request.UserName, role);
             user.Token = token;
+            user.Role = role;
             return user;
         }
     }
