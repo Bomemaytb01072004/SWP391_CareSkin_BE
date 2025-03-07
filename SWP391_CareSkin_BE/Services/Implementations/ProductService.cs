@@ -23,7 +23,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         public async Task<List<ProductDTO>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllProductsAsync();
-            return products.Select(ProductMapper.ToDTO).ToList();
+            return ProductMapper.ToDTOList(products);
         }
 
         public async Task<ProductDTO> GetProductByIdAsync(int productId)

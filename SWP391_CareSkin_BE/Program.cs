@@ -120,6 +120,11 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
+            
+            // Register Rating & Feedback services and repositories
+            builder.Services.AddScoped<IRatingFeedbackRepository, RatingFeedbackRepository>();
+            builder.Services.AddScoped<IRatingFeedbackImageRepository, RatingFeedbackImageRepository>();
+            builder.Services.AddScoped<IRatingFeedbackService, RatingFeedbackService>();
 
             // Configure Hangfire
             builder.Services.AddHangfire(config => config

@@ -7,7 +7,7 @@ namespace SWP391_CareSkin_BE.Mappers
 {
     public class ProductMapper
     {
-        // Chuyển từ Product Entity sang ProductDTO
+        // Convert from Product Entity to ProductDTO
         public static ProductDTO ToDTO(Product product)
         {
             if (product == null)
@@ -20,10 +20,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 Description = product.Description,
                 Category = product.Category,
                 BrandName = product.Brand?.Name,
-
-                // Trả về URL ảnh
                 PictureUrl = product.PictureUrl,
-
+                AverageRating = product.AverageRating,
 
                 PromotionProducts = product.PromotionProducts?
                     .Where(p => p.IsActive) // Only include active promotions
@@ -71,8 +69,16 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
-        // Chuyển từ ProductCreateRequestDTO sang Product Entity
-        // Có thể truyền vào tham số pictureUrl (sau khi upload xong) nếu muốn set luôn
+        // Convert a list of Product entities to a list of ProductDTOs
+        public static List<ProductDTO> ToDTOList(IEnumerable<Product> products)
+        {
+            if (products == null)
+                return new List<ProductDTO>();
+
+            return products.Select(ToDTO).ToList();
+        }
+
+        // Convert from ProductCreateRequestDTO to Product Entity
         public static Product ToEntity(ProductCreateRequestDTO request, string pictureUrl = null)
         {
             if (request == null)
@@ -84,9 +90,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 BrandId = request.BrandId,
                 Category = request.Category,
                 Description = request.Description,
-
-                // Sau khi upload ảnh, bạn có thể gán pictureUrl vào đây
                 PictureUrl = pictureUrl,
+                AverageRating = 0, // Initialize average rating to 0 for new products
 
                 ProductForSkinTypes = request.ProductForSkinTypes?.Select(s => new ProductForSkinType
                 {
@@ -117,7 +122,7 @@ namespace SWP391_CareSkin_BE.Mappers
             return product;
         }
 
-        // Cập nhật một Product Entity dựa trên ProductUpdateRequestDTO
+        // Update a Product Entity based on ProductUpdateRequestDTO
         public static void UpdateEntity(Product product, ProductUpdateRequestDTO request, string pictureUrl = null)
         {
             if (product == null || request == null)
@@ -128,13 +133,13 @@ namespace SWP391_CareSkin_BE.Mappers
             product.Category = request.Category;
             product.Description = request.Description;
 
-            // Nếu có ảnh mới, set lại
+            // Set new picture if provided
             if (!string.IsNullOrEmpty(pictureUrl))
             {
                 product.PictureUrl = pictureUrl;
             }
 
-            // Cập nhật ProductForSkinTypes
+            // Update ProductForSkinTypes
             if (request.ProductForSkinTypes != null)
             {
                 product.ProductForSkinTypes.Clear();
@@ -147,7 +152,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 }
             }
 
-            // Cập nhật ProductVariations
+            // Update ProductVariations
             if (request.Variations != null)
             {
                 product.ProductVariations.Clear();
@@ -162,7 +167,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 }
             }
 
-            // Cập nhật ProductMainIngredients
+            // Update ProductMainIngredients
             if (request.MainIngredients != null)
             {
                 product.ProductMainIngredients.Clear();
@@ -176,7 +181,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 }
             }
 
-            // Cập nhật ProductDetailIngredients
+            // Update ProductDetailIngredients
             if (request.DetailIngredients != null)
             {
                 product.ProductDetailIngredients.Clear();
@@ -189,7 +194,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 }
             }
 
-            // Cập nhật ProductUsages
+            // Update ProductUsages
             if (request.Usages != null)
             {
                 product.ProductUsages.Clear();

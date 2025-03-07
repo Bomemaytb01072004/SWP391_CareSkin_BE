@@ -39,6 +39,7 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Question> Questions { get; set; }
         public DbSet<Quiz> Quizs { get; set; }
         public DbSet<RatingFeedback> RatingFeedbacks { get; set; }
+        public DbSet<RatingFeedbackImage> RatingFeedbackImages { get; set; }
         public DbSet<Result> Results { get; set; }
         public DbSet<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; }
         public DbSet<SkinCareRoutine> SkinCareRoutines { get; set; }
@@ -79,6 +80,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Question>().HasKey(q => q.QuestionsId);
             modelBuilder.Entity<Quiz>().HasKey(q => q.QuizId);
             modelBuilder.Entity<RatingFeedback>().HasKey(r => r.Id);
+            modelBuilder.Entity<RatingFeedbackImage>().HasKey(r => r.Id);
             modelBuilder.Entity<Result>().HasKey(result => result.ResultId);
             modelBuilder.Entity<SkinCareRoutineProduct>().HasKey(s => new { s.SkinCareRoutineId, s.ProductId });
             modelBuilder.Entity<SkinCareRoutine>().HasKey(s => s.Id);
@@ -306,6 +308,17 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<VnpayTransactions>()
                 .Property(v => v.Amount)
                 .HasColumnType("decimal(18, 4)");
+
+            modelBuilder.Entity<RatingFeedback>()
+                .HasMany(r => r.RatingFeedbackImages)
+                .WithOne(r => r.RatingFeedback)
+                .HasForeignKey(r => r.RatingFeedbackId);
+
+            modelBuilder.Entity<RatingFeedbackImage>()
+                .HasOne(r => r.RatingFeedback)
+                .WithMany(r => r.RatingFeedbackImages)
+                .HasForeignKey(r => r.RatingFeedbackId);
+
             //end relationship
         }
     }

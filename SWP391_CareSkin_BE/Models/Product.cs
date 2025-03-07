@@ -18,6 +18,8 @@ namespace SWP391_CareSkin_BE.Models
         public string Description { get; set; }
 
         public string PictureUrl { get; set; }
+        
+        public double AverageRating { get; set; } = 0;
 
         public virtual Brand Brand { get; set; }
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
