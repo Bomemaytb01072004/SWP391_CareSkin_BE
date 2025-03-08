@@ -1,13 +1,18 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Question;
+using SWP391_CareSkin_BE.DTOs.Responses.Question;
+using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
     public interface IQuestionRepository
     {
-        Task<IEnumerable<QuestionDTO>> GetAllAsync();
-        Task<QuestionDTO> GetByIdAsync(int id);
-        Task<QuestionDTO> AddAsync(QuestionDTO questionDTO);
-        Task<QuestionDTO> UpdateAsync(QuestionDTO questionDTO);
-        Task<bool> DeleteAsync(int id);
+        List<Question> GetAllQuestions();
+        Question GetQuestionById(int questionId);
+        void AddQuestion(Question question);
+        void UpdateQuestion(Question question);
+        void DeleteQuestion(int questionId);
+        void SaveChanges();
     }
+
 }

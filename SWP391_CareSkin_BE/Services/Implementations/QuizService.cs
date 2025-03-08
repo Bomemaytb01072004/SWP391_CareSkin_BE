@@ -1,4 +1,7 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Quiz;
+using SWP391_CareSkin_BE.DTOs.Responses.Quiz;
+using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -12,48 +15,40 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         {
             _quizRepository = quizRepository;
         }
-        public async Task<QuizDTO> CreateQuizAsync(QuizDTO quizDto)
+
+        public List<QuizResponseDTO> GetAllQuizzes()
         {
-            return await _quizRepository.AddAsync(quizDto);
+            var quizzes = _quizRepository.GetAllQuizzes();
+            return quizzes.Select(QuizMapper.ToDTO).ToList();
         }
 
-        public async Task<bool> DeleteQuizAsync(int id)
+        public QuizResponseDTO GetQuizById(int quizId)
         {
-            return await _quizRepository.DeleteAsync(id);
+            var quiz = _quizRepository.GetQuizById(quizId);
+            return quiz != null ? QuizMapper.ToDTO(quiz) : null;
         }
 
-        public async Task<IEnumerable<QuizDTO>> GetAllQuizzesAsync()
+        public void CreateQuiz(CreateQuizRequestDTO dto)
         {
-            return await _quizRepository.GetAllAsync();
+            var quiz = QuizMapper.ToEntity(dto);
+            _quizRepository.AddQuiz(quiz);
         }
 
-        public async Task<QuizDTO> GetQuizByIdAsync(int id)
+        public void UpdateQuiz(UpdateQuizRequestDTO dto)
         {
-            return await _quizRepository.GetByIdAsync(id);
-        }
-
-        public async Task<QuizDTO> UpdateQuizAsync(QuizDTO quizDto)
-        {
-            return await _quizRepository.UpdateAsync(quizDto);
-        }
-
-        public async Task<QuizDTO> UpdateQuizAsync(int id, QuizDTO quizDto)
-        {
-            var existingQuiz = await _quizRepository.GetByIdAsync(id);
-            if (existingQuiz == null)
-                return null; 
-            existingQuiz.Title = quizDto.Title;
-            existingQuiz.Description = quizDto.Description;
-
-            await _quizRepository.UpdateAsync(existingQuiz);
-
-            return new QuizDTO
+            var quiz = _quizRepository.GetQuizById(dto.QuizId);
+            if (quiz != null)
             {
-                QuizId = existingQuiz.QuizId,
-                Title = existingQuiz.Title,
-                Description = existingQuiz.Description
-            };
+                quiz.Title = dto.Title;
+                quiz.Description = dto.Description;
+                _quizRepository.UpdateQuiz(quiz);
+            }
         }
 
+        public void DeleteQuiz(int quizId)
+        {
+            _quizRepository.DeleteQuiz(quizId);
+        }
     }
+
 }

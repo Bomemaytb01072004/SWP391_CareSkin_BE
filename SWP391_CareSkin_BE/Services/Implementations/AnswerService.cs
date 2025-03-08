@@ -1,4 +1,7 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Answer;
+using SWP391_CareSkin_BE.DTOs.Responses.Answer;
+using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -13,51 +16,39 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _answerRepository = answerRepository;
         }
 
-        public async Task<IEnumerable<AnswerDTO>> GetAllAnswersAsync()
+        public List<AnswerResponseDTO> GetAllAnswers()
         {
-            return await _answerRepository.GetAllAsync();
+            var answers = _answerRepository.GetAllAnswers();
+            return answers.Select(AnswerMapper.ToDTO).ToList();
         }
 
-        public async Task<AnswerDTO> GetAnswerByIdAsync(int id)
+        public AnswerResponseDTO GetAnswerById(int answerId)
         {
-            return await _answerRepository.GetByIdAsync(id);
+            var answer = _answerRepository.GetAnswerById(answerId);
+            return answer != null ? AnswerMapper.ToDTO(answer) : null;
         }
 
-        public async Task<AnswerDTO> CreateAnswerAsync(AnswerDTO answerDto)
+        public void CreateAnswer(CreateAnswerRequestDTO dto)
         {
-            return await _answerRepository.AddAsync(answerDto);
+            var answer = AnswerMapper.ToEntity(dto);
+            _answerRepository.AddAnswer(answer);
         }
 
-        public async Task<AnswerDTO> UpdateAnswerAsync(AnswerDTO answerDto)
+        public void UpdateAnswer(UpdateAnswerRequestDTO dto)
         {
-            return await _answerRepository.UpdateAsync( answerDto);
-        }
-
-        public async Task<bool> DeleteAnswerAsync(int id)
-        {
-            return await _answerRepository.DeleteAsync(id);
-        }
-
-        public async Task<AnswerDTO> UpdateAnswerAsync(int id, AnswerDTO answerDto)
-        {
-            var existingAnswer = await _answerRepository.GetByIdAsync(id);
-            if (existingAnswer == null)
-                return null;
-
-            existingAnswer.AnswersContext = answerDto.AnswersContext;
-            existingAnswer.PointForSkinType = answerDto.PointForSkinType;
-            existingAnswer.QuestionId = answerDto.QuestionId;
-
-            await _answerRepository.UpdateAsync(answerDto);
-
-            return new AnswerDTO
+            var answer = _answerRepository.GetAnswerById(dto.AnswerId);
+            if (answer != null)
             {
-                AnswerId = existingAnswer.AnswerId,
-                AnswersContext = existingAnswer.AnswersContext,
-                PointForSkinType = existingAnswer.PointForSkinType,
-                QuestionId = existingAnswer.QuestionId
-            };
+                answer.AnswersContext = dto.AnswersContext;
+                answer.PointForSkinType = dto.PointForSkinType;
+                _answerRepository.UpdateAnswer(answer);
+            }
         }
 
+        public void DeleteAnswer(int answerId)
+        {
+            _answerRepository.DeleteAnswer(answerId);
+        }
     }
+
 }

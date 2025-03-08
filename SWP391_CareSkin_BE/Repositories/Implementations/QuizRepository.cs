@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Mappers;
+﻿using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using System;
 
@@ -16,47 +14,31 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<QuizDTO>> GetAllAsync()
-        {
-            var quizzes = await _context.Quizs.ToListAsync();
-            return quizzes.Select(q => QuizMapper.ToDTO(q));
-        }
+        public List<Quiz> GetAllQuizzes() => _context.Quizs.ToList();
 
-        public async Task<QuizDTO> GetByIdAsync(int id)
-        {
-            var quiz = await _context.Quizs.FindAsync(id);
-            return quiz != null ? QuizMapper.ToDTO(quiz) : null;
-        }
+        public Quiz GetQuizById(int quizId) => _context.Quizs.Find(quizId);
 
-        public async Task<QuizDTO> AddAsync(QuizDTO quizDTO)
+        public void AddQuiz(Quiz quiz)
         {
-            var quiz = QuizMapper.ToEntity(quizDTO);
             _context.Quizs.Add(quiz);
-            await _context.SaveChangesAsync();
-            return QuizMapper.ToDTO(quiz);
+            SaveChanges();
         }
 
-        public async Task<QuizDTO> UpdateAsync(QuizDTO quizDTO)
+        public void UpdateQuiz(Quiz quiz)
         {
-            var quiz = await _context.Quizs.FindAsync(quizDTO.QuizId);
-            if (quiz == null) return null;
-
-            quiz.Title = quizDTO.Title;
-            quiz.Description = quizDTO.Description;
-
-            await _context.SaveChangesAsync();
-            return QuizMapper.ToDTO(quiz);
+            _context.Quizs.Update(quiz);
+            SaveChanges();
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public void DeleteQuiz(int quizId)
         {
-            var quiz = await _context.Quizs.FindAsync(id);
-            if (quiz == null) return false;
-
-            _context.Quizs.Remove(quiz);
-            await _context.SaveChangesAsync();
-            return true;
+            var quiz = GetQuizById(quizId);
+            if (quiz != null)
+            {
+                _context.Quizs.Remove(quiz);
+                SaveChanges();
+            }
         }
+        public void SaveChanges() => _context.SaveChanges();
     }
-
 }

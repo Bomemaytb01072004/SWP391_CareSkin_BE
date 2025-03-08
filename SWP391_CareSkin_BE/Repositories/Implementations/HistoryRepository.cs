@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Mappers;
+﻿using SWP391_CareSkin_BE.Data;
+using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using System;
 
@@ -16,34 +14,33 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<HistoryDTO>> GetAllAsync()
-        {
-            var histories = await _context.Historys.ToListAsync();
-            return histories.Select(h => HistoryMapper.ToDTO(h));
-        }
+        public List<History> GetAllHistories() => _context.Historys.ToList();
 
-        public async Task<HistoryDTO> GetByIdAsync(int id)
-        {
-            var history = await _context.Historys.FindAsync(id);
-            return history != null ? HistoryMapper.ToDTO(history) : null;
-        }
+        public History GetHistoryById(int historyId) => _context.Historys.Find(historyId);
 
-        public async Task<HistoryDTO> AddAsync(HistoryDTO historyDTO)
+        public void AddHistory(History history)
         {
-            var history = HistoryMapper.ToEntity(historyDTO);
             _context.Historys.Add(history);
-            await _context.SaveChangesAsync();
-            return HistoryMapper.ToDTO(history);
+            SaveChanges();
         }
 
-        public async Task<bool> DeleteHistoryAsync(int id) 
+        public void UpdateHistory(History history)
         {
-            var history = await _context.Historys.FindAsync(id);
-            if (history == null) return false;
-
-            _context.Historys.Remove(history);
-            await _context.SaveChangesAsync();
-            return true;
+            _context.Historys.Update(history);
+            SaveChanges();
         }
+
+        public void DeleteHistory(int historyId)
+        {
+            var history = GetHistoryById(historyId);
+            if (history != null)
+            {
+                _context.Historys.Remove(history);
+                SaveChanges();
+            }
+        }
+
+        public void SaveChanges() => _context.SaveChanges();
     }
+
 }

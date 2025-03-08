@@ -1,12 +1,19 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.History;
+using SWP391_CareSkin_BE.DTOs.Responses.History;
+using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
     public interface IHistoryRepository
     {
-        Task<IEnumerable<HistoryDTO>> GetAllAsync();
-        Task<HistoryDTO> GetByIdAsync(int id);
-        Task<HistoryDTO> AddAsync(HistoryDTO historyDto);
-        Task<bool> DeleteHistoryAsync(int id); 
+        List<History> GetAllHistories();
+        History GetHistoryById(int historyId);
+        void AddHistory(History history);
+        void UpdateHistory(History history);
+        void DeleteHistory(int historyId);
+        void SaveChanges();
     }
+
+
 }

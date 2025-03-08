@@ -1,48 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.History;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class HistoryController : ControllerBase
-    {
-        private readonly IHistoryService _historyService;
-
-        public HistoryController(IHistoryService historyService)
+        [Route("api/history")]
+        [ApiController]
+        public class HistoryController : ControllerBase
         {
-            _historyService = historyService;
-        }
+            private readonly IHistoryService _historyService;
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllHistories()
-        {
-            var histories = await _historyService.GetAllHistoriesAsync();
-            return Ok(histories);
-        }
+            public HistoryController(IHistoryService historyService)
+            {
+                _historyService = historyService;
+            }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetHistoryById(int id)
-        {
-            var history = await _historyService.GetHistoryByIdAsync(id);
-            if (history == null) return NotFound();
-            return Ok(history);
-        }
+            [HttpGet]
+            public IActionResult GetAllHistories()
+            {
+                var histories = _historyService.GetAllHistories();
+                return Ok(histories);
+            }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateHistory([FromBody] HistoryDTO historyDto)
-        {
-            var createdHistory = await _historyService.CreateHistoryAsync(historyDto);
-            return CreatedAtAction(nameof(GetHistoryById), new { id = createdHistory.HistoryId }, createdHistory);
-        }
+            [HttpGet("{id}")]
+            public IActionResult GetHistoryById(int id)
+            {
+                var history = _historyService.GetHistoryById(id);
+                if (history == null)
+                    return NotFound("History not found");
+                return Ok(history);
+            }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHistory(int id)
-        {
-            var result = await _historyService.DeleteHistoryAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
-        }
-    }
+            [HttpPost]
+            public IActionResult CreateHistory([FromBody] CreateHistoryRequestDTO dto)
+            {
+                _historyService.CreateHistory(dto);
+                return Ok("History created successfully");
+            }
+
+            [HttpPut]
+            public IActionResult UpdateHistory([FromBody] UpdateHistoryRequestDTO dto)
+            {
+                _historyService.UpdateHistory(dto);
+                return Ok("History updated successfully");
+            }
+
+            [HttpDelete("{id}")]
+            public IActionResult DeleteHistory(int id)
+            {
+                _historyService.DeleteHistory(id);
+                return Ok("History deleted successfully");
+            }
+        }  
+
 }

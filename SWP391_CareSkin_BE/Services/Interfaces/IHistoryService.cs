@@ -1,12 +1,16 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.History;
+using SWP391_CareSkin_BE.DTOs.Responses.History;
 
 namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IHistoryService
     {
-        Task<IEnumerable<HistoryDTO>> GetAllHistoriesAsync();
-        Task<HistoryDTO> GetHistoryByIdAsync(int id);
-        Task<HistoryDTO> CreateHistoryAsync(HistoryDTO historyDto);
-        Task<bool> DeleteHistoryAsync(int id);
+        List<HistoryResponseDTO> GetAllHistories();
+        HistoryResponseDTO GetHistoryById(int historyId);
+        void CreateHistory(CreateHistoryRequestDTO dto);
+        void UpdateHistory(UpdateHistoryRequestDTO dto);
+        void DeleteHistory(int historyId);
     }
+
 }

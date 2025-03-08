@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Answer;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/answer")]
     [ApiController]
     public class AnswerController : ControllerBase
     {
@@ -16,33 +17,40 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAnswers()
+        public IActionResult GetAllAnswers()
         {
-            var answers = await _answerService.GetAllAnswersAsync();
+            var answers = _answerService.GetAllAnswers();
             return Ok(answers);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAnswerById(int id)
+        public IActionResult GetAnswerById(int id)
         {
-            var answer = await _answerService.GetAnswerByIdAsync(id);
-            if (answer == null) return NotFound();
+            var answer = _answerService.GetAnswerById(id);
+            if (answer == null)
+                return NotFound("Answer not found");
             return Ok(answer);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAnswer([FromBody] AnswerDTO answerDto)
+        public IActionResult CreateAnswer([FromBody] CreateAnswerRequestDTO dto)
         {
-            var createdAnswer = await _answerService.CreateAnswerAsync(answerDto);
-            return CreatedAtAction(nameof(GetAnswerById), new { id = createdAnswer.AnswerId }, createdAnswer);
+            _answerService.CreateAnswer(dto);
+            return Ok("Answer created successfully");
+        }
+
+        [HttpPut]
+        public IActionResult UpdateAnswer([FromBody] UpdateAnswerRequestDTO dto)
+        {
+            _answerService.UpdateAnswer(dto);
+            return Ok("Answer updated successfully");
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnswer(int id)
+        public IActionResult DeleteAnswer(int id)
         {
-            var result = await _answerService.DeleteAnswerAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
+            _answerService.DeleteAnswer(id);
+            return Ok("Answer deleted successfully");
         }
     }
 }

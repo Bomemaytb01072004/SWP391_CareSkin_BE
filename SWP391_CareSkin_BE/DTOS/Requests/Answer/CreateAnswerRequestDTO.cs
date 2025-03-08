@@ -1,8 +1,7 @@
-﻿namespace SWP391_CareSkin_BE.DTOs
+﻿namespace SWP391_CareSkin_BE.DTOs.Requests.Answer
 {
-    public class AnswerDTO
+    public class CreateAnswerRequestDTO
     {
-        public int AnswerId { get; set; }
         public int QuestionId { get; set; }
         public string AnswersContext { get; set; }
         public int PointForSkinType { get; set; }

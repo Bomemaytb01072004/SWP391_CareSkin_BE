@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Quiz;
+using SWP391_CareSkin_BE.DTOs.Responses.Quiz;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/quizzes")]
     public class QuizController : ControllerBase
     {
         private readonly IQuizService _quizService;
@@ -16,33 +18,33 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllQuizzes()
-        {
-            var quizzes = await _quizService.GetAllQuizzesAsync();
-            return Ok(quizzes);
-        }
+        public ActionResult<List<QuizResponseDTO>> GetAllQuizzes() => Ok(_quizService.GetAllQuizzes());
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetQuizById(int id)
-        {
-            var quiz = await _quizService.GetQuizByIdAsync(id);
-            if (quiz == null) return NotFound();
-            return Ok(quiz);
-        }
+        [HttpGet("{quizId}")]
+        public ActionResult<QuizResponseDTO> GetQuizById(int quizId) => Ok(_quizService.GetQuizById(quizId));
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuiz([FromBody] QuizDTO quizDto)
+        public IActionResult CreateQuiz([FromBody] CreateQuizRequestDTO dto)
         {
-            var createdQuiz = await _quizService.CreateQuizAsync(quizDto);
-            return CreatedAtAction(nameof(GetQuizById), new { id = createdQuiz.QuizId }, createdQuiz);
+            _quizService.CreateQuiz(dto);
+            return Ok("Quiz created successfully.");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuiz(int id)
+        [HttpPut]
+        public IActionResult UpdateQuiz([FromBody] UpdateQuizRequestDTO dto)
         {
-            var result = await _quizService.DeleteQuizAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
+            _quizService.UpdateQuiz(dto);
+            return Ok("Quiz updated successfully.");
+        }
+
+        [HttpDelete("{quizId}")]
+        public IActionResult DeleteQuiz(int quizId)
+        {
+            _quizService.DeleteQuiz(quizId);
+            return Ok("Quiz deleted successfully.");
         }
     }
+
+
 }
+

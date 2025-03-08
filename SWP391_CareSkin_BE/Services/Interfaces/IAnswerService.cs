@@ -1,13 +1,16 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Answer;
+using SWP391_CareSkin_BE.DTOs.Responses.Answer;
 
 namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IAnswerService
     {
-        Task<IEnumerable<AnswerDTO>> GetAllAnswersAsync();
-        Task<AnswerDTO> GetAnswerByIdAsync(int id);
-        Task<AnswerDTO> CreateAnswerAsync(AnswerDTO answerDto);
-        Task<AnswerDTO> UpdateAnswerAsync(int id, AnswerDTO answerDto);
-        Task<bool> DeleteAnswerAsync(int id);
+        List<AnswerResponseDTO> GetAllAnswers();
+        AnswerResponseDTO GetAnswerById(int answerId);
+        void CreateAnswer(CreateAnswerRequestDTO dto);
+        void UpdateAnswer(UpdateAnswerRequestDTO dto);
+        void DeleteAnswer(int answerId);
     }
+
 }

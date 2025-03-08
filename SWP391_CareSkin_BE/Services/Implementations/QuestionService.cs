@@ -1,4 +1,7 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Question;
+using SWP391_CareSkin_BE.DTOs.Responses.Question;
+using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
@@ -13,29 +16,38 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _questionRepository = questionRepository;
         }
 
-        public async Task<IEnumerable<QuestionDTO>> GetAllQuestionsAsync()
+        public List<QuestionResponseDTO> GetAllQuestions()
         {
-            return await _questionRepository.GetAllAsync();
+            var questions = _questionRepository.GetAllQuestions();
+            return questions.Select(QuestionMapper.ToDTO).ToList();
         }
 
-        public async Task<QuestionDTO> GetQuestionByIdAsync(int id)
+        public QuestionResponseDTO GetQuestionById(int questionId)
         {
-            return await _questionRepository.GetByIdAsync(id);
+            var question = _questionRepository.GetQuestionById(questionId);
+            return question != null ? QuestionMapper.ToDTO(question) : null;
         }
 
-        public async Task<QuestionDTO> CreateQuestionAsync(QuestionDTO questionDto)
+        public void CreateQuestion(CreateQuestionRequestDTO dto)
         {
-            return await _questionRepository.AddAsync(questionDto);
+            var question = QuestionMapper.ToEntity(dto);
+            _questionRepository.AddQuestion(question);
         }
 
-        public async Task<QuestionDTO> UpdateQuestionAsync(QuestionDTO questionDto)
+        public void UpdateQuestion(UpdateQuestionRequestDTO dto)
         {
-            return await _questionRepository.UpdateAsync(questionDto);
+            var question = _questionRepository.GetQuestionById(dto.QuestionsId);
+            if (question != null)
+            {
+                question.QuestionContext = dto.QuestionContext;
+                _questionRepository.UpdateQuestion(question);
+            }
         }
 
-        public async Task<bool> DeleteQuestionAsync(int id)
+        public void DeleteQuestion(int questionId)
         {
-            return await _questionRepository.DeleteAsync(id);
+            _questionRepository.DeleteQuestion(questionId);
         }
     }
+
 }

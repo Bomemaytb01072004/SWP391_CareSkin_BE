@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.DTOs.Requests.Question;
+using SWP391_CareSkin_BE.DTOs.Responses.Question;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/questions")]
     public class QuestionController : ControllerBase
     {
         private readonly IQuestionService _questionService;
@@ -16,33 +18,31 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllQuestions()
-        {
-            var questions = await _questionService.GetAllQuestionsAsync();
-            return Ok(questions);
-        }
+        public ActionResult<List<QuestionResponseDTO>> GetAllQuestions() => Ok(_questionService.GetAllQuestions());
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetQuestionById(int id)
-        {
-            var question = await _questionService.GetQuestionByIdAsync(id);
-            if (question == null) return NotFound();
-            return Ok(question);
-        }
+        [HttpGet("{questionId}")]
+        public ActionResult<QuestionResponseDTO> GetQuestionById(int questionId) => Ok(_questionService.GetQuestionById(questionId));
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestion([FromBody] QuestionDTO questionDto)
+        public IActionResult CreateQuestion([FromBody] CreateQuestionRequestDTO dto)
         {
-            var createdQuestion = await _questionService.CreateQuestionAsync(questionDto);
-            return CreatedAtAction(nameof(GetQuestionById), new { id = createdQuestion.QuestionsId }, createdQuestion);
+            _questionService.CreateQuestion(dto);
+            return Ok("Question created successfully.");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestion(int id)
+        [HttpPut]
+        public IActionResult UpdateQuestion([FromBody] UpdateQuestionRequestDTO dto)
         {
-            var result = await _questionService.DeleteQuestionAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
+            _questionService.UpdateQuestion(dto);
+            return Ok("Question updated successfully.");
+        }
+
+        [HttpDelete("{questionId}")]
+        public IActionResult DeleteQuestion(int questionId)
+        {
+            _questionService.DeleteQuestion(questionId);
+            return Ok("Question deleted successfully.");
         }
     }
+
 }
