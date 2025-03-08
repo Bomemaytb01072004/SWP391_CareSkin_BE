@@ -3,7 +3,7 @@ using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Mappers
 {
-    public class QuizMapper
+    public static class QuizMapper
     {
         public static QuizDTO ToDTO(Quiz quiz)
         {
@@ -15,14 +15,15 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
-        public static Quiz ToEntity(QuizDTO dto)
+        public static Quiz ToEntity(QuizDTO quizDTO)
         {
             return new Quiz
             {
-                QuizId = dto.QuizId,
-                Title = dto.Title,
-                Description = dto.Description
+                QuizId = quizDTO.QuizId,
+                Title = quizDTO.Title,
+                Description = quizDTO.Description
             };
         }
     }
+
 }

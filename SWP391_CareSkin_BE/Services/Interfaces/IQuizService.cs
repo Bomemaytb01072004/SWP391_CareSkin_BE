@@ -1,15 +1,13 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IQuizService
     {
-        Task<List<Quiz>> GetAllQuizzesAsync();
-        Task<Quiz> GetQuizByIdAsync(int id);
-        Task<Quiz> CreateQuizAsync(QuizDTO dto);
-        Task<Quiz> UpdateQuizAsync(int id, QuizDTO dto);
+        Task<IEnumerable<QuizDTO>> GetAllQuizzesAsync();
+        Task<QuizDTO> GetQuizByIdAsync(int id);
+        Task<QuizDTO> CreateQuizAsync(QuizDTO quizDto);
+        Task<QuizDTO> UpdateQuizAsync(int id, QuizDTO quizDto);
         Task<bool> DeleteQuizAsync(int id);
-
     }
 }

@@ -3,7 +3,7 @@ using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Mappers
 {
-    public class AnswerQuestion
+    public static class AnswerMapper
     {
         public static AnswerDTO ToDTO(Answer answer)
         {
@@ -16,15 +16,16 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
-        public static Answer ToEntity(AnswerDTO dto)
+        public static Answer ToEntity(AnswerDTO answerDTO)
         {
             return new Answer
             {
-                AnswerId = dto.AnswerId,
-                QuestionId = dto.QuestionId,
-                AnswersContext = dto.AnswersContext,
-                PointForSkinType = dto.PointForSkinType
+                AnswerId = answerDTO.AnswerId,
+                QuestionId = answerDTO.QuestionId,
+                AnswersContext = answerDTO.AnswersContext,
+                PointForSkinType = answerDTO.PointForSkinType
             };
         }
     }
+
 }

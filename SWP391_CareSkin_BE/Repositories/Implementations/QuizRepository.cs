@@ -1,8 +1,9 @@
-﻿using Google;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.DTOs;
+using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
+using System;
 
 namespace SWP391_CareSkin_BE.Repositories.Implementations
 {
@@ -15,38 +16,47 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<List<Quiz>> GetAllAsync()
+        public async Task<IEnumerable<QuizDTO>> GetAllAsync()
         {
-            return await _context.Quizs.Include(q => q.Questions).ToListAsync();
+            var quizzes = await _context.Quizs.ToListAsync();
+            return quizzes.Select(q => QuizMapper.ToDTO(q));
         }
 
-        public async Task<Quiz> GetByIdAsync(int id)
+        public async Task<QuizDTO> GetByIdAsync(int id)
         {
-            return await _context.Quizs.Include(q => q.Questions)
-                                       .FirstOrDefaultAsync(q => q.QuizId == id);
+            var quiz = await _context.Quizs.FindAsync(id);
+            return quiz != null ? QuizMapper.ToDTO(quiz) : null;
         }
 
-        public async Task<Quiz> AddAsync(Quiz quiz)
+        public async Task<QuizDTO> AddAsync(QuizDTO quizDTO)
         {
+            var quiz = QuizMapper.ToEntity(quizDTO);
             _context.Quizs.Add(quiz);
             await _context.SaveChangesAsync();
-            return quiz;
+            return QuizMapper.ToDTO(quiz);
         }
 
-        public async Task<Quiz> UpdateAsync(Quiz quiz)
+        public async Task<QuizDTO> UpdateAsync(QuizDTO quizDTO)
         {
-            _context.Quizs.Update(quiz);
+            var quiz = await _context.Quizs.FindAsync(quizDTO.QuizId);
+            if (quiz == null) return null;
+
+            quiz.Title = quizDTO.Title;
+            quiz.Description = quizDTO.Description;
+
             await _context.SaveChangesAsync();
-            return quiz;
+            return QuizMapper.ToDTO(quiz);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var quiz = await _context.Quizs.FindAsync(id);
             if (quiz == null) return false;
+
             _context.Quizs.Remove(quiz);
             await _context.SaveChangesAsync();
             return true;
         }
     }
+
 }

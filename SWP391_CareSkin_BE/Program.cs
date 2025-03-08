@@ -111,7 +111,22 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IVnpayRepository, VnpayRepository>();
             builder.Services.AddScoped<IVnpayService, VnpayService >();
 
-  
+            builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+            builder.Services.AddScoped<IHistoryService, HistoryService>();
+
+            builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+            builder.Services.AddScoped<IAnswerService, AnswerService>();
+
+
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
+
+
+            builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+            builder.Services.AddScoped<IQuizService, QuizService>();
+
+
+
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>

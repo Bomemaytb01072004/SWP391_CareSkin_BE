@@ -1,28 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Services.Implementations;
+using SWP391_CareSkin_BE.Services.Interfaces;
 
-namespace SWP391_CareSkin_BE.Controllers.Answer
+namespace SWP391_CareSkin_BE.Controllers
 {
-    [Route("api/answers")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AnswerController : ControllerBase
     {
-        private readonly AnswerService _answerService;
+        private readonly IAnswerService _answerService;
 
-        public AnswerController(AnswerService answerService)
+        public AnswerController(IAnswerService answerService)
         {
             _answerService = answerService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AnswerDTO>>> GetAllAnswers()
+        public async Task<IActionResult> GetAllAnswers()
         {
-            return Ok(await _answerService.GetAllAnswersAsync());
+            var answers = await _answerService.GetAllAnswersAsync();
+            return Ok(answers);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AnswerDTO>> GetAnswerById(int id)
+        public async Task<IActionResult> GetAnswerById(int id)
         {
             var answer = await _answerService.GetAnswerByIdAsync(id);
             if (answer == null) return NotFound();
@@ -30,18 +31,10 @@ namespace SWP391_CareSkin_BE.Controllers.Answer
         }
 
         [HttpPost]
-        public async Task<ActionResult<AnswerDTO>> CreateAnswer(AnswerDTO dto)
+        public async Task<IActionResult> CreateAnswer([FromBody] AnswerDTO answerDto)
         {
-            var createdAnswer = await _answerService.CreateAnswerAsync(dto);
+            var createdAnswer = await _answerService.CreateAnswerAsync(answerDto);
             return CreatedAtAction(nameof(GetAnswerById), new { id = createdAnswer.AnswerId }, createdAnswer);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAnswer(int id, AnswerDTO dto)
-        {
-            var updatedAnswer = await _answerService.UpdateAnswerAsync(id, dto);
-            if (updatedAnswer == null) return NotFound();
-            return Ok(updatedAnswer);
         }
 
         [HttpDelete("{id}")]

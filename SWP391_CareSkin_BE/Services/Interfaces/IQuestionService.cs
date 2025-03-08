@@ -1,14 +1,13 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IQuestionService
     {
-        Task<List<Question>> GetAllQuestionsAsync();
-        Task<Question> GetQuestionByIdAsync(int id);
-        Task<Question> CreateQuestionAsync(QuestionDTO dto);
-        Task<Question> UpdateQuestionAsync(int id, QuestionDTO dto);
+        Task<IEnumerable<QuestionDTO>> GetAllQuestionsAsync();
+        Task<QuestionDTO> GetQuestionByIdAsync(int id);
+        Task<QuestionDTO> CreateQuestionAsync(QuestionDTO questionDto);
+        Task<QuestionDTO> UpdateQuestionAsync( QuestionDTO questionDto);
         Task<bool> DeleteQuestionAsync(int id);
     }
 }

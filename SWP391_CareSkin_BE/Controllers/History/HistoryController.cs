@@ -1,23 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Services.Implementations;
+using SWP391_CareSkin_BE.Services.Interfaces;
 
-[Route("api/history")]
-[ApiController]
-public class HistoryController : ControllerBase
+namespace SWP391_CareSkin_BE.Controllers
 {
-    private readonly HistoryService _historyService;
-
-    public HistoryController(HistoryService historyService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class HistoryController : ControllerBase
     {
-        _historyService = historyService;
-    }
+        private readonly IHistoryService _historyService;
 
-    [HttpPost]
-    public async Task<ActionResult<History>> SaveHistory(HistoryDTO dto)
-    {
-        var history = await _historyService.SaveHistoryAsync(dto);
-        return Ok(history);
+        public HistoryController(IHistoryService historyService)
+        {
+            _historyService = historyService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllHistories()
+        {
+            var histories = await _historyService.GetAllHistoriesAsync();
+            return Ok(histories);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetHistoryById(int id)
+        {
+            var history = await _historyService.GetHistoryByIdAsync(id);
+            if (history == null) return NotFound();
+            return Ok(history);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateHistory([FromBody] HistoryDTO historyDto)
+        {
+            var createdHistory = await _historyService.CreateHistoryAsync(historyDto);
+            return CreatedAtAction(nameof(GetHistoryById), new { id = createdHistory.HistoryId }, createdHistory);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHistory(int id)
+        {
+            var result = await _historyService.DeleteHistoryAsync(id);
+            if (!result) return NotFound();
+            return NoContent();
+        }
     }
 }

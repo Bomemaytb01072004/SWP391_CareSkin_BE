@@ -1,55 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Services.Implementations;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using SWP391_CareSkin_BE.Services.Interfaces;
 
-[Route("api/questions")]
-[ApiController]
-public class QuestionController : ControllerBase
+namespace SWP391_CareSkin_BE.Controllers
 {
-    private readonly QuestionService _questionService;
-
-    public QuestionController(QuestionService questionService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class QuestionController : ControllerBase
     {
-        _questionService = questionService;
-    }
+        private readonly IQuestionService _questionService;
 
-    [HttpGet]
-    public async Task<ActionResult<List<Question>>> GetAllQuestions()
-    {
-        return Ok(await _questionService.GetAllQuestionsAsync());
-    }
+        public QuestionController(IQuestionService questionService)
+        {
+            _questionService = questionService;
+        }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Question>> GetQuestionById(int id)
-    {
-        var question = await _questionService.GetQuestionByIdAsync(id);
-        if (question == null) return NotFound();
-        return Ok(question);
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAllQuestions()
+        {
+            var questions = await _questionService.GetAllQuestionsAsync();
+            return Ok(questions);
+        }
 
-    [HttpPost]
-    public async Task<ActionResult<Question>> CreateQuestion(QuestionDTO dto)
-    {
-        var createdQuestion = await _questionService.CreateQuestionAsync(dto);
-        return CreatedAtAction(nameof(GetQuestionById), new { id = createdQuestion.QuestionsId }, createdQuestion);
-    }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetQuestionById(int id)
+        {
+            var question = await _questionService.GetQuestionByIdAsync(id);
+            if (question == null) return NotFound();
+            return Ok(question);
+        }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateQuestion(int id, QuestionDTO dto)
-    {
-        var updatedQuestion = await _questionService.UpdateQuestionAsync(id, dto);
-        if (updatedQuestion == null) return NotFound();
-        return Ok(updatedQuestion);
-    }
+        [HttpPost]
+        public async Task<IActionResult> CreateQuestion([FromBody] QuestionDTO questionDto)
+        {
+            var createdQuestion = await _questionService.CreateQuestionAsync(questionDto);
+            return CreatedAtAction(nameof(GetQuestionById), new { id = createdQuestion.QuestionsId }, createdQuestion);
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteQuestion(int id)
-    {
-        var result = await _questionService.DeleteQuestionAsync(id);
-        if (!result) return NotFound();
-        return NoContent();
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            var result = await _questionService.DeleteQuestionAsync(id);
+            if (!result) return NotFound();
+            return NoContent();
+        }
     }
 }

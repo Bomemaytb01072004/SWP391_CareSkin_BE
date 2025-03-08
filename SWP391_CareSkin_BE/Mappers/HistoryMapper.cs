@@ -3,7 +3,7 @@ using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Mappers
 {
-    public class HistoryMapper
+    public static class HistoryMapper
     {
         public static HistoryDTO ToDTO(History history)
         {
@@ -16,15 +16,16 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
-        public static History ToEntity(HistoryDTO dto)
+        public static History ToEntity(HistoryDTO historyDTO)
         {
             return new History
             {
-                HistoryId = dto.HistoryId,
-                CustomerId = dto.CustomerId,
-                QuestionId = dto.QuestionId,
-                AnswerId = dto.AnswerId
+                HistoryId = historyDTO.HistoryId,
+                CustomerId = historyDTO.CustomerId,
+                QuestionId = historyDTO.QuestionId,
+                AnswerId = historyDTO.AnswerId
             };
         }
     }
+
 }

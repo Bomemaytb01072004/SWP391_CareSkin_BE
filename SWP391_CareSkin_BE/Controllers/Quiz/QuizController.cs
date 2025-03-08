@@ -1,28 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Services.Implementations;
+using SWP391_CareSkin_BE.Services.Interfaces;
 
-namespace SWP391_CareSkin_BE.Controllers.Quiz
+namespace SWP391_CareSkin_BE.Controllers
 {
-    [Route("api/quizzes")]
+    [Route("api/[controller]")]
     [ApiController]
     public class QuizController : ControllerBase
     {
-        private readonly QuizService _quizService;
+        private readonly IQuizService _quizService;
 
-        public QuizController(QuizService quizService)
+        public QuizController(IQuizService quizService)
         {
             _quizService = quizService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<QuizDTO>>> GetAllQuizzes()
+        public async Task<IActionResult> GetAllQuizzes()
         {
-            return Ok(await _quizService.GetAllQuizzesAsync());
+            var quizzes = await _quizService.GetAllQuizzesAsync();
+            return Ok(quizzes);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<QuizDTO>> GetQuizById(int id)
+        public async Task<IActionResult> GetQuizById(int id)
         {
             var quiz = await _quizService.GetQuizByIdAsync(id);
             if (quiz == null) return NotFound();
@@ -30,9 +31,9 @@ namespace SWP391_CareSkin_BE.Controllers.Quiz
         }
 
         [HttpPost]
-        public async Task<ActionResult<QuizDTO>> CreateQuiz(QuizDTO dto)
+        public async Task<IActionResult> CreateQuiz([FromBody] QuizDTO quizDto)
         {
-            var createdQuiz = await _quizService.CreateQuizAsync(dto);
+            var createdQuiz = await _quizService.CreateQuizAsync(quizDto);
             return CreatedAtAction(nameof(GetQuizById), new { id = createdQuiz.QuizId }, createdQuiz);
         }
 

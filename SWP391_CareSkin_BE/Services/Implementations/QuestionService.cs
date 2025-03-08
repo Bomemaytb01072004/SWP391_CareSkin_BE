@@ -1,48 +1,36 @@
 ﻿using SWP391_CareSkin_BE.DTOs;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Repositories.Implementations;
+using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
     public class QuestionService : IQuestionService
-
     {
-        private readonly QuestionRepository _questionRepository;
+        private readonly IQuestionRepository _questionRepository;
 
-        public QuestionService(QuestionRepository questionRepository)
+        public QuestionService(IQuestionRepository questionRepository)
         {
             _questionRepository = questionRepository;
         }
 
-        public async Task<List<Question>> GetAllQuestionsAsync()
+        public async Task<IEnumerable<QuestionDTO>> GetAllQuestionsAsync()
         {
             return await _questionRepository.GetAllAsync();
         }
 
-        public async Task<Question> GetQuestionByIdAsync(int id)
+        public async Task<QuestionDTO> GetQuestionByIdAsync(int id)
         {
             return await _questionRepository.GetByIdAsync(id);
         }
 
-        public async Task<Question> CreateQuestionAsync(QuestionDTO dto)
+        public async Task<QuestionDTO> CreateQuestionAsync(QuestionDTO questionDto)
         {
-            var question = new Question
-            {
-                QuizId = dto.QuizId,
-                QuestionContext = dto.QuestionContext
-            };
-
-            return await _questionRepository.AddAsync(question);
+            return await _questionRepository.AddAsync(questionDto);
         }
 
-        public async Task<Question> UpdateQuestionAsync(int id, QuestionDTO dto)
+        public async Task<QuestionDTO> UpdateQuestionAsync(QuestionDTO questionDto)
         {
-            var question = await _questionRepository.GetByIdAsync(id);
-            if (question == null) return null;
-
-            question.QuestionContext = dto.QuestionContext;
-            return await _questionRepository.UpdateAsync(question);
+            return await _questionRepository.UpdateAsync(questionDto);
         }
 
         public async Task<bool> DeleteQuestionAsync(int id)
