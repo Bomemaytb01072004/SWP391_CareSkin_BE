@@ -1,4 +1,5 @@
 ﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests.Customer;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -83,5 +84,29 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var authResult = await _customerRepository.LoginCustomer(loginDto);
             return authResult;
         }
+
+        public async Task<bool> ChangePasswordAsync(int customerId, ChangePasswordDTO request)
+        {
+            var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
+            if (customer == null)
+            {
+                throw new ArgumentException("Khách hàng không tồn tại.");
+            }
+
+            // Kiểm tra mật khẩu hiện tại
+            if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, customer.Password))
+            {
+                throw new ArgumentException("Mật khẩu hiện tại không đúng.");
+            }
+
+            // Cập nhật mật khẩu mới
+            customer.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            await _customerRepository.UpdateCustomerAsync(customer);
+            return true;
+        }
+
+        
+
+       
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests.Customer;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -118,6 +119,21 @@ namespace SWP391_CareSkin_BE.Controllers.UserController
             }
 
             return Ok(authResult);
+        }
+
+        [HttpPut("ChangePassword/{customerId}")]
+        public async Task<IActionResult> ChangePassword(int customerId, [FromBody] ChangePasswordDTO request)
+        {
+            try
+            {
+                var result = await _customerService.ChangePasswordAsync(customerId, request);
+                if (!result) return BadRequest("Đổi mật khẩu thất bại.");
+                return Ok(new { message = "Đổi mật khẩu thành công" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
     }

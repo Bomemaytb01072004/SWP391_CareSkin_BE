@@ -40,7 +40,6 @@
   <ItemGroup>
     <Folder Include="DTOs\Requests\Brand\" />
     <Folder Include="DTOs\Requests\Cart\" />
-    <Folder Include="DTOs\Requests\Customer\" />
     <Folder Include="DTOs\Requests\Staff\" />
     <Folder Include="DTOs\Requests\Product\" />
     <Folder Include="DTOs\Requests\Order\" />
