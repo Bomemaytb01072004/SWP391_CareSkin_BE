@@ -148,10 +148,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RatingFeedbackMapper.ToDTO(updatedRatingFeedback);
         }
 
-        public async Task<bool> DeleteRatingFeedbackAsync(int customerId, int id)
+        public async Task<bool> DeleteRatingFeedbackAsync(int id)
         {
             var ratingFeedback = await _ratingFeedbackRepository.GetRatingFeedbackByIdAsync(id);
-            if (ratingFeedback == null || ratingFeedback.CustomerId != customerId)
+            //if (ratingFeedback == null || ratingFeedback.CustomerId != customerId)
+            //    return false;
+
+            if (ratingFeedback == null)
                 return false;
 
             var productId = ratingFeedback.ProductId;

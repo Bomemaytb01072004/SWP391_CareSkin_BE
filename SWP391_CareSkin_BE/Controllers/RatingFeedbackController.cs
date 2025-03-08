@@ -93,12 +93,17 @@ namespace SWP391_CareSkin_BE.Controllers
         public async Task<IActionResult> Update(int id, [FromForm] UpdateRatingFeedbackDTO updateDto)
         {
             // Get customerId from DTO if provided (for Swagger testing), otherwise from claims
-            int customerId = updateDto.CustomerId.HasValue ? updateDto.CustomerId.Value : GetCustomerIdFromClaims();
+            //int customerId = updateDto.CustomerId.HasValue ? updateDto.CustomerId.Value : GetCustomerIdFromClaims();
             
+            //var customer = await _customerService.GetCustomerByIdAsync(customerId);
+            //if (customer == null)
+            //    return NotFound("Customer not found");
+            
+            int customerId = id;
             var customer = await _customerService.GetCustomerByIdAsync(customerId);
             if (customer == null)
                 return NotFound("Customer not found");
-                
+
             var ratingFeedback = await _ratingFeedbackService.UpdateRatingFeedbackAsync(customerId, id, updateDto);
             if (ratingFeedback == null)
                 return NotFound();
@@ -108,15 +113,14 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // DELETE: api/RatingFeedback/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Delete(int id)
         {
-            var customerId = GetCustomerIdFromClaims();
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            if (customer == null)
-                return NotFound("Customer not found");
+            //var customerId = GetCustomerIdFromClaims();
+            //var customer = await _customerService.GetCustomerByIdAsync(customerId);
+            //if (customer == null)
+            //    return NotFound("Customer not found");
                 
-            var result = await _ratingFeedbackService.DeleteRatingFeedbackAsync(customerId, id);
+            var result = await _ratingFeedbackService.DeleteRatingFeedbackAsync(id);
             if (!result)
                 return NotFound();
 

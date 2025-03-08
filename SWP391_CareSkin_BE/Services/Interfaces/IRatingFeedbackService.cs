@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<RatingFeedbackDTO> GetRatingFeedbackByIdAsync(int id);
         Task<RatingFeedbackDTO> CreateRatingFeedbackAsync(int customerId, CreateRatingFeedbackDTO createDto);
         Task<RatingFeedbackDTO> UpdateRatingFeedbackAsync(int customerId, int id, UpdateRatingFeedbackDTO updateDto);
-        Task<bool> DeleteRatingFeedbackAsync(int customerId, int id);
+        Task<bool> DeleteRatingFeedbackAsync(int id);
         Task<bool> AdminToggleRatingFeedbackVisibilityAsync(int id, AdminRatingFeedbackActionDTO actionDto);
         Task<bool> AdminDeleteRatingFeedbackAsync(int id);
         Task<double> GetAverageRatingForProductAsync(int productId);

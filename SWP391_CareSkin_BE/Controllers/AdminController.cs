@@ -101,36 +101,16 @@ namespace SWP391_CareSkin_BE.Controllers
         // Rating Feedback Admin Methods
         // GET: api/Admin/RatingFeedback
         [HttpGet("RatingFeedback")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllRatingFeedbacks()
         {
-            // Verify admin/staff exists
-            int adminId = GetAdminIdFromClaims();
-            var adminList = await _adminService.GetAdminAsync();
-            var adminExists = adminList.Any(a => a.AdminId == adminId);
-            if (!adminExists)
-            {
-                return Unauthorized("Admin not found");
-            }
-            
             var ratingFeedbacks = await _ratingFeedbackService.GetAllRatingFeedbacksAsync();
             return Ok(ratingFeedbacks);
         }
 
         // GET: api/Admin/RatingFeedback/{id}
         [HttpGet("RatingFeedback/{id}")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetRatingFeedbackById(int id)
-        {
-            // Verify admin/staff exists
-            int adminId = GetAdminIdFromClaims();
-            var adminList = await _adminService.GetAdminAsync();
-            var adminExists = adminList.Any(a => a.AdminId == adminId);
-            if (!adminExists)
-            {
-                return Unauthorized("Admin not found");
-            }
-            
+        {           
             var ratingFeedback = await _ratingFeedbackService.GetRatingFeedbackByIdAsync(id);
             if (ratingFeedback == null)
                 return NotFound();
@@ -140,18 +120,8 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // PUT: api/Admin/RatingFeedback/{id}/visibility
         [HttpPut("RatingFeedback/{id}/visibility")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> ToggleRatingFeedbackVisibility(int id, [FromBody] AdminRatingFeedbackActionDTO actionDto)
-        {
-            // Verify admin/staff exists
-            int adminId = GetAdminIdFromClaims();
-            var adminList = await _adminService.GetAdminAsync();
-            var adminExists = adminList.Any(a => a.AdminId == adminId);
-            if (!adminExists)
-            {
-                return Unauthorized("Admin not found");
-            }
-            
+        {            
             var result = await _ratingFeedbackService.AdminToggleRatingFeedbackVisibilityAsync(id, actionDto);
             if (!result)
                 return NotFound();
@@ -161,17 +131,16 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // DELETE: api/Admin/RatingFeedback/{id}
         [HttpDelete("RatingFeedback/{id}")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteRatingFeedback(int id)
         {
-            // Verify admin/staff exists
-            int adminId = GetAdminIdFromClaims();
-            var adminList = await _adminService.GetAdminAsync();
-            var adminExists = adminList.Any(a => a.AdminId == adminId);
-            if (!adminExists)
-            {
-                return Unauthorized("Admin not found");
-            }
+            //// Verify admin/staff exists
+            //int adminId = GetAdminIdFromClaims();
+            //var adminList = await _adminService.GetAdminAsync();
+            //var adminExists = adminList.Any(a => a.AdminId == adminId);
+            //if (!adminExists)
+            //{
+            //    return Unauthorized("Admin not found");
+            //}
             
             var result = await _ratingFeedbackService.AdminDeleteRatingFeedbackAsync(id);
             if (!result)

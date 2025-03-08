@@ -50,7 +50,6 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return await _context.RatingFeedbacks
                 .Include(rf => rf.Customer)
                 .Include(rf => rf.Product)
-                    .ThenInclude(p => p.ProductName)
                 .Include(rf => rf.RatingFeedbackImages)
                 .FirstOrDefaultAsync(rf => rf.Id == id);
         }
