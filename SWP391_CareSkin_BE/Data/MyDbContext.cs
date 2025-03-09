@@ -79,8 +79,8 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Promotion>().HasKey(p => p.PromotionId);
             modelBuilder.Entity<Question>().HasKey(q => q.QuestionsId);
             modelBuilder.Entity<Quiz>().HasKey(q => q.QuizId);
-            modelBuilder.Entity<RatingFeedback>().HasKey(r => r.Id);
-            modelBuilder.Entity<RatingFeedbackImage>().HasKey(r => r.Id);
+            modelBuilder.Entity<RatingFeedback>().HasKey(r => r.RatingFeedbackId);
+            modelBuilder.Entity<RatingFeedbackImage>().HasKey(r => r.RatingFeedbackImageId);
             modelBuilder.Entity<Result>().HasKey(result => result.ResultId);
             modelBuilder.Entity<SkinCareRoutineProduct>().HasKey(s => new { s.SkinCareRoutineId, s.ProductId });
             modelBuilder.Entity<SkinCareRoutine>().HasKey(s => s.Id);

@@ -96,6 +96,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
 
+            builder.Services.AddScoped<IProductPictureRepository, ProductPictureRepository>();
+            builder.Services.AddScoped<IProductPictureService, ProductPictureService>();
+
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
 
@@ -11,9 +12,11 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250309042634_UpdateDbv17")]
+    partial class UpdateDbv17
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -662,11 +665,11 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedback", b =>
                 {
-                    b.Property<int>("RatingFeedbackId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RatingFeedbackId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -690,7 +693,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("RatingFeedbackId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
@@ -701,20 +704,20 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedbackImage", b =>
                 {
-                    b.Property<int>("RatingFeedbackImageId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RatingFeedbackImageId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("FeedbackImageUrl")
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RatingFeedbackId")
                         .HasColumnType("int");
 
-                    b.HasKey("RatingFeedbackImageId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RatingFeedbackId");
 

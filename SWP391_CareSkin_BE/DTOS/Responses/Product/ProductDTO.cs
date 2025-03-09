@@ -1,4 +1,5 @@
-﻿using SWP391_CareSkin_BE.DTOs.Responses.Product;
+using SWP391_CareSkin_BE.DTOs.Responses.Product;
+using SWP391_CareSkin_BE.DTOS.ProductPicture;
 using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.DTOS.Responses
@@ -28,5 +29,8 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
 
         // Danh sách cách sử dụng sản phẩm
         public List<ProductUsageDTO> Usages { get; set; }
+        
+        // Danh sách các ảnh phụ của sản phẩm
+        public List<ProductPictureDTO> ProductPictures { get; set; }
     }
 }

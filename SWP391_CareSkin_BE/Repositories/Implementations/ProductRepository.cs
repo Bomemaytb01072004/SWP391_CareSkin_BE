@@ -25,6 +25,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                     .ThenInclude(pp => pp.Promotion)
                 .Include(p => p.ProductForSkinTypes)
                     .ThenInclude(ps => ps.SkinType)
+                .Include(p => p.ProductPictures)
                 .ToListAsync();
         }
 
@@ -40,6 +41,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                     .ThenInclude(pp => pp.Promotion)
                 .Include(p => p.ProductForSkinTypes)
                     .ThenInclude(ps => ps.SkinType)
+                .Include(p => p.ProductPictures)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 

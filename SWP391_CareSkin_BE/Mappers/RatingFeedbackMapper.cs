@@ -15,7 +15,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 
             return new RatingFeedbackDTO
             {
-                Id = ratingFeedback.Id,
+                RatingFeedbackId = ratingFeedback.RatingFeedbackId,
                 CustomerId = ratingFeedback.CustomerId,
                 CustomerName = ratingFeedback.Customer?.FullName,
                 CustomerAvatar = ratingFeedback.Customer?.PictureUrl,
@@ -26,7 +26,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 CreatedDate = ratingFeedback.CreatedDate,
                 UpdatedDate = ratingFeedback.UpdatedDate,
                 IsVisible = ratingFeedback.IsVisible,
-                Images = ratingFeedback.RatingFeedbackImages?.Select(i => ToDTO(i)).ToList()
+                FeedbackImages = ratingFeedback.RatingFeedbackImages?.Select(i => ToDTO(i)).ToList()
             };
         }
         
@@ -37,9 +37,9 @@ namespace SWP391_CareSkin_BE.Mappers
                 
             return new RatingFeedbackImageDTO
             {
-                Id = image.Id,
+                RatingFeedbackImageId = image.RatingFeedbackImageId,
                 RatingFeedbackId = image.RatingFeedbackId,
-                ImageUrl = image.ImageUrl
+                FeedbackImageUrl = image.FeedbackImageUrl
             };
         }
         

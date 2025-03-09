@@ -67,9 +67,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             await _ratingFeedbackRepository.CreateRatingFeedbackAsync(ratingFeedback);
 
             // Process images if any
-            if (createDto.Images != null && createDto.Images.Count > 0)
+            if (createDto.FeedbackImages != null && createDto.FeedbackImages.Count > 0)
             {
-                foreach (var image in createDto.Images)
+                foreach (var image in createDto.FeedbackImages)
                 {
                     if (image != null && image.Length > 0)
                     {
@@ -79,8 +79,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
                         var ratingFeedbackImage = new RatingFeedbackImage
                         {
-                            RatingFeedbackId = ratingFeedback.Id,
-                            ImageUrl = imageUrl
+                            RatingFeedbackId = ratingFeedback.RatingFeedbackId,
+                            FeedbackImageUrl = imageUrl
                         };
 
                         await _ratingFeedbackImageRepository.CreateImageAsync(ratingFeedbackImage);
@@ -89,7 +89,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             // Reload the entity with images
-            var createdRatingFeedback = await _ratingFeedbackRepository.GetRatingFeedbackByIdAsync(ratingFeedback.Id);
+            var createdRatingFeedback = await _ratingFeedbackRepository.GetRatingFeedbackByIdAsync(ratingFeedback.RatingFeedbackId);
 
             // Update product average rating
             await UpdateProductAverageRatingAsync(createDto.ProductId);
@@ -106,14 +106,29 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             // Use the mapper to update the entity
             RatingFeedbackMapper.UpdateEntity(ratingFeedback, updateDto);
 
-            await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
-
+            // Process images before updating the entity
+            
             // Delete specific images if requested
             if (updateDto.ImagesToDelete != null && updateDto.ImagesToDelete.Any())
             {
                 foreach (var imageId in updateDto.ImagesToDelete)
                 {
-                    await _ratingFeedbackImageRepository.DeleteImageAsync(imageId);
+                    var image = await _ratingFeedbackImageRepository.GetImageByIdAsync(imageId);
+                    if (image != null && image.RatingFeedbackId == id)
+                    {
+                        // Delete from storage if using Firebase
+                        if (!string.IsNullOrEmpty(image.FeedbackImageUrl))
+                        {
+                            var fileName = ExtractFilenameFromFirebaseUrl(image.FeedbackImageUrl);
+                            if (!string.IsNullOrEmpty(fileName))
+                            {
+                                await _firebaseService.DeleteImageAsync(fileName);
+                            }
+                        }
+                        
+                        // Delete from database
+                        await _ratingFeedbackImageRepository.DeleteImageAsync(imageId);
+                    }
                 }
             }
 
@@ -130,14 +145,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
                         var ratingFeedbackImage = new RatingFeedbackImage
                         {
-                            RatingFeedbackId = ratingFeedback.Id,
-                            ImageUrl = imageUrl
+                            RatingFeedbackId = ratingFeedback.RatingFeedbackId,
+                            FeedbackImageUrl = imageUrl
                         };
 
                         await _ratingFeedbackImageRepository.CreateImageAsync(ratingFeedbackImage);
                     }
                 }
             }
+
+            // Now update the entity after processing images
+            await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
 
             // Reload the entity with images
             var updatedRatingFeedback = await _ratingFeedbackRepository.GetRatingFeedbackByIdAsync(id);
@@ -159,7 +177,23 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             var productId = ratingFeedback.ProductId;
 
-            // Delete all associated images
+            // Get all associated images before deletion
+            var images = await _ratingFeedbackImageRepository.GetImagesByRatingFeedbackIdAsync(id);
+            
+            // Delete images from Firebase Storage
+            foreach (var image in images)
+            {
+                if (!string.IsNullOrEmpty(image.FeedbackImageUrl))
+                {
+                    var fileName = ExtractFilenameFromFirebaseUrl(image.FeedbackImageUrl);
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        await _firebaseService.DeleteImageAsync(fileName);
+                    }
+                }
+            }
+
+            // Delete all associated images from database
             await _ratingFeedbackImageRepository.DeleteImagesByRatingFeedbackIdAsync(id);
 
             // Delete the rating feedback
@@ -197,7 +231,23 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             var productId = ratingFeedback.ProductId;
 
-            // Delete all associated images
+            // Get all associated images before deletion
+            var images = await _ratingFeedbackImageRepository.GetImagesByRatingFeedbackIdAsync(id);
+            
+            // Delete images from Firebase Storage
+            foreach (var image in images)
+            {
+                if (!string.IsNullOrEmpty(image.FeedbackImageUrl))
+                {
+                    var fileName = ExtractFilenameFromFirebaseUrl(image.FeedbackImageUrl);
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        await _firebaseService.DeleteImageAsync(fileName);
+                    }
+                }
+            }
+
+            // Delete all associated images from database
             await _ratingFeedbackImageRepository.DeleteImagesByRatingFeedbackIdAsync(id);
 
             // Delete the rating feedback
@@ -224,6 +274,25 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             {
                 product.AverageRating = averageRating;
                 await _productRepository.UpdateProductAsync(product);
+            }
+        }
+
+        // Helper method to extract filename from Firebase Storage URL
+        private string ExtractFilenameFromFirebaseUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return null;
+
+            try
+            {
+                var uri = new Uri(url);
+                var path = Uri.UnescapeDataString(uri.AbsolutePath);
+                return path.Split(new[] { "/o/" }, StringSplitOptions.None)[1];
+            }
+            catch
+            {
+                // If URL parsing fails, try a simpler approach
+                return url.Split('/').Last().Split('?').First();
             }
         }
     }

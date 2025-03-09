@@ -85,7 +85,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 return NotFound("Customer not found");
                 
             var ratingFeedback = await _ratingFeedbackService.CreateRatingFeedbackAsync(customerId, createDto);
-            return CreatedAtAction(nameof(GetById), new { id = ratingFeedback.Id }, ratingFeedback);
+            return CreatedAtAction(nameof(GetById), new { id = ratingFeedback.RatingFeedbackId }, ratingFeedback);
         }
 
         // PUT: api/RatingFeedback/{id}
@@ -98,11 +98,8 @@ namespace SWP391_CareSkin_BE.Controllers
             //var customer = await _customerService.GetCustomerByIdAsync(customerId);
             //if (customer == null)
             //    return NotFound("Customer not found");
-            
-            int customerId = id;
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            if (customer == null)
-                return NotFound("Customer not found");
+
+            int customerId = updateDto.CustomerId;
 
             var ratingFeedback = await _ratingFeedbackService.UpdateRatingFeedbackAsync(customerId, id, updateDto);
             if (ratingFeedback == null)

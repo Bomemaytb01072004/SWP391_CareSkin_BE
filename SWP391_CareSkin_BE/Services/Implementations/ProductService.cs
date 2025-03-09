@@ -6,6 +6,9 @@ using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 using SWP391_CareSkin_BE.Extensions;
+using Microsoft.AspNetCore.Http;
+using SWP391_CareSkin_BE.DTOS.ProductPicture;
+using System;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -13,11 +16,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     {
         private readonly IProductRepository _productRepository;
         private readonly IFirebaseService _firebaseService;
+        private readonly IProductPictureService _productPictureService;
 
-        public ProductService(IProductRepository productRepository, IFirebaseService firebaseService)
+        public ProductService(
+            IProductRepository productRepository, 
+            IFirebaseService firebaseService,
+            IProductPictureService productPictureService)
         {
             _productRepository = productRepository;
             _firebaseService = firebaseService;
+            _productPictureService = productPictureService;
         }
 
         public async Task<List<ProductDTO>> GetAllProductsAsync()
@@ -37,6 +45,28 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var productEntity = ProductMapper.ToEntity(request, pictureUrl);
             await _productRepository.AddProductAsync(productEntity);
             var createdProduct = await _productRepository.GetProductByIdAsync(productEntity.ProductId);
+            
+            // Handle additional product pictures if provided
+            if (request.AdditionalPictures != null && request.AdditionalPictures.Any())
+            {
+                foreach (var picture in request.AdditionalPictures)
+                {
+                    if (picture != null && picture.Length > 0)
+                    {
+                        var createPictureDto = new CreateProductPictureDTO
+                        {
+                            ProductId = createdProduct.ProductId,
+                            Image = picture
+                        };
+                        
+                        await _productPictureService.CreateProductPictureAsync(createPictureDto);
+                    }
+                }
+                
+                // Reload the product to include the newly added pictures
+                createdProduct = await _productRepository.GetProductByIdAsync(productEntity.ProductId);
+            }
+            
             return ProductMapper.ToDTO(createdProduct);
         }
 
@@ -62,8 +92,11 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             {
                 if (!string.IsNullOrEmpty(existingProduct.PictureUrl))
                 {
-                    var oldFileName = existingProduct.PictureUrl.Split('/').Last();
-                    await _firebaseService.DeleteImageAsync(oldFileName);
+                    var oldFileName = ExtractFilenameFromFirebaseUrl(existingProduct.PictureUrl);
+                    if (!string.IsNullOrEmpty(oldFileName))
+                    {
+                        await _firebaseService.DeleteImageAsync(oldFileName);
+                    }
                 }
                 existingProduct.PictureUrl = pictureUrl;
             }
@@ -89,7 +122,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                     existingProduct.ProductVariations.Add(new ProductVariation
                     {
                         Ml = variation.Ml,
-                        Price = variation.Price
+                        Price = variation.Price,
+                        SalePrice = 0 // Initialize SalePrice to 0 for new variations
                     });
                 }
             }
@@ -132,6 +166,32 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
+            // Handle additional product pictures
+            if (request.AdditionalPicturesToDelete != null && request.AdditionalPicturesToDelete.Any())
+            {
+                foreach (var pictureId in request.AdditionalPicturesToDelete)
+                {
+                    await _productPictureService.DeleteProductPictureAsync(pictureId);
+                }
+            }
+
+            if (request.NewAdditionalPictures != null && request.NewAdditionalPictures.Any())
+            {
+                foreach (var picture in request.NewAdditionalPictures)
+                {
+                    if (picture != null && picture.Length > 0)
+                    {
+                        var createPictureDto = new CreateProductPictureDTO
+                        {
+                            ProductId = productId,
+                            Image = picture
+                        };
+                        
+                        await _productPictureService.CreateProductPictureAsync(createPictureDto);
+                    }
+                }
+            }
+
             await _productRepository.UpdateProductAsync(existingProduct);
             var updatedProduct = await _productRepository.GetProductByIdAsync(productId);
             return ProductMapper.ToDTO(updatedProduct);
@@ -161,6 +221,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 .Include(p => p.ProductVariations)
                 .Include(p => p.ProductMainIngredients)
                 .Include(p => p.ProductForSkinTypes)
+                .Include(p => p.ProductPictures)
                 .ToListAsync();
 
             return (products.Select(ProductMapper.ToDTO).ToList(), totalCount);
@@ -172,14 +233,40 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (product == null)
                 return false;
 
+            // Delete main product image if exists
             if (!string.IsNullOrEmpty(product.PictureUrl))
             {
-                var fileName = product.PictureUrl.Split('/').Last();
-                await _firebaseService.DeleteImageAsync(fileName);
+                var fileName = ExtractFilenameFromFirebaseUrl(product.PictureUrl);
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    await _firebaseService.DeleteImageAsync(fileName);
+                }
             }
+
+            // Delete all associated product pictures
+            await _productPictureService.DeleteProductPicturesByProductIdAsync(productId);
 
             await _productRepository.DeleteProductAsync(productId);
             return true;
+        }
+
+        // Helper method to extract filename from Firebase Storage URL
+        private string ExtractFilenameFromFirebaseUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return null;
+
+            try
+            {
+                var uri = new Uri(url);
+                var path = Uri.UnescapeDataString(uri.AbsolutePath);
+                return path.Split(new[] { "/o/" }, StringSplitOptions.None)[1];
+            }
+            catch
+            {
+                // If URL parsing fails, try a simpler approach
+                return url.Split('/').Last().Split('?').First();
+            }
         }
     }
 }

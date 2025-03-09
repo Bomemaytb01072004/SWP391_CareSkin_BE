@@ -2,6 +2,7 @@ using SWP391_CareSkin_BE.DTOs.Responses.Product;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.DTOS.ProductPicture;
 
 namespace SWP391_CareSkin_BE.Mappers
 {
@@ -65,6 +66,13 @@ namespace SWP391_CareSkin_BE.Mappers
                     ProductUsageId = u.ProductUsageId,
                     Step = u.Step,
                     Instruction = u.Instruction
+                }).ToList(),
+                ProductPictures = product.ProductPictures?.Select(pp => new ProductPictureDTO
+                {
+                    ProductPictureId = pp.ProductPictureId,
+                    ProductId = pp.ProductId,
+                    ProductName = product.ProductName,
+                    PictureUrl = pp.PictureUrl
                 }).ToList()
             };
         }

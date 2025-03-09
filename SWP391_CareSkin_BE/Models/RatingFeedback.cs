@@ -8,7 +8,7 @@ namespace SWP391_CareSkin_BE.Models
     [Table("RatingFeedback")]
     public class RatingFeedback
     {
-        public int Id { get; set; }
+        public int RatingFeedbackId { get; set; }
 
         public int CustomerId { get; set; }
 

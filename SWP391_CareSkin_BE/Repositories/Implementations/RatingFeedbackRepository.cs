@@ -51,7 +51,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(rf => rf.Customer)
                 .Include(rf => rf.Product)
                 .Include(rf => rf.RatingFeedbackImages)
-                .FirstOrDefaultAsync(rf => rf.Id == id);
+                .FirstOrDefaultAsync(rf => rf.RatingFeedbackId == id);
         }
 
         public async Task<RatingFeedback> CreateRatingFeedbackAsync(RatingFeedback ratingFeedback)
@@ -93,7 +93,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<bool> CustomerOwnsRatingFeedbackAsync(int customerId, int ratingFeedbackId)
         {
             return await _context.RatingFeedbacks
-                .AnyAsync(rf => rf.Id == ratingFeedbackId && rf.CustomerId == customerId);
+                .AnyAsync(rf => rf.RatingFeedbackId == ratingFeedbackId && rf.CustomerId == customerId);
         }
 
         public async Task<double> GetAverageRatingForProductAsync(int productId)

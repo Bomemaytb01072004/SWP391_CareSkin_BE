@@ -16,6 +16,6 @@ namespace SWP391_CareSkin_BE.DTOS.RatingFeedback
         [Required]
         public string FeedBack { get; set; }
 
-        public List<IFormFile> Images { get; set; }
+        public List<IFormFile> FeedbackImages { get; set; }
     }
 }
