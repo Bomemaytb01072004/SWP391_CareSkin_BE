@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Data.Common;
+using FirebaseAdmin;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.DTOs.Requests.BlogNews;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.Services.Implementations;
@@ -39,14 +42,14 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         // GET: api/BlogNews/{name}
-        [HttpGet("{name}")]
-        public async Task<IActionResult> GetBlogByTitle(string title)
-        {
-            var blog = await _blogService.GetNewsByNameAsync(title);
-            if (blog == null) return NotFound();
+        //[HttpGet("{name}")]
+        //public async Task<IActionResult> GetBlogByTitle(string title)
+        //{
+        //    var blog = await _blogService.GetNewsByNameAsync(title);
+        //    if (blog == null) return NotFound();
 
-            return Ok(blog);
-        }
+        //    return Ok(blog);
+        //}
 
         // POST: api/BlogNews
         [HttpPost]
@@ -67,20 +70,57 @@ namespace SWP391_CareSkin_BE.Controllers
                 return CreatedAtAction(nameof(GetBlogById),
                     new { id = createdBlog.BlogId }, createdBlog);
             }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"DbUpdateException: {ex}"); 
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException}"); 
+                    Console.WriteLine($"Inner Exception StackTrace: {ex.InnerException.StackTrace}");
+                }
+                return StatusCode(500, $"A database error occurred: {ex.InnerException?.Message ?? ex.Message}");
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while creating the blog: {ex.Message}");
+                Console.WriteLine($"Exception: {ex}");
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
 
         // PUT: api/BlogNews/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBlog(int id, [FromBody] BlogNewsUpdateRequest request)
+        public async Task<IActionResult> UpdateBlog(int id, [FromForm] BlogNewsUpdateRequest request)
         {
-            var updateBlog = await _blogService.UpdateNewsAsync(id, request);
-            if (updateBlog == null) return NotFound();
+            try
+            {
+                string pictureUrl = null;
+                if (request.PictureFile != null)
+                {
+                    var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                    using var stream = request.PictureFile.OpenReadStream();
+                    pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+                }
 
-            return Ok(updateBlog);
+                var updateBlog = await _blogService.UpdateNewsAsync(id, request, pictureUrl);
+                if (updateBlog == null) return NotFound();
+
+                return Ok(updateBlog);
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"DbUpdateException: {ex}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException}");
+                    Console.WriteLine($"Inner Exception StackTrace: {ex.InnerException.StackTrace}");
+                }
+                return StatusCode(500, $"A database error occurred: {ex.InnerException?.Message ?? ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex}");
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }           
         }
 
         // DELETE: api/BlogNews/{id}

@@ -29,36 +29,31 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return BlogNewsMapper.ToDTO(blog);
         }
 
-        public async Task<BlogNewsDTO> GetNewsByNameAsync(string title)
-        {
-            var blog = await _newsRepository.GetNewsByNameAsync(title);
-            return BlogNewsMapper.ToDTO(blog);
-        }
+        //public async Task<BlogNewsDTO> GetNewsByNameAsync(string title)
+        //{
+        //    var blog = await _newsRepository.GetNewsByNameAsync(title);
+        //    return BlogNewsMapper.ToDTO(blog);
+        //}
 
         public async Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, string pictureUrl)
         {
-            var newsEntity = BlogNewsMapper.ToEntity(request, pictureUrl);
-            if(newsEntity == null)
-        {
-          throw new Exception("Failed to create entity from request"); 
-        }
-            await _newsRepository.AddNewsAsync(newsEntity);
+            var blogEntity = BlogNewsMapper.ToEntity(request, pictureUrl);
+            await _newsRepository.AddNewsAsync(blogEntity);
 
-            var createdNews = _newsRepository.GetNewsByIdAsync(newsEntity.BlogId);
-            return BlogNewsMapper.ToDTO(newsEntity);
+            var createdBlog = await _newsRepository.GetNewsByIdAsync(blogEntity.BlogId);
+            return BlogNewsMapper.ToDTO(createdBlog);
         }
 
-        public async Task<BlogNewsDTO> UpdateNewsAsync(int blogId, BlogNewsUpdateRequest request)
+        public async Task<BlogNewsDTO> UpdateNewsAsync(int blogId, BlogNewsUpdateRequest request, string pictureUrl)
         {
             var existedNews = await _newsRepository.GetNewsByIdAsync(blogId);
             if (existedNews == null) return null;
 
-            BlogNewsMapper.UpdateEntity(existedNews, request);
+            BlogNewsMapper.UpdateEntity(existedNews, request, pictureUrl);
             await _newsRepository.UpdateNewsAsync(existedNews);
 
             var updateNews = await _newsRepository.GetNewsByIdAsync(blogId);
             return BlogNewsMapper.ToDTO(updateNews);
-
         }
 
         public async Task<bool> DeleteNewsAsync(int blogId)
