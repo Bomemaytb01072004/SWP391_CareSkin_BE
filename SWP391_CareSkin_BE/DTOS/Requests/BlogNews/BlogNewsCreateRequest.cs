@@ -10,6 +10,7 @@ namespace SWP391_CareSkin_BE.DTOs.Requests.BlogNews
         [Required]
         public string Content { get; set; }
 
+        [Required]
         public IFormFile? PictureFile { get; set; }
 
         [Required] // Thêm Required nếu CustomerId bắt buộc
