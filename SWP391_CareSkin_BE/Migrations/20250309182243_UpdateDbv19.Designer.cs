@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
 
@@ -11,9 +12,11 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250309182243_UpdateDbv19")]
+    partial class UpdateDbv19
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,6 +253,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("AttemmptId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -258,6 +264,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasIndex("AnswerId");
 
                     b.HasIndex("AttemmptId");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("QuestionId");
 
@@ -1025,6 +1033,10 @@ namespace SWP391_CareSkin_BE.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("SWP391_CareSkin_BE.Models.Customer", null)
+                        .WithMany("Historys")
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("SWP391_CareSkin_BE.Models.Question", "Question")
                         .WithMany("Historys")
                         .HasForeignKey("QuestionId")
@@ -1375,6 +1387,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("BlogNews");
 
                     b.Navigation("Carts");
+
+                    b.Navigation("Historys");
 
                     b.Navigation("Orders");
 

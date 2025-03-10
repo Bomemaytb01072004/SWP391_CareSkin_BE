@@ -42,10 +42,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request, string pictureUrl)
         {
+            // Check if a product with the same name already exists
+            bool productExists = await _productRepository.ExistsByNameAsync(request.ProductName);
+            if (productExists)
+            {
+                // Throw ArgumentException with a specific message that will be caught by the controller
+                throw new ArgumentException($"Product with name '{request.ProductName}' already exists");
+            }
+
             var productEntity = ProductMapper.ToEntity(request, pictureUrl);
             await _productRepository.AddProductAsync(productEntity);
             var createdProduct = await _productRepository.GetProductByIdAsync(productEntity.ProductId);
-            
+
             // Handle additional product pictures if provided
             if (request.AdditionalPictures != null && request.AdditionalPictures.Any())
             {
@@ -58,15 +66,15 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                             ProductId = createdProduct.ProductId,
                             Image = picture
                         };
-                        
+
                         await _productPictureService.CreateProductPictureAsync(createPictureDto);
                     }
                 }
-                
+
                 // Reload the product to include the newly added pictures
                 createdProduct = await _productRepository.GetProductByIdAsync(productEntity.ProductId);
             }
-            
+
             return ProductMapper.ToDTO(createdProduct);
         }
 

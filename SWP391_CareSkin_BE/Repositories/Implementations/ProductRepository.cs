@@ -45,6 +45,12 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
+        public async Task<bool> ExistsByNameAsync(string productName)
+        {
+            return await _context.Products
+                .AnyAsync(p => p.ProductName.ToLower() == productName.ToLower());
+        }
+
         public async Task AddProductAsync(Product product)
         {
             _context.Products.Add(product);
