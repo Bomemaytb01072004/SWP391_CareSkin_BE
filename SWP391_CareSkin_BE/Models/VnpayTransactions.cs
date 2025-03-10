@@ -7,16 +7,12 @@ namespace SWP391_CareSkin_BE.Models
     public class VnpayTransactions
     {
         [Key]
-        public int Id { get; set; }
-        [Required]
+        public int TransactionId { get; set; }
         public int OrderId { get; set; }
-
-        [Column(TypeName = "decimal(18,4)")]
         public decimal Amount { get; set; }
-        public string PayUrl { get; set; }
-        public int ResultCode { get; set; }
-        public string Message { get; set; }
-        public string Status { get; set; }
+        public string OrderDescription { get; set; }
+        public string PaymentMethod { get; set; }
+        public string PaymentStatus { get; set; } // "Pending", "Success", "Failed"
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("OrderId")]

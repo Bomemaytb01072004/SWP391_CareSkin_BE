@@ -88,7 +88,6 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<SkinType>().HasKey(s => s.SkinTypeId);
             modelBuilder.Entity<Staff>().HasKey(s => s.StaffId);
             modelBuilder.Entity<Support>().HasKey(s => s.SuppportId);
-            modelBuilder.Entity<VnpayTransactions>().HasKey(v => v.Id);
             modelBuilder.Entity<UserQuizAttempt>().HasKey(u => u.UserQuizAttemptId);
 
 
