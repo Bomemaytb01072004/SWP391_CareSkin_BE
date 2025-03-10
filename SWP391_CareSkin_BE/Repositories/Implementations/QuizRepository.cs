@@ -17,18 +17,17 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public async Task<IEnumerable<Quiz>> GetAllAsync()
         {
-            return await _context.Quizs.ToListAsync();
+            return await _context.Quizs
+                .Include(q => q.Questions)
+                .ThenInclude(q => q.Answers)
+                .ToListAsync();
         }
 
-        public async Task<Quiz> GetByIdAsync(int quizId, bool includeQuestions = false)
+        public async Task<Quiz> GetByIdAsync(int quizId)
         {
-            IQueryable<Quiz> query = _context.Quizs;
-
-            if (includeQuestions)
-            {
-                query = query.Include(q => q.Questions)
-                            .ThenInclude(q => q.Answers);
-            }
+            IQueryable<Quiz> query = _context.Quizs.Include(q => q.Questions)
+                                                        .ThenInclude(q => q.Answers);
+            
 
             return await query.FirstOrDefaultAsync(q => q.QuizId == quizId);
         }

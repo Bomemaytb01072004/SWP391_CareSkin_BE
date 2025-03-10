@@ -120,6 +120,24 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<ISkinTypeRepository, SkinTypeRepository>();
             builder.Services.AddScoped<ISkinTypeService, SkinTypeService>();
 
+            builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+            builder.Services.AddScoped<IQuizService, QuizService>();
+
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
+
+            builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+            builder.Services.AddScoped<IAnswerService, AnswerService>();
+
+            //builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+            //builder.Services.AddScoped<IHistoryService, IHistoryService>;
+
+            //builder.Services.AddScoped<IResultRepository, ResultRepository>();
+            //builder.Services.AddScoped<IResultService, ResultService>();
+
+            //builder.Services.AddScoped<IUserQuizAttemptRepository, UserQuizAttemptRepository>();
+            //builder.Services.AddScoped<IUserQuizAttemptService, UserQuizAttemptService>();
+
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();

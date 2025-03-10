@@ -18,11 +18,11 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Quiz
         [HttpGet]
-        public async Task<IActionResult> GetAllQuizzes([FromQuery] bool includeQuestions = false)
+        public async Task<IActionResult> GetAllQuizzes()
         {
             try
             {
-                var quizzes = await _quizService.GetAllQuizzesAsync(includeQuestions);
+                var quizzes = await _quizService.GetAllQuizzesAsync();
                 return Ok(quizzes);
             }
             catch (Exception ex)
@@ -33,11 +33,11 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Quiz/{quizId}
         [HttpGet("{quizId}")]
-        public async Task<IActionResult> GetQuizById(int quizId, [FromQuery] bool includeQuestions = false)
+        public async Task<IActionResult> GetQuizById(int quizId)
         {
             try
             {
-                var quiz = await _quizService.GetQuizByIdAsync(quizId, includeQuestions);
+                var quiz = await _quizService.GetQuizByIdAsync(quizId);
                 return Ok(quiz);
             }
             catch (ArgumentException ex)

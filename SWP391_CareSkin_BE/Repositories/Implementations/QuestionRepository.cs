@@ -14,15 +14,9 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Question>> GetByQuizIdAsync(int quizId, bool includeAnswers = false)
+        public async Task<IEnumerable<Question>> GetByQuizIdAsync(int quizId)
         {
             IQueryable<Question> query = _context.Questions.Where(q => q.QuizId == quizId);
-
-            if (includeAnswers)
-            {
-                query = query.Include(q => q.Answers);
-            }
-
             return await query.ToListAsync();
         }
 

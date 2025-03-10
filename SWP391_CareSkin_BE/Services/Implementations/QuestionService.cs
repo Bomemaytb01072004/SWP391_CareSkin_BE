@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _quizRepository = quizRepository;
         }
 
-        public async Task<List<QuestionDTO>> GetQuestionsByQuizAsync(int quizId, bool includeAnswers = false)
+        public async Task<List<QuestionDTO>> GetQuestionsByQuizAsync(int quizId)
         {
             var quizExists = await _quizRepository.ExistsAsync(quizId);
             if (!quizExists)
@@ -27,8 +27,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException($"Quiz with ID {quizId} not found");
             }
 
-            var questions = await _questionRepository.GetByQuizIdAsync(quizId, includeAnswers);
-            return QuestionMapper.ToDTOList(questions, includeAnswers);
+            var questions = await _questionRepository.GetByQuizIdAsync(quizId);
+            return QuestionMapper.ToDTOList(questions);
         }
 
         public async Task<QuestionDTO> GetQuestionByIdAsync(int questionId, bool includeAnswers = false)

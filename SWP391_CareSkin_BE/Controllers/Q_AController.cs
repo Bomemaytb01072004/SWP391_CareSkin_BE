@@ -21,11 +21,11 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Q_A/quizzes/{quizId}/questions
         [HttpGet("quizzes/{quizId}/questions")]
-        public async Task<IActionResult> GetQuestionsByQuiz(int quizId, [FromQuery] bool includeAnswers = false)
+        public async Task<IActionResult> GetQuestionsByQuiz(int quizId)
         {
             try
             {
-                var questions = await _questionService.GetQuestionsByQuizAsync(quizId, includeAnswers);
+                var questions = await _questionService.GetQuestionsByQuizAsync(quizId);
                 return Ok(questions);
             }
             catch (ArgumentException ex)

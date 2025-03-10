@@ -17,21 +17,21 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _quizRepository = quizRepository;
         }
 
-        public async Task<List<QuizDTO>> GetAllQuizzesAsync(bool includeQuestions = false)
+        public async Task<List<QuizDTO>> GetAllQuizzesAsync()
         {
             var quizzes = await _quizRepository.GetAllAsync();
-            return QuizMapper.ToDTOList(quizzes, includeQuestions);
+            return QuizMapper.ToDTOList(quizzes);
         }
 
-        public async Task<QuizDTO> GetQuizByIdAsync(int quizId, bool includeQuestions = false)
+        public async Task<QuizDTO> GetQuizByIdAsync(int quizId)
         {
-            var quiz = await _quizRepository.GetByIdAsync(quizId, includeQuestions);
+            var quiz = await _quizRepository.GetByIdAsync(quizId);
             if (quiz == null)
             {
                 throw new ArgumentException($"Quiz with ID {quizId} not found");
             }
             
-            return QuizMapper.ToDTO(quiz, includeQuestions);
+            return QuizMapper.ToDTO(quiz);
         }
 
         public async Task<QuizDTO> CreateQuizAsync(CreateQuizDTO createQuizDTO)
