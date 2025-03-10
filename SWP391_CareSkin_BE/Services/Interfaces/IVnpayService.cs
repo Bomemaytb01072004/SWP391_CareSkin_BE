@@ -5,8 +5,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IVnpayService
     {
-        Task<VnpayResponseDTO> CreatePaymentAsync(VnpayRequestDTO request);
-        bool ValidateSignature(Dictionary<string, string> queryParams);
-        Task<bool> ProcessPaymentCallbackAsync(Dictionary<string, string> queryParams);
+        string CreatePaymentUrl(VnpayRequestDTO model, HttpContext context);
+        VnpayResponseDTO PaymentExecute(IQueryCollection collection);
     }
 }

@@ -261,6 +261,17 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(s => s.Staff)
                 .HasForeignKey(s => s.StaffId);
 
+            modelBuilder.Entity<VnpayTransactions>()
+            .HasOne(v => v.order)
+            .WithMany(o => o.VnpayTransactions)
+            .HasForeignKey(v => v.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<VnpayTransactions>()
+                .Property(v => v.Amount)
+                .HasColumnType("decimal(18, 4)");
+
+
             //end relationship
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWP391_CareSkin_BE.DTOS.Responses
 {
@@ -14,6 +15,9 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public string ConfirmPassword { get; set; }
 
         [JsonPropertyName("Email")]
+        [Required]
+        [MaxLength(100)]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$", ErrorMessage = "Email phải có định dạng hợp lệ và kết thúc bằng @gmail.com")]
         public string Email { get; set; }
 
 

@@ -4,8 +4,8 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
     public interface IVnpayRepository
     {
-        Task AddTransactionAsync(VnpayTransactions transaction);
-        Task<VnpayTransactions> GetTransactionByOrderIdAsync(string orderId);
+        Task<VnpayTransactions> AddTransactionAsync(VnpayTransactions transaction);
+        Task<VnpayTransactions> GetByOrderIdAsync(int orderId);
         Task UpdateTransactionAsync(VnpayTransactions transaction);
     }
 }

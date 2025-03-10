@@ -1,5 +1,6 @@
 ﻿using SWP391_CareSkin_BE.DTOs.Requests.Vnpay;
 using SWP391_CareSkin_BE.DTOs.Responses.Vnpay;
+using SWP391_CareSkin_BE.Lib;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -10,90 +11,58 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 {
     public class VnpayService : IVnpayService
     {
-        private readonly string _vnpTmnCode;
-        private readonly string _vnpHashSecret;
-        private readonly string _vnpUrl;
+        private readonly IConfiguration _configuration;
         private readonly IVnpayRepository _vnpayRepository;
 
         public VnpayService(IConfiguration configuration, IVnpayRepository vnpayRepository)
         {
-            _vnpTmnCode = configuration["Vnpay:TmnCode"];
-            _vnpHashSecret = configuration["Vnpay:HashSecret"];
-            _vnpUrl = configuration["Vnpay:Url"];
+            _configuration = configuration;
             _vnpayRepository = vnpayRepository;
         }
 
-        public async Task<VnpayResponseDTO> CreatePaymentAsync(VnpayRequestDTO request)
+        public string CreatePaymentUrl(VnpayRequestDTO model, HttpContext context)
         {
-            var transaction = VnpayMapper.ToEntity(request);
-            await _vnpayRepository.AddTransactionAsync(transaction);
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+            var transactionId = DateTime.Now.Ticks.ToString();
+            var pay = new VnpayLibrary();
+            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
 
-            var timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-            var vnpayData = new SortedDictionary<string, string>
+            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
+            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
+            pay.AddRequestData("vnp_Amount", ((int)model.Amount * 100).ToString());
+            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
+            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
+            pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
+            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
+            pay.AddRequestData("vnp_OrderInfo", $"{model.CustomerName} {model.OrderDescription} {model.Amount}");
+            pay.AddRequestData("vnp_OrderType", model.OrderType);
+            pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
+            pay.AddRequestData("vnp_TxnRef", transactionId);
+
+            var paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
+            return paymentUrl;
+        }
+
+        public VnpayResponseDTO PaymentExecute(IQueryCollection collections)
+        {
+            var pay = new VnpayLibrary();
+            var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+
+            return new VnpayResponseDTO
             {
-                { "vnp_Version", "2.1.0" },
-                { "vnp_Command", "pay" },
-                { "vnp_TmnCode", _vnpTmnCode },
-                { "vnp_Amount", ((int)request.Amount * 100).ToString() },
-                { "vnp_TxnRef", request.OrderId },
-                { "vnp_CreateDate", timeStamp }
+                Success = response.Success,
+                OrderDescription = response.OrderDescription,
+                OrderId = response.OrderId,
+                TransactionId = response.TransactionId,
+                PaymentMethod = response.PaymentMethod,
+                PaymentId = response.PaymentId,
+                Token = response.Token,
+                VnPayResponseCode = response.VnPayResponseCode
             };
-
-            string queryString = string.Join("&", vnpayData.Select(kvp => $"{kvp.Key}={kvp.Value}"));
-            string secureHash = ComputeHmacSHA512(queryString, _vnpHashSecret);
-            string paymentUrl = $"{_vnpUrl}?{queryString}&vnp_SecureHash={secureHash}";
-
-            return VnpayMapper.ToResponse(paymentUrl, request);
         }
-
-        public async Task<bool> ProcessPaymentCallbackAsync(Dictionary<string, string> queryParams)
-        {
-            if (!ValidateSignature(queryParams))
-            {
-                return false; // Chữ ký không hợp lệ, có thể là request giả mạo
-            }
-
-            string orderId = queryParams["vnp_TxnRef"];
-            string responseCode = queryParams["vnp_ResponseCode"];
-
-            var transaction = await _vnpayRepository.GetTransactionByOrderIdAsync(orderId);
-            if (transaction == null)
-            {
-                return false; // Không tìm thấy giao dịch
-            }
-            // Kiểm tra mã phản hồi từ VNPAY
-            if (responseCode == "00")
-            {
-                transaction.Status = "Success";
-            }
-            else
-            {
-                transaction.Status = "Failed";
-            }
-
-            await _vnpayRepository.UpdateTransactionAsync(transaction);
-            return true;
-        }
-
-        public bool ValidateSignature(Dictionary<string, string> queryParams)
-        {
-            if (!queryParams.ContainsKey("vnp_SecureHash")) return false;
-
-            string receivedHash = queryParams["vnp_SecureHash"];
-            queryParams.Remove("vnp_SecureHash");
-
-            string generatedHash = ComputeHmacSHA512(string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={kvp.Value}")), _vnpHashSecret);
-            return receivedHash.Equals(generatedHash, StringComparison.OrdinalIgnoreCase);
-        }
-        private string ComputeHmacSHA512(string data, string key)
-        {
-            using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(key)))
-            {
-                return BitConverter.ToString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).Replace("-", "").ToLower();
-            }
-        }
-
 
     }
-
 }

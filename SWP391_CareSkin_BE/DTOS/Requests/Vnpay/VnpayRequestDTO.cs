@@ -2,9 +2,11 @@
 {
     public class VnpayRequestDTO
     {
-        public string OrderId { get; set; } 
-        public decimal Amount { get; set; }  
-        public string ReturnUrl { get; set; }
-        public string IpAddress { get; set; }
+        public int OrderId { get; set; }       
+        public decimal Amount { get; set; }        
+        public string OrderDescription { get; set; }
+        public string OrderType { get; set; }
+
+        public string CustomerName { get; set; }
     }
 }

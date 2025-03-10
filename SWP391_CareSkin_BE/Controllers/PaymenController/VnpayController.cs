@@ -8,33 +8,33 @@ namespace SWP391_CareSkin_BE.Controllers
     [Route("api/vnpay")]
     public class VnpayController : ControllerBase
     {
-        private readonly IVnpayService _vnpayService;
+        private readonly IVnpayService _vnPayService;
 
-        public VnpayController(IVnpayService vnpayService)
+        public VnpayController(IVnpayService vnPayService)
         {
-            _vnpayService = vnpayService;
+            _vnPayService = vnPayService;
         }
 
+        // Tạo thanh toán
         [HttpPost("create-payment")]
-        public async Task<IActionResult> CreatePayment([FromBody] VnpayRequestDTO request)
+        public IActionResult CreatePayment([FromBody] VnpayRequestDTO model)
         {
-            var response = await _vnpayService.CreatePaymentAsync(request);
-            return Ok(response);
+            var paymentUrl = _vnPayService.CreatePaymentUrl(model, HttpContext);
+            return Ok(new { paymentUrl });
         }
 
-        [HttpGet("payment-callback")]
-        public async Task<IActionResult> PaymentCallback()
-        {
-            var queryParams = Request.Query.ToDictionary(k => k.Key, v => v.Value.ToString());
 
-            bool result = await _vnpayService.ProcessPaymentCallbackAsync(queryParams);
-            if (!result)
+        // Nhận callback từ VNPAY
+        [HttpGet("callback")]
+        public IActionResult PaymentCallback()
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
+            if (!response.Success)
             {
-                return BadRequest(new { message = "Thanh toán không hợp lệ hoặc thất bại" });
+                return BadRequest(response);
             }
+            return Ok(response);
 
-            return Ok(new { message = "Thanh toán thành công" });
         }
-
     }
 }

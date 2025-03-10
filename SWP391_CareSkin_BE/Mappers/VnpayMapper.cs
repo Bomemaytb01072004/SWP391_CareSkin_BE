@@ -6,25 +6,31 @@ namespace SWP391_CareSkin_BE.Mappers
 {
     public static class VnpayMapper
     {
-        public static VnpayTransactions ToEntity(VnpayRequestDTO request)
+        public static VnpayTransactions ToEntity(this VnpayRequestDTO model)
         {
             return new VnpayTransactions
             {
-                OrderId = request.OrderId,
-                Amount = request.Amount,
-                Status = "Pending",
+                
+                OrderId = model.OrderId,
+                Amount = model.Amount,
+                OrderDescription = model.OrderDescription,
+                PaymentMethod = "VnPay",
+                PaymentStatus = "Pending",
                 CreatedAt = DateTime.UtcNow
             };
         }
 
-        public static VnpayResponseDTO ToResponse(string paymentUrl, VnpayRequestDTO request)
+        // Từ Entity sang PaymentResponseModel (nếu muốn)
+        public static VnpayResponseDTO ToResponse(this VnpayTransactions entity)
         {
             return new VnpayResponseDTO
             {
-                PaymentUrl = paymentUrl,
-                OrderId = request.OrderId,
-                Amount = request.Amount,
-                Status = "Pending"
+                OrderDescription = entity.OrderDescription,
+                TransactionId = entity.TransactionId.ToString(),
+                OrderId = entity.OrderId,
+                PaymentMethod = entity.PaymentMethod,
+                // ... tuỳ biến
+                Success = entity.PaymentStatus == "Success"
             };
         }
     }

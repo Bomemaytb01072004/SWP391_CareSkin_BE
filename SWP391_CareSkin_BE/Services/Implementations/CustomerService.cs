@@ -7,6 +7,7 @@ using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -41,6 +42,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException("Email hoặc username đã tồn tại.");
             }
 
+            // Kiểm tra email
+            if (!Regex.IsMatch(request.Email, @"^[a-zA-Z0-9._%+-]+@gmail\.com$"))
+            {
+                throw new ArgumentException("Email phải có định dạng hợp lệ và kết thúc bằng @gmail.com");
+            }
+
+            // Kiểm tra số điện thoại
+            if (!string.IsNullOrEmpty(request.Phone) && !Regex.IsMatch(request.Phone, @"^0\d{10}$"))
+            {
+                throw new ArgumentException("Số điện thoại phải bắt đầu bằng 0 và có 11 chữ số.");
+            }
+
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var newCustomer = CustomerMapper.ToCustomer(request, hashedPassword);
             await _customerRepository.AddCustomerAsync(newCustomer);
@@ -54,6 +67,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (customer == null)
             {
                 throw new ArgumentException("Khách hàng không tồn tại.");
+            }
+
+            // Kiểm tra email
+            if (!string.IsNullOrEmpty(request.Email) && !Regex.IsMatch(request.Email, @"^[a-zA-Z0-9._%+-]+@gmail\.com$"))
+            {
+                throw new ArgumentException("Email phải có định dạng hợp lệ và kết thúc bằng @gmail.com");
+            }
+
+            // Kiểm tra số điện thoại
+            if (!string.IsNullOrEmpty(request.Phone) && !Regex.IsMatch(request.Phone, @"^0\d{10}$"))
+            {
+                throw new ArgumentException("Số điện thoại phải bắt đầu bằng 0 và có 11 chữ số.");
             }
 
             CustomerMapper.UpdateCustomer(customer, request, pictureUrl);

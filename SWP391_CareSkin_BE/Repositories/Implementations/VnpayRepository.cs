@@ -15,15 +15,18 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             _context = context;
         }
-        public async Task AddTransactionAsync(VnpayTransactions transaction)
+
+        public async Task<VnpayTransactions> AddTransactionAsync(VnpayTransactions transaction)
         {
-            await _context.VnpayTransactions.AddAsync(transaction);
+            _context.VnpayTransactions.Add(transaction);
             await _context.SaveChangesAsync();
+            return transaction;
         }
 
-        public async Task<VnpayTransactions> GetTransactionByOrderIdAsync(string orderId)
+        public async Task<VnpayTransactions> GetByOrderIdAsync(int orderId)
         {
-            return await _context.VnpayTransactions.FirstOrDefaultAsync(t => t.OrderId == orderId);
+            return await _context.VnpayTransactions
+            .FirstOrDefaultAsync(t => t.OrderId == orderId);
         }
 
         public async Task UpdateTransactionAsync(VnpayTransactions transaction)
