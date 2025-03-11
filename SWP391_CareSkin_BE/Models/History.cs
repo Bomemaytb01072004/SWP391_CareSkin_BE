@@ -13,10 +13,6 @@ namespace SWP391_CareSkin_BE.Models
         public int QuestionId { get; set; }
 
         public int AnswerId { get; set; }
-        
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
 
         public virtual UserQuizAttempt UserQuizAttempt { get; set; }
 

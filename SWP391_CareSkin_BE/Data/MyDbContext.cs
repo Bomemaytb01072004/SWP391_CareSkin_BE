@@ -22,7 +22,7 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
-        public DbSet<History> Historys { get; set; }
+        public DbSet<History> Histories { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
@@ -259,11 +259,6 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(q => q.QuizId);
 
             modelBuilder.Entity<Quiz>()
-                .HasMany(q => q.Results)
-                .WithOne(result => result.Quiz)
-                .HasForeignKey(result => result.QuizId);
-
-            modelBuilder.Entity<Quiz>()
                 .HasMany(q => q.UserQuizAttempts)
                 .WithOne(u => u.Quiz)
                 .HasForeignKey(u => u.QuizId);
@@ -272,11 +267,6 @@ namespace SWP391_CareSkin_BE.Data
                 .HasOne(result => result.Customer)
                 .WithMany(c => c.Results)
                 .HasForeignKey(result => result.CustomerId);
-
-            modelBuilder.Entity<Result>()
-                .HasOne(result => result.Quiz)
-                .WithMany(q => q.Results)
-                .HasForeignKey(result => result.QuizId);
 
             modelBuilder.Entity<Result>()
                 .HasOne(result => result.SkinType)
@@ -346,7 +336,8 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<Result>()
                 .HasOne(r => r.UserQuizAttempt)
                 .WithOne()
-                .HasForeignKey<Result>(r => r.UserQuizAttemptId);
+                .HasForeignKey<Result>(r => r.UserQuizAttemptId)
+                .OnDelete(DeleteBehavior.NoAction);
             //end relationship
         }
     }

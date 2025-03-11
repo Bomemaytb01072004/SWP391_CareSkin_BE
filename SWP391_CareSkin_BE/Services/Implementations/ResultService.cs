@@ -7,6 +7,7 @@ using SWP391_CareSkin_BE.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -55,8 +56,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             // Determine skin type based on score
-            // This is a simplified example - you might have a more complex algorithm
-            int skinTypeId = DetermineSkinTypeId(totalScore, totalQuestions);
+            int skinTypeId = await DetermineSkinTypeId(totalScore);
 
             // Create result entity using mapper
             var resultEntity = ResultMapper.ToEntity(createResultDTO, totalScore, totalQuestions, skinTypeId);
@@ -66,11 +66,11 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             
             // Mark the attempt as completed
             userQuizAttempt.IsCompleted = true;
-            userQuizAttempt.CompletedAt = DateTime.Now;
+            userQuizAttempt.CompletedAt = DateOnly.FromDateTime(DateTime.Now);
             await _userQuizAttemptRepository.UpdateAsync(userQuizAttempt);
             
             // Return the DTO with related entities
-            return ResultMapper.ToDTO(createdResult, true, true);
+            return ResultMapper.ToDTO(createdResult);
         }
 
         public async Task<ResultDTO> UpdateResultScoreAsync(int resultId, int additionalScore)
@@ -86,16 +86,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             result.TotalScore += additionalScore;
             
             // Update the last quiz time
-            result.LastQuizTime = DateTime.Now;
+            result.LastQuizTime = DateOnly.FromDateTime(DateTime.Now);
             
             // Recalculate skin type if needed based on new score
-            result.SkinTypeId = DetermineSkinTypeId(result.TotalScore, result.TotalQuestions);
+            result.SkinTypeId = await DetermineSkinTypeId(result.TotalScore);
             
             // Save the updated result
             var updatedResult = await _resultRepository.UpdateAsync(result);
             
             // Return the updated result DTO
-            return ResultMapper.ToDTO(updatedResult, true, true);
+            return ResultMapper.ToDTO(updatedResult);
         }
 
         public async Task<ResultDTO> GetResultByIdAsync(int resultId)
@@ -107,39 +107,34 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException($"Result with ID {resultId} not found");
             }
             
-            return ResultMapper.ToDTO(result, true, true);
+            return ResultMapper.ToDTO(result);
         }
 
         public async Task<List<ResultDTO>> GetResultsByCustomerIdAsync(int customerId)
         {
             var results = await _resultRepository.GetByCustomerIdAsync(customerId);
-            return ResultMapper.ToDTOList(results, true, false);
-        }
-
-        public async Task<ResultDTO> GetLatestResultByQuizAndCustomerAsync(int quizId, int customerId)
-        {
-            var result = await _resultRepository.GetLatestByQuizAndCustomerAsync(quizId, customerId);
-            
-            if (result == null)
-            {
-                throw new ArgumentException($"No result found for quiz ID {quizId} and customer ID {customerId}");
-            }
-            
-            return ResultMapper.ToDTO(result, true, true);
+            return ResultMapper.ToDTOList(results);
         }
 
         // Helper method to determine skin type based on quiz score
-        private int DetermineSkinTypeId(int score, int totalQuestions)
+        private async Task<int> DetermineSkinTypeId(int score)
         {
-            // This is a simplified example - replace with your actual logic
-            double scorePercentage = (double)score / totalQuestions;
+            // Get all skin types from the database
+            var skinTypes = await _skinTypeRepository.GetAllAsync();
             
-            // Example logic (replace with your actual skin type determination logic):
-            if (scorePercentage >= 0.8) return 1; // e.g., Normal skin
-            else if (scorePercentage >= 0.6) return 2; // e.g., Dry skin
-            else if (scorePercentage >= 0.4) return 3; // e.g., Oily skin
-            else if (scorePercentage >= 0.2) return 4; // e.g., Combination skin
-            else return 5; // e.g., Sensitive skin
+            // Find the skin type where the score falls between MinScore and MaxScore
+            var matchingSkinType = skinTypes.FirstOrDefault(st => score >= st.MinScore && score <= st.MaxScore);
+            
+            // If no matching skin type is found, return the one with the closest score range
+            if (matchingSkinType == null)
+            {
+                // Find the skin type with the closest min/max range to the score
+                matchingSkinType = skinTypes
+                    .OrderBy(st => Math.Min(Math.Abs(st.MinScore - score), Math.Abs(st.MaxScore - score)))
+                    .FirstOrDefault();
+            }
+            
+            return matchingSkinType?.SkinTypeId ?? 1; // Default to ID 1 if no skin type found
         }
     }
 }

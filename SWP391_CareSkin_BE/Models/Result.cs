@@ -9,8 +9,6 @@ namespace SWP391_CareSkin_BE.Models
         public int ResultId { get; set; }
 
         public int CustomerId { get; set; }
-
-        public int QuizId { get; set; }
         
         public int UserQuizAttemptId { get; set; }
 
@@ -20,13 +18,11 @@ namespace SWP391_CareSkin_BE.Models
         
         public int TotalQuestions { get; set; }
 
-        public DateTime LastQuizTime { get; set; }
+        public DateOnly LastQuizTime { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
 
         public virtual Customer Customer { get; set; }
-
-        public virtual Quiz Quiz { get; set; }
 
         public virtual SkinType SkinType { get; set; }
         

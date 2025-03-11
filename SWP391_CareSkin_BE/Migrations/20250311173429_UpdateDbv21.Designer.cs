@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
 
@@ -11,9 +12,11 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311173429_UpdateDbv21")]
+    partial class UpdateDbv21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -728,14 +731,17 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResultId"));
 
-                    b.Property<DateOnly>("CreatedAt")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("LastQuizTime")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("LastQuizTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SkinTypeId")
                         .HasColumnType("int");
@@ -752,6 +758,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasKey("ResultId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("QuizId");
 
                     b.HasIndex("SkinTypeId");
 
@@ -918,11 +926,11 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("AttemptNumber")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly?>("CompletedAt")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("CreatedAt")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -1281,6 +1289,12 @@ namespace SWP391_CareSkin_BE.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SWP391_CareSkin_BE.Models.Quiz", "Quiz")
+                        .WithMany("Results")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SWP391_CareSkin_BE.Models.SkinType", "SkinType")
                         .WithMany("Results")
                         .HasForeignKey("SkinTypeId")
@@ -1294,6 +1308,8 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Quiz");
 
                     b.Navigation("SkinType");
 
@@ -1471,6 +1487,8 @@ namespace SWP391_CareSkin_BE.Migrations
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Quiz", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("Results");
 
                     b.Navigation("UserQuizAttempts");
                 });

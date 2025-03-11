@@ -129,14 +129,14 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
             builder.Services.AddScoped<IAnswerService, AnswerService>();
 
-            //builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-            //builder.Services.AddScoped<IHistoryService, IHistoryService>;
+            builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+            builder.Services.AddScoped<IHistoryService, HistoryService>();
 
-            //builder.Services.AddScoped<IResultRepository, ResultRepository>();
-            //builder.Services.AddScoped<IResultService, ResultService>();
+            builder.Services.AddScoped<IResultRepository, ResultRepository>();
+            builder.Services.AddScoped<IResultService, ResultService>();
 
-            //builder.Services.AddScoped<IUserQuizAttemptRepository, UserQuizAttemptRepository>();
-            //builder.Services.AddScoped<IUserQuizAttemptService, UserQuizAttemptService>();
+            builder.Services.AddScoped<IUserQuizAttemptRepository, UserQuizAttemptRepository>();
+            builder.Services.AddScoped<IUserQuizAttemptService, UserQuizAttemptService>();
 
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 

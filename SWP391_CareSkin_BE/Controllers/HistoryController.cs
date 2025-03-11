@@ -17,12 +17,12 @@ namespace SWP391_CareSkin_BE.Controllers
             _historyService = historyService;
         }
 
-        [HttpPost("attempt/{attemptId}")]
-        public async Task<ActionResult<HistoryDTO>> CreateHistory(int attemptId, [FromBody] CreateHistoryDTO createHistoryDTO)
+        [HttpPost("attempt/{userQuizAttemptId}")]
+        public async Task<ActionResult<HistoryDTO>> CreateHistory(int userQuizAttemptId, [FromBody] CreateHistoryDTO createHistoryDTO)
         {
             try
             {
-                var history = await _historyService.CreateHistoryAsync(attemptId, createHistoryDTO);
+                var history = await _historyService.CreateHistoryAsync(userQuizAttemptId, createHistoryDTO);
                 return Ok(history);
             }
             catch (Exception ex)
@@ -31,12 +31,26 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpGet("attempt/{attemptId}")]
-        public async Task<ActionResult<List<HistoryDTO>>> GetHistoriesByAttemptId(int attemptId, [FromQuery] bool includeDetails = false)
+        [HttpPut("attempt/{userQuizAttemptId}/answer")]
+        public async Task<ActionResult<HistoryDTO>> CreateOrUpdateHistory(int userQuizAttemptId, [FromBody] CreateHistoryDTO historyDTO)
         {
             try
             {
-                var histories = await _historyService.GetHistoriesByAttemptIdAsync(attemptId, includeDetails);
+                var history = await _historyService.CreateOrUpdateHistoryAsync(userQuizAttemptId, historyDTO);
+                return Ok(history);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("attempt/{userQuizAttemptId}")]
+        public async Task<ActionResult<List<HistoryDTO>>> GetHistoriesByAttemptId(int userQuizAttemptId, [FromQuery] bool includeDetails = false)
+        {
+            try
+            {
+                var histories = await _historyService.GetHistoriesByAttemptIdAsync(userQuizAttemptId, includeDetails);
                 return Ok(histories);
             }
             catch (Exception ex)

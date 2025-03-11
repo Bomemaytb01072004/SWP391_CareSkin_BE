@@ -14,20 +14,11 @@ namespace SWP391_CareSkin_BE.Mappers
             var historyDTO = new HistoryDTO
             {
                 HistoryId = history.HistoryId,
-                AttemmptId = history.AttemmptId,
-                QuestionId = history.QuestionId,
-                AnswerId = history.AnswerId,
-                CreatedAt = history.CreatedAt,
-                UpdatedAt = history.UpdatedAt
+                AttemmptId = history.AttemmptId
             };
 
             if (includeDetails)
             {
-                if (history.Question != null)
-                {
-                    historyDTO.Question = new List<QuestionDTO> { QuestionMapper.ToDTO(history.Question) };
-                }
-
                 if (history.Answer != null)
                 {
                     historyDTO.Answer = new List<AnswerDTO> { AnswerMapper.ToDTO(history.Answer) };
@@ -49,7 +40,6 @@ namespace SWP391_CareSkin_BE.Mappers
                 AttemmptId = attemptId,
                 QuestionId = createHistoryDTO.QuestionId,
                 AnswerId = createHistoryDTO.AnswerId,
-                CreatedAt = DateTime.Now
             };
         }
 
@@ -57,7 +47,6 @@ namespace SWP391_CareSkin_BE.Mappers
         {
             history.QuestionId = updateHistoryDTO.QuestionId;
             history.AnswerId = updateHistoryDTO.AnswerId;
-            history.UpdatedAt = DateTime.Now;
 
             return history;
         }

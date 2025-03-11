@@ -10,7 +10,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task<Result> UpdateAsync(Result result);
         Task<Result> GetByIdAsync(int resultId);
         Task<IEnumerable<Result>> GetByCustomerIdAsync(int customerId);
-        Task<Result> GetLatestByQuizAndCustomerAsync(int quizId, int customerId);
         Task<bool> ExistsAsync(int resultId);
     }
 }

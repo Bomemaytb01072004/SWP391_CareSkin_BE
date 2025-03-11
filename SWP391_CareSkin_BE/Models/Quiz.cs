@@ -13,7 +13,6 @@ namespace SWP391_CareSkin_BE.Models
         public string? Description { get; set; }
 
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
-        public virtual ICollection<Result> Results { get; set; } = new List<Result>();
         public virtual ICollection<UserQuizAttempt> UserQuizAttempts { get; set; } = new List<UserQuizAttempt>();
     }
 }

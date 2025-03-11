@@ -48,16 +48,6 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Result> GetLatestByQuizAndCustomerAsync(int quizId, int customerId)
-        {
-            return await _context.Results
-                .Include(r => r.SkinType)
-                .Include(r => r.UserQuizAttempt)
-                .Where(r => r.QuizId == quizId && r.CustomerId == customerId)
-                .OrderByDescending(r => r.LastQuizTime)
-                .FirstOrDefaultAsync();
-        }
-
         public async Task<bool> ExistsAsync(int resultId)
         {
             return await _context.Results.AnyAsync(r => r.ResultId == resultId);

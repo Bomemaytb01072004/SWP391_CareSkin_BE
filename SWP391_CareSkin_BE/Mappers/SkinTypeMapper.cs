@@ -15,6 +15,8 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 SkinTypeId = skinType.SkinTypeId,
                 TypeName = skinType.TypeName,
+                MinScore = skinType.MinScore,
+                MaxScore = skinType.MaxScore,
                 Description = skinType.Description
             };
         }
@@ -27,6 +29,8 @@ namespace SWP391_CareSkin_BE.Mappers
             return new SkinType
             {
                 TypeName = request.TypeName,
+                MinScore = request.MinScore,
+                MaxScore = request.MaxScore,
                 Description = request.Description
             };
         }
@@ -37,6 +41,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 return;
 
             skinType.TypeName = request.TypeName;
+            skinType.MinScore = request.MinScore;
+            skinType.MaxScore = request.MaxScore;
             skinType.Description = request.Description;
         }
     }

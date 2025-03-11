@@ -31,16 +31,16 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpGet("{attemptId}")]
-        public async Task<ActionResult<UserQuizAttemptDTO>> GetUserQuizAttemptById(int attemptId, [FromQuery] bool includeHistories = false)
+        [HttpGet("{userQuizAttemptId}")]
+        public async Task<ActionResult<UserQuizAttemptDTO>> GetUserQuizAttemptById(int userQuizAttemptId, [FromQuery] bool includeHistories = false)
         {
             try
             {
-                var attempt = await _userQuizAttemptService.GetUserQuizAttemptByIdAsync(attemptId, includeHistories);
+                var attempt = await _userQuizAttemptService.GetUserQuizAttemptByIdAsync(userQuizAttemptId, includeHistories);
                 
                 if (attempt == null)
                 {
-                    return NotFound($"User quiz attempt with ID {attemptId} not found");
+                    return NotFound($"User quiz attempt with ID {userQuizAttemptId} not found");
                 }
                 
                 return Ok(attempt);
@@ -79,16 +79,16 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpPut("{attemptId}/complete")]
-        public async Task<ActionResult<UserQuizAttemptDTO>> CompleteUserQuizAttempt(int attemptId)
+        [HttpPut("{userQuizAttemptId}/complete")]
+        public async Task<ActionResult<UserQuizAttemptDTO>> CompleteUserQuizAttempt(int userQuizAttemptId)
         {
             try
             {
-                var attempt = await _userQuizAttemptService.CompleteUserQuizAttemptAsync(attemptId);
+                var attempt = await _userQuizAttemptService.CompleteUserQuizAttemptAsync(userQuizAttemptId);
                 
                 if (attempt == null)
                 {
-                    return NotFound($"User quiz attempt with ID {attemptId} not found");
+                    return NotFound($"User quiz attempt with ID {userQuizAttemptId} not found");
                 }
                 
                 return Ok(attempt);

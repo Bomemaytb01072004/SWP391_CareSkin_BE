@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 UserQuizAttemptId = attempt.UserQuizAttemptId,
                 CustomerId = attempt.CustomerId,
                 QuizId = attempt.QuizId,
-                AttemptDate = DateTime.Parse(attempt.AttemptDate.ToString()),
+                AttemptDate = DateOnly.Parse(attempt.AttemptDate.ToString()),
                 AttemptNumber = attempt.AttemptNumber,
                 IsCompleted = attempt.IsCompleted,
                 CreatedAt = attempt.CreatedAt,
@@ -42,14 +42,14 @@ namespace SWP391_CareSkin_BE.Mappers
                 AttemptDate = DateOnly.FromDateTime(DateTime.Now),
                 AttemptNumber = attemptNumber,
                 IsCompleted = false,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             };
         }
         
         public static UserQuizAttempt CompleteAttempt(UserQuizAttempt attempt)
         {
             attempt.IsCompleted = true;
-            attempt.CompletedAt = DateTime.Now;
+            attempt.CompletedAt = DateOnly.FromDateTime(DateTime.Now);
             return attempt;
         }
     }

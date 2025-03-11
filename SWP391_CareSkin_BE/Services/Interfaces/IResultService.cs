@@ -11,6 +11,5 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<ResultDTO> UpdateResultScoreAsync(int resultId, int additionalScore);
         Task<ResultDTO> GetResultByIdAsync(int resultId);
         Task<List<ResultDTO>> GetResultsByCustomerIdAsync(int customerId);
-        Task<ResultDTO> GetLatestResultByQuizAndCustomerAsync(int quizId, int customerId);
     }
 }

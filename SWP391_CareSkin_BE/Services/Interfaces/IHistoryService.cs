@@ -6,6 +6,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     public interface IHistoryService
     {
         Task<HistoryDTO> CreateHistoryAsync(int attemptId, CreateHistoryDTO createHistoryDTO);
+        Task<HistoryDTO> CreateOrUpdateHistoryAsync(int attemptId, CreateHistoryDTO historyDTO);
         Task<List<HistoryDTO>> GetHistoriesByAttemptIdAsync(int attemptId, bool includeDetails = false);
         Task<HistoryDTO> GetHistoryByIdAsync(int historyId, bool includeDetails = false);
     }

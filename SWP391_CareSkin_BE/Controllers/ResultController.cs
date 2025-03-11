@@ -31,6 +31,26 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
+        [HttpPut("{resultId}/score")]
+        public async Task<ActionResult<ResultDTO>> UpdateResultScore(int resultId, [FromBody] int additionalScore)
+        {
+            try
+            {
+                var result = await _resultService.UpdateResultScoreAsync(resultId, additionalScore);
+                
+                if (result == null)
+                {
+                    return NotFound($"Result with ID {resultId} not found");
+                }
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{resultId}")]
         public async Task<ActionResult<ResultDTO>> GetResultById(int resultId)
         {
@@ -58,26 +78,6 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 var results = await _resultService.GetResultsByCustomerIdAsync(customerId);
                 return Ok(results);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("quiz/{quizId}/customer/{customerId}")]
-        public async Task<ActionResult<ResultDTO>> GetLatestResultByQuizAndCustomer(int quizId, int customerId)
-        {
-            try
-            {
-                var result = await _resultService.GetLatestResultByQuizAndCustomerAsync(quizId, customerId);
-                
-                if (result == null)
-                {
-                    return NotFound($"No result found for quiz ID {quizId} and customer ID {customerId}");
-                }
-                
-                return Ok(result);
             }
             catch (Exception ex)
             {

@@ -14,13 +14,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     {
         private readonly IUserQuizAttemptRepository _userQuizAttemptRepository;
         private readonly IQuizRepository _quizRepository;
+        private readonly ICustomerRepository _customerRepository;
 
         public UserQuizAttemptService(
             IUserQuizAttemptRepository userQuizAttemptRepository,
-            IQuizRepository quizRepository)
+            IQuizRepository quizRepository,
+            ICustomerRepository customerRepository)
         {
             _userQuizAttemptRepository = userQuizAttemptRepository;
             _quizRepository = quizRepository;
+            _customerRepository = customerRepository;
         }
 
         public async Task<UserQuizAttemptDTO> CreateUserQuizAttemptAsync(CreateUserQuizAttemptDTO createUserQuizAttemptDTO)
@@ -32,8 +35,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException($"Quiz with ID {createUserQuizAttemptDTO.QuizId} not found");
             }
 
-            var customerExists = await _userQuizAttemptRepository.ExistsAsync(createUserQuizAttemptDTO.CustomerId);
-            if (!customerExists)
+            var customerExists = await _customerRepository.GetCustomerByIdAsync(createUserQuizAttemptDTO.CustomerId);
+            if (customerExists == null)
             {
                 throw new ArgumentException($"Customer with ID {createUserQuizAttemptDTO.CustomerId} not found");
             }

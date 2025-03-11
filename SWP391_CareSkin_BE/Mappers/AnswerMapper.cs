@@ -10,8 +10,8 @@ namespace SWP391_CareSkin_BE.Mappers
         {
             return new AnswerDTO
             {
-                AnswerId = answer.AnswerId,
                 QuestionId = answer.QuestionId,
+                AnswerId = answer.AnswerId,
                 AnswersText = answer.AnswersText,
                 Score = answer.Score
             };

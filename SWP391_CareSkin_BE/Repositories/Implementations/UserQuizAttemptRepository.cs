@@ -49,7 +49,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             }
 
             return await query.Where(a => a.CustomerId == customerId)
-                            .OrderByDescending(a => a.CreatedAt)
+                            .OrderByDescending(a => a.UserQuizAttemptId)
                             .ToListAsync();
         }
 
@@ -66,7 +66,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             }
 
             return await query.Where(a => a.QuizId == quizId && a.CustomerId == customerId)
-                            .OrderByDescending(a => a.CreatedAt)
+                            .OrderByDescending(a => a.UserQuizAttemptId)
                             .ToListAsync();
         }
 
