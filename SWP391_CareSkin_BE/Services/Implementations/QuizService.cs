@@ -1,3 +1,4 @@
+using SWP391_CareSkin_BE.DTOs.Responses.Quiz;
 using SWP391_CareSkin_BE.DTOS.Requests.Quiz;
 using SWP391_CareSkin_BE.DTOS.Responses.Quiz;
 using SWP391_CareSkin_BE.Mappers;
@@ -17,13 +18,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _quizRepository = quizRepository;
         }
 
-        public async Task<List<QuizDTO>> GetAllQuizzesAsync()
+        public async Task<IEnumerable<QuizDTO>> GetAllQuizzesAsync()
         {
             var quizzes = await _quizRepository.GetAllAsync();
             return QuizMapper.ToDTOList(quizzes);
         }
 
-        public async Task<QuizDTO> GetQuizByIdAsync(int quizId)
+        public async Task<QuizDetailsDTO> GetQuizByIdAsync(int quizId)
         {
             var quiz = await _quizRepository.GetByIdAsync(quizId);
             if (quiz == null)
@@ -31,7 +32,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException($"Quiz with ID {quizId} not found");
             }
             
-            return QuizMapper.ToDTO(quiz);
+            return QuizMapper.ToDetailsDTO(quiz);
         }
 
         public async Task<QuizDTO> CreateQuizAsync(CreateQuizDTO createQuizDTO)

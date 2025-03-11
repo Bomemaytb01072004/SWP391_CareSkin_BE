@@ -38,14 +38,13 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        // POST: api/Q_A/quizzes/{quizId}/questions
-        [HttpPost("quizzes/{quizId}/questions")]
-        public async Task<IActionResult> CreateQuestion(int quizId, [FromBody] CreateQuestionDTO createQuestionDTO)
+        [HttpGet("quizzes/{questionId}")]
+        public async Task<IActionResult> GetQAByQuiz(int questionId, bool includeAnswers)
         {
             try
             {
-                var createdQuestion = await _questionService.CreateQuestionAsync(quizId, createQuestionDTO);
-                return CreatedAtAction(nameof(GetQuestion), new { questionId = createdQuestion.QuestionsId }, createdQuestion);
+                var questions = await _questionService.GetQAByQuizAsync(questionId, includeAnswers);
+                return Ok(questions);
             }
             catch (ArgumentException ex)
             {
@@ -57,14 +56,26 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        // GET: api/Q_A/questions/{questionId}
         [HttpGet("questions/{questionId}")]
-        public async Task<IActionResult> GetQuestion(int questionId, [FromQuery] bool includeAnswers = false)
+        public async Task<IActionResult> GetQuestionByIdAsync(int questionId)
+        {
+            var question = await _questionService.GetQuestionByIdAsync(questionId);
+            if (question == null)
+            {
+                return NotFound();
+            }
+            return Ok(question);
+        }
+
+
+        // POST: api/Q_A/quizzes/{quizId}/questions
+        [HttpPost("quizzes/{quizId}/questions")]
+        public async Task<IActionResult> CreateQuestion(int quizId, [FromBody] CreateQuestionDTO createQuestionDTO)
         {
             try
             {
-                var question = await _questionService.GetQuestionByIdAsync(questionId, includeAnswers);
-                return Ok(question);
+                var createdQuestion = await _questionService.CreateQuestionAsync(quizId, createQuestionDTO);
+                return Created($"/api/Q_A/questions/{createdQuestion.QuestionsId}", createdQuestion);
             }
             catch (ArgumentException ex)
             {
@@ -135,24 +146,17 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        // GET: api/Q_A/answers/{answerId}
         [HttpGet("answers/{answerId}")]
-        public async Task<IActionResult> GetAnswer(int answerId)
+        public async Task<IActionResult> GetAnswerByIdAsync(int answerId)
         {
-            try
+            var answer = await _answerService.GetAnswerByIdAsync(answerId);
+            if (answer == null)
             {
-                var answer = await _answerService.GetAnswerByIdAsync(answerId);
-                return Ok(answer);
+                return NotFound();
             }
-            catch (ArgumentException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Ok(answer);
         }
+
 
         // POST: api/Q_A/questions/{questionId}/answers
         [HttpPost("questions/{questionId}/answers")]
@@ -161,7 +165,7 @@ namespace SWP391_CareSkin_BE.Controllers
             try
             {
                 var createdAnswer = await _answerService.CreateAnswerAsync(questionId, createAnswerDTO);
-                return CreatedAtAction(nameof(GetAnswer), new { answerId = createdAnswer.AnswerId }, createdAnswer);
+                return Created($"/api/Q_A/answers/{createdAnswer.AnswerId}", createdAnswer);
             }
             catch (ArgumentException ex)
             {

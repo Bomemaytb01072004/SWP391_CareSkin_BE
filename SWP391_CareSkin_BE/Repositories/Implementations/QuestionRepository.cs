@@ -20,14 +20,11 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return await query.ToListAsync();
         }
 
-        public async Task<Question> GetByIdAsync(int questionId, bool includeAnswers = false)
+        public async Task<Question> GetByIdAsync(int questionId)
         {
             IQueryable<Question> query = _context.Questions;
-
-            if (includeAnswers)
-            {
                 query = query.Include(q => q.Answers);
-            }
+            
 
             return await query.FirstOrDefaultAsync(q => q.QuestionsId == questionId);
         }

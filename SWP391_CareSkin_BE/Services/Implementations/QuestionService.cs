@@ -1,5 +1,6 @@
 using SWP391_CareSkin_BE.DTOS.Requests.Question;
 using SWP391_CareSkin_BE.DTOS.Responses.Question;
+using SWP391_CareSkin_BE.DTOs.Responses.Question;
 using SWP391_CareSkin_BE.Mappers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -31,15 +32,26 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return QuestionMapper.ToDTOList(questions);
         }
 
-        public async Task<QuestionDTO> GetQuestionByIdAsync(int questionId, bool includeAnswers = false)
+        public async Task<QuestionDetailsDTO> GetQAByQuizAsync(int questionId, bool includeAnswers)
         {
-            var question = await _questionRepository.GetByIdAsync(questionId, includeAnswers);
+            var question = await _questionRepository.GetByIdAsync(questionId);
             if (question == null)
             {
                 throw new ArgumentException($"Question with ID {questionId} not found");
             }
 
-            return QuestionMapper.ToDTO(question, includeAnswers);
+            return QuestionMapper.ToDetailsDTO(question, includeAnswers);
+        }
+
+        public async Task<QuestionDTO> GetQuestionByIdAsync(int questionId)
+        {
+            var question = await _questionRepository.GetByIdAsync(questionId);
+            if (question == null)
+            {
+                throw new ArgumentException($"Question with ID {questionId} not found");
+            }
+
+            return QuestionMapper.ToDTO(question);
         }
 
         public async Task<QuestionDTO> CreateQuestionAsync(int quizId, CreateQuestionDTO createQuestionDTO)
