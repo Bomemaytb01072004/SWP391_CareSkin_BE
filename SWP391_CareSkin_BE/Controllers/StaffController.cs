@@ -99,23 +99,5 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO adminDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            LoginDTO loginDto = new LoginDTO
-            {
-                UserName = adminDTO.UserName,
-                Password = adminDTO.Password
-            };
-
-            var authResult = await _staffService.Login(loginDto);
-
-            return Ok(authResult);
-        }
     }
 }

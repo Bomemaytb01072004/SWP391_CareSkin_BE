@@ -79,25 +79,6 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(updateAdmin);
         }
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO adminDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            LoginDTO loginDto = new LoginDTO
-            {
-                UserName = adminDTO.UserName,
-                Password = adminDTO.Password
-            };
-
-            var authResult = await _adminService.Login(loginDto);
-
-            return Ok(authResult);
-        }
-
         // Rating Feedback Admin Methods
         // GET: api/Admin/RatingFeedback
         [HttpGet("RatingFeedback")]
