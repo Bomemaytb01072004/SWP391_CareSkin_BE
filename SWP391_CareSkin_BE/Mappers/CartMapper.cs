@@ -1,5 +1,6 @@
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Mappers
@@ -11,8 +12,8 @@ namespace SWP391_CareSkin_BE.Mappers
         {
             if (cart == null)
                 return null;
-            
-            return new CartDTO
+
+            var cartDTO = new CartDTO
             {
                 CartId = cart.CartId,
                 CustomerId = cart.CustomerId,
@@ -25,8 +26,18 @@ namespace SWP391_CareSkin_BE.Mappers
                 TotalPrice = 0, // Will be calculated in service
                 SalePrice = 0, // Will be calculated in service
                 TotalSalePrice = 0, // Will be calculated in service
-                IsOnSale = false // Will be calculated in service
+                IsOnSale = false, // Will be calculated in service
+
+                ProductVariations = cart.Product?.ProductVariations?.Select(v => new ProductVariationDTO
+                {
+                    ProductVariationId = v.ProductVariationId,
+                    Ml = v.Ml,
+                    Price = v.Price,
+                    SalePrice = v.SalePrice
+                }).ToList()
             };
+
+            return cartDTO;
         }
 
         // Chuyển từ AddCartItemRequestDTO sang Cart Entity (dùng khi thêm mới)

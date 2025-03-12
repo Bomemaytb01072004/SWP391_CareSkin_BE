@@ -1,3 +1,5 @@
+using SWP391_CareSkin_BE.DTOS.Responses;
+
 namespace SWP391_CareSkin_BE.DTOs.Responses
 {
     public class CartDTO
@@ -25,5 +27,7 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
         public decimal TotalSalePrice { get; set; }
         
         public bool IsOnSale { get; set; }
+
+        public List<ProductVariationDTO> ProductVariations { get; set; }
     }
 }

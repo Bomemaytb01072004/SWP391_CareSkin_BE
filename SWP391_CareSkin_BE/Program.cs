@@ -147,6 +147,12 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IRatingFeedbackImageRepository, RatingFeedbackImageRepository>();
             builder.Services.AddScoped<IRatingFeedbackService, RatingFeedbackService>();
 
+            // Register Routine and RoutineProduct services and repositories
+            builder.Services.AddScoped<IRoutineRepository, RoutineRepository>();
+            builder.Services.AddScoped<IRoutineService, RoutineService>();
+            builder.Services.AddScoped<IRoutineProductRepository, RoutineProductRepository>();
+            builder.Services.AddScoped<IRoutineProductService, RoutineProductService>();
+
             // Configure Hangfire
             builder.Services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

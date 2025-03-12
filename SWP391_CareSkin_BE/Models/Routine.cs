@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
@@ -15,10 +15,10 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Description { get; set; }
 
+        [ForeignKey("SkinType")]
         public int SkinTypeId { get; set; }
 
         public virtual SkinType SkinType { get; set; }
-        public virtual ICollection<RoutineProduct> RoutineProducts { get; set; } = new List<RoutineProduct>();
-
+        public virtual ICollection<RoutineStep> RoutineSteps { get; set; } = new List<RoutineStep>();
     }
 }

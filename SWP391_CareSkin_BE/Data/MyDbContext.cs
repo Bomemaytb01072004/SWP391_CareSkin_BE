@@ -1,11 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models;
-using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Data
 
@@ -42,6 +36,7 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<RatingFeedbackImage> RatingFeedbackImages { get; set; }
         public DbSet<Result> Results { get; set; }
         public DbSet<RoutineProduct> RoutineProducts { get; set; }
+        public DbSet<RoutineStep> RoutineSteps { get; set; }
         public DbSet<Routine> Routines { get; set; }
         public DbSet<SkinType> SkinTypes { get; set; }
         public DbSet<Staff> Staffs { get; set; }
@@ -84,6 +79,7 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<RatingFeedbackImage>().HasKey(r => r.RatingFeedbackImageId);
             modelBuilder.Entity<Result>().HasKey(result => result.ResultId);
             modelBuilder.Entity<RoutineProduct>().HasKey(s => new { s.RoutineProductId });
+            modelBuilder.Entity<RoutineStep>().HasKey(rs => rs.RoutineStepId);
             modelBuilder.Entity<Routine>().HasKey(s => s.RoutineId);
             modelBuilder.Entity<SkinType>().HasKey(s => s.SkinTypeId);
             modelBuilder.Entity<Staff>().HasKey(s => s.StaffId);
@@ -274,9 +270,16 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(result => result.SkinTypeId);
 
             modelBuilder.Entity<Routine>()
-                .HasMany(s => s.RoutineProducts)
-                .WithOne(s => s.Routine)
-                .HasForeignKey(s => s.RoutineId);
+                .HasMany(r => r.RoutineSteps)
+                .WithOne(rs => rs.Routine)
+                .HasForeignKey(rs => rs.RoutineId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RoutineStep>()
+                .HasMany(rs => rs.RoutineProducts)
+                .WithOne(rp => rp.RoutineStep)
+                .HasForeignKey(rp => rp.RoutineStepId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<SkinType>()
                 .HasMany(s => s.Results)
