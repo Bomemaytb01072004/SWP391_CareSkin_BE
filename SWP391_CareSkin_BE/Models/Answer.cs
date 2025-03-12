@@ -10,9 +10,9 @@ namespace SWP391_CareSkin_BE.Models
 
         public int QuestionId { get; set; }
         
-        public string AnswersContext { get; set; }
+        public string AnswersText { get; set; }
 
-        public int PointForSkinType { get; set; }
+        public int Score { get; set; }
 
         public virtual Question Question { get; set; }
 

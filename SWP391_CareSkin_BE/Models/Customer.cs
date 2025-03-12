@@ -40,8 +40,6 @@ namespace SWP391_CareSkin_BE.Models
 
         public virtual ICollection<BlogNew>? BlogNews { get; set; } = new List<BlogNew>();
 
-        public virtual ICollection<History>? Historys { get; set; } = new List<History>();
-
         public virtual ICollection<Result>? Results { get; set; } = new List<Result>();
 
         public virtual ICollection<Cart>? Carts { get; set; } = new List<Cart>();
@@ -53,5 +51,7 @@ namespace SWP391_CareSkin_BE.Models
         public virtual ICollection<Support>? Supports { get; set; } = new List<Support>();
 
         public virtual ICollection<PromotionCustomer>? PromotionCustomers { get; set; } = new List<PromotionCustomer>();
+
+        public virtual ICollection<UserQuizAttempt>? UserQuizAttempts { get; set; } = new List<UserQuizAttempt>();
     }
 }

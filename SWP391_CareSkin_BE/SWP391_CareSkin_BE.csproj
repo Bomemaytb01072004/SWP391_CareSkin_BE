@@ -22,6 +22,8 @@
 	  <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
 	  <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
 	  <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
+	  <PackageReference Include="Hangfire" Version="1.8.18" />
+	  <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
@@ -40,15 +42,19 @@
     <Folder Include="DTOs\Requests\Brand\" />
     <Folder Include="DTOs\Requests\Cart\" />
     <Folder Include="DTOs\Requests\Customer\" />
+    <Folder Include="DTOs\Requests\ProductPicture\" />
+    <Folder Include="DTOs\Requests\RatingFeedback\" />
     <Folder Include="DTOs\Requests\Staff\" />
-    <Folder Include="DTOs\Requests\Product\" />
     <Folder Include="DTOs\Requests\Order\" />
     <Folder Include="DTOs\Responses\Brand\" />
     <Folder Include="DTOs\Responses\Admin\" />
     <Folder Include="DTOs\Responses\Cart\" />
     <Folder Include="DTOs\Responses\Customer\" />
+    <Folder Include="DTOs\Responses\Question\" />
+    <Folder Include="DTOs\Responses\ProductPicture\" />
+    <Folder Include="DTOs\Responses\RatingFeedback\" />
+    <Folder Include="DTOs\Responses\SkinType\" />
     <Folder Include="DTOs\Responses\Staff\" />
-    <Folder Include="DTOs\Responses\Product\" />
     <Folder Include="DTOs\Responses\Order\" />
   </ItemGroup>
 

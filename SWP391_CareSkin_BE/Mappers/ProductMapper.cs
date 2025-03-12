@@ -1,12 +1,14 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOs.Responses.Product;
+using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.DTOS.ProductPicture;
 
 namespace SWP391_CareSkin_BE.Mappers
 {
     public class ProductMapper
     {
-        // Chuyển từ Product Entity sang ProductDTO
+        // Convert from Product Entity to ProductDTO
         public static ProductDTO ToDTO(Product product)
         {
             if (product == null)
@@ -19,15 +21,34 @@ namespace SWP391_CareSkin_BE.Mappers
                 Description = product.Description,
                 Category = product.Category,
                 BrandName = product.Brand?.Name,
-
-                // Trả về URL ảnh
                 PictureUrl = product.PictureUrl,
+                AverageRating = product.AverageRating,
 
+                PromotionProducts = product.PromotionProducts?
+                    .Where(p => p.IsActive) // Only include active promotions
+                    .Select(p => new PromotionProductDTO
+                    {
+                        PromotionProductId = p.PromotionProductId,
+                        PromotionId = p.PromotionId,
+                        ProductId = p.ProductId,
+                        DiscountPercent = p.Promotion.DiscountPercent,
+                        Start_Date = p.Promotion.Start_Date,
+                        End_Date = p.Promotion.End_Date,
+                        IsActive = p.IsActive
+                    }).ToList(),
+                ProductForSkinTypes = product.ProductForSkinTypes?.Select(s => new ProductForSkinTypeDTO
+                {
+                    ProductForSkinTypeId = s.ProductForSkinTypeId,
+                    ProductId = s.ProductId,
+                    SkinTypeId = s.SkinTypeId,
+                    TypeName = s.SkinType.TypeName
+                }).ToList(),
                 Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
                 {
                     ProductVariationId = v.ProductVariationId,
                     Ml = v.Ml,
-                    Price = v.Price
+                    Price = v.Price,
+                    SalePrice = v.SalePrice
                 }).ToList(),
                 MainIngredients = product.ProductMainIngredients?.Select(m => new ProductMainIngredientDTO
                 {
@@ -45,12 +66,27 @@ namespace SWP391_CareSkin_BE.Mappers
                     ProductUsageId = u.ProductUsageId,
                     Step = u.Step,
                     Instruction = u.Instruction
+                }).ToList(),
+                ProductPictures = product.ProductPictures?.Select(pp => new ProductPictureDTO
+                {
+                    ProductPictureId = pp.ProductPictureId,
+                    ProductId = pp.ProductId,
+                    ProductName = product.ProductName,
+                    PictureUrl = pp.PictureUrl
                 }).ToList()
             };
         }
 
-        // Chuyển từ ProductCreateRequestDTO sang Product Entity
-        // Có thể truyền vào tham số pictureUrl (sau khi upload xong) nếu muốn set luôn
+        // Convert a list of Product entities to a list of ProductDTOs
+        public static List<ProductDTO> ToDTOList(IEnumerable<Product> products)
+        {
+            if (products == null)
+                return new List<ProductDTO>();
+
+            return products.Select(ToDTO).ToList();
+        }
+
+        // Convert from ProductCreateRequestDTO to Product Entity
         public static Product ToEntity(ProductCreateRequestDTO request, string pictureUrl = null)
         {
             if (request == null)
@@ -62,14 +98,18 @@ namespace SWP391_CareSkin_BE.Mappers
                 BrandId = request.BrandId,
                 Category = request.Category,
                 Description = request.Description,
-
-                // Sau khi upload ảnh, bạn có thể gán pictureUrl vào đây
                 PictureUrl = pictureUrl,
+                AverageRating = 0, // Initialize average rating to 0 for new products
 
+                ProductForSkinTypes = request.ProductForSkinTypes?.Select(s => new ProductForSkinType
+                {
+                    SkinTypeId = s.SkinTypeId
+                }).ToList(),
                 ProductVariations = request.Variations?.Select(v => new ProductVariation
                 {
                     Ml = v.Ml,
-                    Price = v.Price
+                    Price = v.Price,
+                    SalePrice = 0 // Initialize SalePrice to 0 for new variations
                 }).ToList(),
                 ProductMainIngredients = request.MainIngredients?.Select(m => new ProductMainIngredient
                 {
@@ -90,7 +130,7 @@ namespace SWP391_CareSkin_BE.Mappers
             return product;
         }
 
-        // Cập nhật một Product Entity dựa trên ProductUpdateRequestDTO
+        // Update a Product Entity based on ProductUpdateRequestDTO
         public static void UpdateEntity(Product product, ProductUpdateRequestDTO request, string pictureUrl = null)
         {
             if (product == null || request == null)
@@ -101,13 +141,26 @@ namespace SWP391_CareSkin_BE.Mappers
             product.Category = request.Category;
             product.Description = request.Description;
 
-            // Nếu có ảnh mới, set lại
+            // Set new picture if provided
             if (!string.IsNullOrEmpty(pictureUrl))
             {
                 product.PictureUrl = pictureUrl;
             }
 
-            // Ví dụ đơn giản: xoá toàn bộ Variation cũ và thêm Variation mới
+            // Update ProductForSkinTypes
+            if (request.ProductForSkinTypes != null)
+            {
+                product.ProductForSkinTypes.Clear();
+                foreach (var skinType in request.ProductForSkinTypes)
+                {
+                    product.ProductForSkinTypes.Add(new ProductForSkinType
+                    {
+                        SkinTypeId = skinType.SkinTypeId
+                    });
+                }
+            }
+
+            // Update ProductVariations
             if (request.Variations != null)
             {
                 product.ProductVariations.Clear();
@@ -116,20 +169,49 @@ namespace SWP391_CareSkin_BE.Mappers
                     product.ProductVariations.Add(new ProductVariation
                     {
                         Ml = variation.Ml,
-                        Price = variation.Price
+                        Price = variation.Price,
+                        SalePrice = 0 // Initialize SalePrice to 0 for new variations
                     });
                 }
             }
 
+            // Update ProductMainIngredients
             if (request.MainIngredients != null)
             {
                 product.ProductMainIngredients.Clear();
-                foreach (var m in request.MainIngredients)
+                foreach (var ingredient in request.MainIngredients)
                 {
                     product.ProductMainIngredients.Add(new ProductMainIngredient
                     {
-                        IngredientName = m.IngredientName,
-                        Description = m.Description
+                        IngredientName = ingredient.IngredientName,
+                        Description = ingredient.Description
+                    });
+                }
+            }
+
+            // Update ProductDetailIngredients
+            if (request.DetailIngredients != null)
+            {
+                product.ProductDetailIngredients.Clear();
+                foreach (var ingredient in request.DetailIngredients)
+                {
+                    product.ProductDetailIngredients.Add(new ProductDetailIngredient
+                    {
+                        IngredientName = ingredient.IngredientName
+                    });
+                }
+            }
+
+            // Update ProductUsages
+            if (request.Usages != null)
+            {
+                product.ProductUsages.Clear();
+                foreach (var usage in request.Usages)
+                {
+                    product.ProductUsages.Add(new ProductUsage
+                    {
+                        Step = usage.Step,
+                        Instruction = usage.Instruction
                     });
                 }
             }

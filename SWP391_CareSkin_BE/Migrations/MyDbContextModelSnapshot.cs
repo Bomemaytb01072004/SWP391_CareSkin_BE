@@ -70,14 +70,14 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnswerId"));
 
-                    b.Property<string>("AnswersContext")
+                    b.Property<string>("AnswersText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PointForSkinType")
+                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuestionId")
+                    b.Property<int>("Score")
                         .HasColumnType("int");
 
                     b.HasKey("AnswerId");
@@ -247,7 +247,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("AnswerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int>("AttemmptId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
@@ -257,7 +257,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("AnswerId");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("AttemmptId");
 
                     b.HasIndex("QuestionId");
 
@@ -321,6 +321,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -329,6 +332,9 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("SalePrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderProductId");
 
@@ -365,6 +371,9 @@ namespace SWP391_CareSkin_BE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("float");
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
@@ -480,7 +489,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductPictures");
+                    b.ToTable("ProductPicture");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductUsage", b =>
@@ -525,6 +534,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("SalePrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("ProductVariationId");
 
                     b.HasIndex("ProductId");
@@ -546,9 +558,15 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<DateOnly>("End_Date")
                         .HasColumnType("date");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PromotionName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PromotionType")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("Start_Date")
                         .HasColumnType("date");
@@ -575,13 +593,24 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.PromotionProduct", b =>
                 {
+                    b.Property<int>("PromotionProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionProductId"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("PromotionId")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductId", "PromotionId");
+                    b.HasKey("PromotionProductId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("PromotionId");
 
@@ -596,7 +625,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionsId"));
 
-                    b.Property<string>("QuestionContext")
+                    b.Property<string>("QuestionText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -619,7 +648,6 @@ namespace SWP391_CareSkin_BE.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuizId"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -633,11 +661,14 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedback", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RatingFeedbackId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RatingFeedbackId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -646,19 +677,47 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("RatingFeedbackId");
 
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("RatingFeedback");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedbackImage", b =>
+                {
+                    b.Property<int>("RatingFeedbackImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RatingFeedbackImageId"));
+
+                    b.Property<string>("FeedbackImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RatingFeedbackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RatingFeedbackImageId");
+
+                    b.HasIndex("RatingFeedbackId");
+
+                    b.ToTable("RatingFeedbackImage");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Result", b =>
@@ -681,6 +740,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("SkinTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalScore")
+                        .HasColumnType("int");
+
                     b.HasKey("ResultId");
 
                     b.HasIndex("CustomerId");
@@ -692,45 +754,57 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.ToTable("Result");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinCareRoutine", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.Routine", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RoutineId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoutineId"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoutineName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoutinePeriod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SkinTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("RoutineId");
 
                     b.HasIndex("SkinTypeId");
 
-                    b.ToTable("SkinCareRoutine");
+                    b.ToTable("Routine");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinCareRoutineProduct", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.RoutineProduct", b =>
                 {
-                    b.Property<int>("SkinCareRoutineId")
+                    b.Property<int>("RoutineProductId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoutineProductId"));
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("SkinCareRoutineId", "ProductId");
+                    b.Property<int>("RoutineId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoutineProductId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("SkinCareRoutineProduct");
+                    b.HasIndex("RoutineId");
+
+                    b.ToTable("RoutineProduct");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinType", b =>
@@ -744,6 +818,12 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MaxScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinScore")
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeName")
                         .IsRequired()
@@ -817,6 +897,71 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.ToTable("Support");
                 });
 
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.UserQuizAttempt", b =>
+                {
+                    b.Property<int>("UserQuizAttemptId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserQuizAttemptId"));
+
+                    b.Property<DateOnly>("AttemptDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserQuizAttemptId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("QuizId");
+
+                    b.ToTable("UserQuizAttempt");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.VnpayTransactions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PayUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ResultCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("VnpayTransactions");
+                });
+
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Question", "Question")
@@ -874,10 +1019,10 @@ namespace SWP391_CareSkin_BE.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SWP391_CareSkin_BE.Models.Customer", "Customer")
-                        .WithMany("Historys")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("SWP391_CareSkin_BE.Models.UserQuizAttempt", "UserQuizAttempt")
+                        .WithMany("Histories")
+                        .HasForeignKey("AttemmptId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SWP391_CareSkin_BE.Models.Question", "Question")
@@ -888,9 +1033,9 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.Navigation("Answer");
 
-                    b.Navigation("Customer");
-
                     b.Navigation("Question");
+
+                    b.Navigation("UserQuizAttempt");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Order", b =>
@@ -1098,6 +1243,17 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedbackImage", b =>
+                {
+                    b.HasOne("SWP391_CareSkin_BE.Models.RatingFeedback", "RatingFeedback")
+                        .WithMany("RatingFeedbackImages")
+                        .HasForeignKey("RatingFeedbackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RatingFeedback");
+                });
+
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Result", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Customer", "Customer")
@@ -1125,10 +1281,10 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("SkinType");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinCareRoutine", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.Routine", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.SkinType", "SkinType")
-                        .WithMany("SkinCareRoutines")
+                        .WithMany("Routines")
                         .HasForeignKey("SkinTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1136,23 +1292,23 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("SkinType");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinCareRoutineProduct", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.RoutineProduct", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Product", "Product")
-                        .WithMany("SkinCareRoutineProducts")
+                        .WithMany("RoutineProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SWP391_CareSkin_BE.Models.SkinCareRoutine", "SkinCareRoutine")
-                        .WithMany("SkinCareRoutineProducts")
-                        .HasForeignKey("SkinCareRoutineId")
+                    b.HasOne("SWP391_CareSkin_BE.Models.Routine", "Routine")
+                        .WithMany("RoutineProducts")
+                        .HasForeignKey("RoutineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("SkinCareRoutine");
+                    b.Navigation("Routine");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Support", b =>
@@ -1174,6 +1330,36 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Staff");
                 });
 
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.UserQuizAttempt", b =>
+                {
+                    b.HasOne("SWP391_CareSkin_BE.Models.Customer", "Customer")
+                        .WithMany("UserQuizAttempts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWP391_CareSkin_BE.Models.Quiz", "Quiz")
+                        .WithMany("UserQuizAttempts")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.VnpayTransactions", b =>
+                {
+                    b.HasOne("SWP391_CareSkin_BE.Models.Order", "order")
+                        .WithMany("VnpayTransactions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("order");
+                });
+
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
                 {
                     b.Navigation("Historys");
@@ -1190,8 +1376,6 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.Navigation("Carts");
 
-                    b.Navigation("Historys");
-
                     b.Navigation("Orders");
 
                     b.Navigation("PromotionCustomers");
@@ -1201,11 +1385,15 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Results");
 
                     b.Navigation("Supports");
+
+                    b.Navigation("UserQuizAttempts");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
+
+                    b.Navigation("VnpayTransactions");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.OrderStatus", b =>
@@ -1235,7 +1423,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.Navigation("RatingFeedbacks");
 
-                    b.Navigation("SkinCareRoutineProducts");
+                    b.Navigation("RoutineProducts");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductVariation", b =>
@@ -1266,11 +1454,18 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("Results");
+
+                    b.Navigation("UserQuizAttempts");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinCareRoutine", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedback", b =>
                 {
-                    b.Navigation("SkinCareRoutineProducts");
+                    b.Navigation("RatingFeedbackImages");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.Routine", b =>
+                {
+                    b.Navigation("RoutineProducts");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinType", b =>
@@ -1279,12 +1474,17 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.Navigation("Results");
 
-                    b.Navigation("SkinCareRoutines");
+                    b.Navigation("Routines");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Staff", b =>
                 {
                     b.Navigation("Supports");
+                });
+
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.UserQuizAttempt", b =>
+                {
+                    b.Navigation("Histories");
                 });
 #pragma warning restore 612, 618
         }

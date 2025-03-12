@@ -60,5 +60,21 @@ namespace SWP391_CareSkin_BE.Controllers
             var total = await _cartService.CalculateCartTotalPrice(customerId);
             return Ok(total);
         }
+        
+        // GET: api/Cart/total-sale/{customerId}
+        [HttpGet("total-sale/{customerId}")]
+        public async Task<IActionResult> GetCartTotalSalePrice(int customerId)
+        {
+            var totalSalePrice = await _cartService.CalculateCartTotalSalePrice(customerId);
+            return Ok(totalSalePrice);
+        }
+        
+        // GET: api/Cart/totals/{customerId}
+        [HttpGet("totals/{customerId}")]
+        public async Task<IActionResult> GetCartTotals(int customerId)
+        {
+            var (totalPrice, totalSalePrice) = await _cartService.CalculateCartTotals(customerId);
+            return Ok(new { TotalPrice = totalPrice, TotalSalePrice = totalSalePrice });
+        }
     }
 }

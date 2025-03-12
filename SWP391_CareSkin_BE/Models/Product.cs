@@ -18,10 +18,12 @@ namespace SWP391_CareSkin_BE.Models
         public string Description { get; set; }
 
         public string PictureUrl { get; set; }
+        
+        public double AverageRating { get; set; } = 0;
 
         public virtual Brand Brand { get; set; }
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
-        public virtual ICollection<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; } = new List<SkinCareRoutineProduct>();
+        public virtual ICollection<RoutineProduct> RoutineProducts { get; set; } = new List<RoutineProduct>();
         public virtual ICollection<PromotionProduct> PromotionProducts { get; set; } = new List<PromotionProduct>();
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
         public virtual ICollection<RatingFeedback> RatingFeedbacks { get; set; } = new List<RatingFeedback>();

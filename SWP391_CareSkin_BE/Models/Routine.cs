@@ -3,20 +3,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("SkinCareRoutine")]
-    public class SkinCareRoutine
+    [Table("Routine")]
+    public class Routine
     {
         [Key]
-        public int Id { get; set; }
+        public int RoutineId { get; set; }
 
-        public string Title { get; set; }
+        public string RoutineName { get; set; }
+
+        public string RoutinePeriod { get; set; }
 
         public string Description { get; set; }
 
         public int SkinTypeId { get; set; }
 
         public virtual SkinType SkinType { get; set; }
-        public virtual ICollection<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; } = new List<SkinCareRoutineProduct>();
+        public virtual ICollection<RoutineProduct> RoutineProducts { get; set; } = new List<RoutineProduct>();
 
     }
 }

@@ -121,7 +121,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 if (!result)
                     return NotFound($"Product with ID {id} not found");
 
-                return NoContent();
+                return Ok("Delete product successful");
             }
             catch (Exception)
             {
@@ -137,14 +137,5 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(categories);
         }
 
-    }
-
-    public class PaginatedResponse<T>
-    {
-        public List<T> Items { get; set; }
-        public int TotalCount { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public int TotalPages { get; set; }
     }
 }

@@ -32,19 +32,22 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<ProductPicture> ProductPictures { get; set; }
         public DbSet<ProductUsage> ProductUsages { get; set; }
         public DbSet<ProductVariation> ProductVariations { get; set; }
+        public DbSet<ProductForSkinType> productForSkinTypes { get; set; }
         public DbSet<PromotionCustomer> PromotionCustomers { get; set; }
         public DbSet<PromotionProduct> PromotionProducts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Quiz> Quizs { get; set; }
         public DbSet<RatingFeedback> RatingFeedbacks { get; set; }
+        public DbSet<RatingFeedbackImage> RatingFeedbackImages { get; set; }
         public DbSet<Result> Results { get; set; }
-        public DbSet<SkinCareRoutineProduct> SkinCareRoutineProducts { get; set; }
-        public DbSet<SkinCareRoutine> SkinCareRoutines { get; set; }
+        public DbSet<RoutineProduct> RoutineProducts { get; set; }
+        public DbSet<Routine> Routines { get; set; }
         public DbSet<SkinType> SkinTypes { get; set; }
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Support> Supports { get; set; }
-
+        public DbSet<VnpayTransactions> VnpayTransactions { get; set; }
+        public DbSet<UserQuizAttempt> UserQuizAttempts { get; set; }
 
         // end Dbset
 
@@ -71,18 +74,22 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<ProductPicture>().HasKey(p => p.ProductPictureId);
             modelBuilder.Entity<ProductUsage>().HasKey(p => p.ProductUsageId);
             modelBuilder.Entity<ProductVariation>().HasKey(p => p.ProductVariationId);
+            modelBuilder.Entity<ProductForSkinType>().HasKey(p => new { p.ProductForSkinTypeId });
             modelBuilder.Entity<PromotionCustomer>().HasKey(p => new { p.CustomerId, p.PromotionId });
-            modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.ProductId, p.PromotionId });
+            modelBuilder.Entity<PromotionProduct>().HasKey(p => new { p.PromotionProductId });
             modelBuilder.Entity<Promotion>().HasKey(p => p.PromotionId);
             modelBuilder.Entity<Question>().HasKey(q => q.QuestionsId);
             modelBuilder.Entity<Quiz>().HasKey(q => q.QuizId);
-            modelBuilder.Entity<RatingFeedback>().HasKey(r => r.Id);
+            modelBuilder.Entity<RatingFeedback>().HasKey(r => r.RatingFeedbackId);
+            modelBuilder.Entity<RatingFeedbackImage>().HasKey(r => r.RatingFeedbackImageId);
             modelBuilder.Entity<Result>().HasKey(result => result.ResultId);
-            modelBuilder.Entity<SkinCareRoutineProduct>().HasKey(s => new { s.SkinCareRoutineId, s.ProductId });
-            modelBuilder.Entity<SkinCareRoutine>().HasKey(s => s.Id);
+            modelBuilder.Entity<RoutineProduct>().HasKey(s => new { s.RoutineProductId });
+            modelBuilder.Entity<Routine>().HasKey(s => s.RoutineId);
             modelBuilder.Entity<SkinType>().HasKey(s => s.SkinTypeId);
             modelBuilder.Entity<Staff>().HasKey(s => s.StaffId);
             modelBuilder.Entity<Support>().HasKey(s => s.SuppportId);
+            modelBuilder.Entity<VnpayTransactions>().HasKey(v => v.Id);
+            modelBuilder.Entity<UserQuizAttempt>().HasKey(u => u.UserQuizAttemptId);
 
 
 
@@ -109,7 +116,7 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(b => b.CustomerId);
 
             modelBuilder.Entity<Customer>()
-                .HasMany(c => c.Historys)
+                .HasMany(c => c.UserQuizAttempts)
                 .WithOne(h => h.Customer)
                 .HasForeignKey(h => h.CustomerId);
 
@@ -159,14 +166,14 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(c => c.ProductId);
 
             modelBuilder.Entity<Product>()
-                .HasMany(p => p.SkinCareRoutineProducts)
+                .HasMany(p => p.RoutineProducts)
                 .WithOne(s => s.Product)
                 .HasForeignKey(s => s.ProductId);
 
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.PromotionProducts)
                 .WithOne(p => p.Product)
-                .HasForeignKey(p => p.ProductId);       
+                .HasForeignKey(p => p.ProductId);
 
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.OrderProducts)
@@ -256,6 +263,11 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(result => result.Quiz)
                 .HasForeignKey(result => result.QuizId);
 
+            modelBuilder.Entity<Quiz>()
+                .HasMany(q => q.UserQuizAttempts)
+                .WithOne(u => u.Quiz)
+                .HasForeignKey(u => u.QuizId);
+
             modelBuilder.Entity<Result>()
                 .HasOne(result => result.Customer)
                 .WithMany(c => c.Results)
@@ -271,10 +283,10 @@ namespace SWP391_CareSkin_BE.Data
                 .WithMany(s => s.Results)
                 .HasForeignKey(result => result.SkinTypeId);
 
-            modelBuilder.Entity<SkinCareRoutine>()
-                .HasMany(s => s.SkinCareRoutineProducts)
-                .WithOne(s => s.SkinCareRoutine)
-                .HasForeignKey(s => s.SkinCareRoutineId);
+            modelBuilder.Entity<Routine>()
+                .HasMany(s => s.RoutineProducts)
+                .WithOne(s => s.Routine)
+                .HasForeignKey(s => s.RoutineId);
 
             modelBuilder.Entity<SkinType>()
                 .HasMany(s => s.Results)
@@ -282,7 +294,7 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(result => result.SkinTypeId);
 
             modelBuilder.Entity<SkinType>()
-                .HasMany(s => s.SkinCareRoutines)
+                .HasMany(s => s.Routines)
                 .WithOne(s => s.SkinType)
                 .HasForeignKey(s => s.SkinTypeId);
 
@@ -295,7 +307,31 @@ namespace SWP391_CareSkin_BE.Data
                 .HasMany(s => s.Supports)
                 .WithOne(s => s.Staff)
                 .HasForeignKey(s => s.StaffId);
+            modelBuilder.Entity<VnpayTransactions>()
+                .HasOne(v => v.order)
+                .WithMany(o => o.VnpayTransactions)
+                .HasForeignKey(v => v.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<VnpayTransactions>()
+                .Property(v => v.Amount)
+                .HasColumnType("decimal(18, 4)");
+
+            modelBuilder.Entity<RatingFeedback>()
+                .HasMany(r => r.RatingFeedbackImages)
+                .WithOne(r => r.RatingFeedback)
+                .HasForeignKey(r => r.RatingFeedbackId);
+
+            modelBuilder.Entity<RatingFeedbackImage>()
+                .HasOne(r => r.RatingFeedback)
+                .WithMany(r => r.RatingFeedbackImages)
+                .HasForeignKey(r => r.RatingFeedbackId);
+
+            modelBuilder.Entity<UserQuizAttempt>()
+                .HasMany(u => u.Histories)
+                .WithOne(r => r.UserQuizAttempt)
+                .HasForeignKey(r => r.AttemmptId)
+                .OnDelete(DeleteBehavior.NoAction);
             //end relationship
         }
     }

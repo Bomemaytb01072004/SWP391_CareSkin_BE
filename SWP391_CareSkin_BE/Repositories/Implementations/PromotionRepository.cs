@@ -63,13 +63,8 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             }
         }
 
-        public async Task AddPromotionProductAsync(int promotionId, int productId)
+        public async Task AddPromotionProductAsync(PromotionProduct promotionProduct)
         {
-            var promotionProduct = new PromotionProduct
-            {
-                PromotionId = promotionId,
-                ProductId = productId
-            };
             _context.PromotionProducts.Add(promotionProduct);
             await _context.SaveChangesAsync();
         }
@@ -118,14 +113,10 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<List<Promotion>> GetPromotionsForProductAsync(int productId)
+        public async Task<List<PromotionProduct>> GetPromotionsForProductAsync(int productId)
         {
-            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
-            return await _context.Promotions
-                .Where(p => p.Start_Date <= currentDate && p.End_Date >= currentDate)
-                .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == productId))
-                .Include(p => p.PromotionProducts)
-                .Include(p => p.PromotionCustomers)
+            return await _context.PromotionProducts
+                .Where(pp => pp.ProductId == productId && pp.IsActive)
                 .ToListAsync();
         }
     }

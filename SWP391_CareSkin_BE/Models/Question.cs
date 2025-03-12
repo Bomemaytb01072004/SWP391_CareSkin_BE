@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.Models
 
         public int QuizId { get; set; }
 
-        public string QuestionContext { get; set; }
+        public string QuestionText { get; set; }
 
         public virtual Quiz Quiz { get; set; }
 

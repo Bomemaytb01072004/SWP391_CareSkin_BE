@@ -14,6 +14,9 @@ namespace SWP391_CareSkin_BE.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal SalePrice { get; set; }
+
         public virtual Product Product { get; set; }
 
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();

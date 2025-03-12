@@ -10,11 +10,11 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task<Promotion> AddPromotionAsync(Promotion promotion);
         Task UpdatePromotionAsync(Promotion promotion);
         Task DeletePromotionAsync(int promotionId);
-        Task AddPromotionProductAsync(int promotionId, int productId);
+        Task AddPromotionProductAsync(PromotionProduct promotionProduct);
         Task AddPromotionCustomerAsync(int promotionId, int customerId);
         Task RemovePromotionProductAsync(int promotionId, int productId);
         Task RemovePromotionCustomerAsync(int promotionId, int customerId);
         Task<List<Promotion>> GetPromotionsForCustomerAsync(int customerId);
-        Task<List<Promotion>> GetPromotionsForProductAsync(int productId);
+        Task<List<PromotionProduct>> GetPromotionsForProductAsync(int productId);
     }
 }
