@@ -1,4 +1,5 @@
 using SWP391_CareSkin_BE.DTOs.Responses.Product;
+using SWP391_CareSkin_BE.DTOs.Requests.Product;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
@@ -168,9 +169,10 @@ namespace SWP391_CareSkin_BE.Mappers
                 {
                     product.ProductVariations.Add(new ProductVariation
                     {
+                        ProductVariationId = variation.ProductVariationId ?? 0,
                         Ml = variation.Ml,
                         Price = variation.Price,
-                        SalePrice = 0 // Initialize SalePrice to 0 for new variations
+                        SalePrice = variation.SalePrice ?? 0 // Use provided SalePrice or default to 0
                     });
                 }
             }
