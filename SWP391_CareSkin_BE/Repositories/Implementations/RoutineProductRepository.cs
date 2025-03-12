@@ -17,7 +17,8 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<List<RoutineProduct>> GetAllAsync()
         {
             return await _context.RoutineProducts
-                .Include(rp => rp.Routine)
+                .Include(rp => rp.RoutineStep)
+                    .ThenInclude(rs => rs.Routine)
                 .Include(rp => rp.Product)
                     .ThenInclude(p => p.ProductVariations)
                 .Include(rp => rp.Product)
@@ -28,7 +29,8 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<RoutineProduct> GetByIdAsync(int id)
         {
             return await _context.RoutineProducts
-                .Include(rp => rp.Routine)
+                .Include(rp => rp.RoutineStep)
+                    .ThenInclude(rs => rs.Routine)
                 .Include(rp => rp.Product)
                     .ThenInclude(p => p.ProductVariations)
                 .Include(rp => rp.Product)

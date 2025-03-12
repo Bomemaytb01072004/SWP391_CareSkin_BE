@@ -341,6 +341,16 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne()
                 .HasForeignKey<Result>(r => r.UserQuizAttemptId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<RoutineStep>()
+           .HasMany(rs => rs.RoutineProducts)
+           .WithOne(rp => rp.RoutineStep)
+           .HasForeignKey(rp => rp.RoutineStepId);
+
+            modelBuilder.Entity<RoutineProduct>()
+            .HasOne(rp => rp.Product)
+            .WithMany()
+            .HasForeignKey(rp => rp.ProductId);
             //end relationship
         }
     }

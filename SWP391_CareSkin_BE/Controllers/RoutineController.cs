@@ -107,43 +107,5 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpGet("{id}/details")]
-        public async Task<ActionResult<RoutineDetailsDTO>> GetRoutineDetails(int id)
-        {
-            try
-            {
-                var routine = await _routineService.GetRoutineByIdAsync(id);
-                var steps = await _routineStepService.GetRoutineStepsByRoutineIdAsync(id);
-
-                var details = new RoutineDetailsDTO
-                {
-                    RoutineId = routine.RoutineId,
-                    RoutineName = routine.RoutineName,
-                    RoutinePeriod = routine.RoutinePeriod,
-                    Description = routine.Description,
-                    SkinTypeId = routine.SkinTypeId,
-                    Steps = steps,
-                    Products = steps.SelectMany(s => s.Product != null 
-                        ? new[] { new RoutineProductDTO 
-                        { 
-                            RoutineProductId = s.RoutineProductId,
-                            ProductId = s.Product.ProductId,
-                            Product = s.Product
-                        }} 
-                        : Array.Empty<RoutineProductDTO>()
-                    ).ToList()
-                };
-
-                return Ok(details);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
     }
 }

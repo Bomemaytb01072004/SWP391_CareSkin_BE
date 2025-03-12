@@ -127,21 +127,21 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet("{id}/details")]
-        public async Task<ActionResult<RoutineStepDetailsDTO>> GetStepDetails(int id)
+        public async Task<ActionResult<RoutineStepDTO>> GetStepDetails(int id)
         {
             try
             {
                 var step = await _routineStepService.GetRoutineStepByIdAsync(id);
                 
                 // The service already handles mapping to DTO with associated products
-                var details = new RoutineStepDetailsDTO
+                var details = new RoutineStepDTO
                 {
                     RoutineStepId = step.RoutineStepId,
                     RoutineId = step.RoutineId,
                     StepOrder = step.StepOrder,
                     StepName = step.StepName,
                     Description = step.Description,
-                    Products = step.RoutineProducts?.Select(rp => new RoutineProductDTO 
+                    RoutineProducts = step.RoutineProducts?.Select(rp => new RoutineProductDTO 
                     {
                         RoutineProductId = rp.RoutineProductId,
                         ProductId = rp.ProductId,

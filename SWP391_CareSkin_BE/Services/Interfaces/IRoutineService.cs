@@ -7,7 +7,6 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     {
         Task<List<RoutineDTO>> GetAllRoutinesAsync();
         Task<RoutineDTO> GetRoutineByIdAsync(int id);
-        Task<List<RoutineDTO>> GetRoutineRecommendationsAsync(RoutineRecommendationRequestDTO request);
         Task<RoutineDTO> CreateRoutineAsync(RoutineCreateRequestDTO request);
         Task<RoutineDTO> UpdateRoutineAsync(int id, RoutineUpdateRequestDTO request);
         Task DeleteRoutineAsync(int id);

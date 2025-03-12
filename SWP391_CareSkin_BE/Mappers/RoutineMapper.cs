@@ -1,4 +1,4 @@
-using SWP391_CareSkin_BE.DTOS.Requests.Routine;
+﻿using SWP391_CareSkin_BE.DTOS.Requests.Routine;
 using SWP391_CareSkin_BE.DTOS.Responses.Routine;
 using SWP391_CareSkin_BE.Models;
 
@@ -17,10 +17,12 @@ namespace SWP391_CareSkin_BE.Mappers
                 RoutinePeriod = routine.RoutinePeriod,
                 Description = routine.Description,
                 SkinTypeId = routine.SkinTypeId,
-                SkinTypeName = routine.SkinType?.TypeName,
-                RoutineProducts = routine.RoutineProducts?
-                    .Select(rp => RoutineProductMapper.ToDTO(rp))
-                    .ToList() ?? new List<RoutineProductDTO>()
+                SkinTypeName = routine.SkinType?.TypeName, // Nếu có SkinType thì lấy tên loại da
+
+                // Ánh xạ các bước của Routine (bây giờ đã có thông tin sản phẩm trong RoutineStep)
+                RoutineStepDTOs = routine.RoutineSteps?
+                    .Select(rp => RoutineStepMapper.ToDTO(rp))
+                    .ToList() ?? new List<RoutineStepDTO>()
             };
         }
 
@@ -29,6 +31,7 @@ namespace SWP391_CareSkin_BE.Mappers
             return routines?.Select(ToDTO).ToList() ?? new List<RoutineDTO>();
         }
 
+        // Chuyển từ DTO tạo Routine thành Entity
         public static Routine ToEntity(RoutineCreateRequestDTO dto)
         {
             if (dto == null) return null;
@@ -42,6 +45,7 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
+        // Cập nhật Entity Routine từ DTO cập nhật
         public static void UpdateEntity(Routine routine, RoutineUpdateRequestDTO dto)
         {
             if (routine == null || dto == null) return;

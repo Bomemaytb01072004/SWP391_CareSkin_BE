@@ -36,35 +36,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RoutineMapper.ToDTO(routine);
         }
 
-        public async Task<List<RoutineDTO>> GetRoutineRecommendationsAsync(RoutineRecommendationRequestDTO request)
-        {
-            // Validate skin type exists
-            var skinType = await _skinTypeRepository.GetByIdAsync(request.SkinTypeId);
-            if (skinType == null)
-            {
-                throw new NotFoundException($"SkinType with ID {request.SkinTypeId} not found");
-            }
-
-            // Validate period (should be either "morning" or "evening")
-            string normalizedPeriod = request.Period.ToLower();
-            if (normalizedPeriod != "morning" && normalizedPeriod != "evening")
-            {
-                throw new Exception("Period must be either 'morning' or 'evening'");
-            }
-
-            // Get routines for the specified skin type and period
-            var routines = await _routineRepository.GetBySkinTypeAndPeriodAsync(request.SkinTypeId, normalizedPeriod);
-            
-            // If no routines found, try to find generic routines that work for all skin types
-            if (routines == null || !routines.Any())
-            {
-                // You could implement a fallback strategy here if needed
-                // For example, get routines for a "normal" skin type or general routines
-            }
-
-            return RoutineMapper.ToDTOList(routines);
-        }
-
         public async Task<RoutineDTO> CreateRoutineAsync(RoutineCreateRequestDTO request)
         {
             // Validate skin type exists
