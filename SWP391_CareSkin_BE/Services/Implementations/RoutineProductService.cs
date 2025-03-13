@@ -80,6 +80,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RoutineProductMapper.ToDTOList(routineProducts);
         }
 
+        /// <summary>
+        /// Checks if a product is already added to a specific routine step
+        /// </summary>
+        /// <param name="stepId">The routine step ID</param>
+        /// <param name="productId">The product ID</param>
+        /// <returns>True if the product is already in the step, false otherwise</returns>
+        private async Task<bool> IsProductAlreadyInStepAsync(int stepId, int productId)
+        {
+            var existingProduct = await _routineProductRepository.GetByStepIdAndProductIdAsync(stepId, productId);
+            return existingProduct != null;
+        }
+
         public async Task<RoutineProductDTO> CreateRoutineProductAsync(RoutineProductCreateRequestDTO request)
         {
             // Validate routine step exists
@@ -97,9 +109,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             // Check if the product is already in this step
-            var existingRoutineProduct = await _routineProductRepository.GetByStepIdAndProductIdAsync(
-                request.RoutineStepId, request.ProductId);
-            if (existingRoutineProduct != null)
+            if (await IsProductAlreadyInStepAsync(request.RoutineStepId, request.ProductId))
             {
                 throw new BadRequestException($"Product with ID {request.ProductId} is already in step with ID {request.RoutineStepId}");
             }
@@ -140,12 +150,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"Product with ID {request.ProductId} not found");
             }
 
-            // Check if the product is already in this step (but not this one)
-            var existingRoutineProduct = await _routineProductRepository.GetByStepIdAndProductIdAsync(
-                request.RoutineStepId, request.ProductId);
-            if (existingRoutineProduct != null && existingRoutineProduct.RoutineProductId != id)
+            // If the product or step has changed, check for duplicates
+            if (routineProduct.ProductId != request.ProductId || routineProduct.RoutineStepId != request.RoutineStepId)
             {
-                throw new BadRequestException($"Product with ID {request.ProductId} is already in step with ID {request.RoutineStepId}");
+                // Check if the product is already in this step
+                if (await IsProductAlreadyInStepAsync(request.RoutineStepId, request.ProductId))
+                {
+                    throw new BadRequestException($"Product with ID {request.ProductId} is already in step with ID {request.RoutineStepId}");
+                }
             }
 
             // Update routine product

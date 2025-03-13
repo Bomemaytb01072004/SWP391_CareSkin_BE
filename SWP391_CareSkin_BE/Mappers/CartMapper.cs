@@ -29,13 +29,16 @@ namespace SWP391_CareSkin_BE.Mappers
                 TotalSalePrice = 0, // Will be calculated in service
                 IsOnSale = false, // Will be calculated in service
 
-                ProductVariations = cart.Product?.ProductVariations?.Select(v => new ProductVariationDTO
-                {
-                    ProductVariationId = v.ProductVariationId,
-                    Ml = v.Ml,
-                    Price = v.Price,
-                    SalePrice = v.SalePrice
-                }).ToList()
+                // Include all variations of the product with the selected one marked
+                ProductVariations = cart.Product?.ProductVariations?
+                    .OrderBy(v => v.Ml)  // Sort by size for better display
+                    .Select(v => new ProductVariationDTO
+                    {
+                        ProductVariationId = v.ProductVariationId,
+                        Ml = v.Ml,
+                        Price = v.Price,
+                        SalePrice = v.SalePrice
+                    }).ToList() ?? new List<ProductVariationDTO>()
             };
 
             return cartDTO;

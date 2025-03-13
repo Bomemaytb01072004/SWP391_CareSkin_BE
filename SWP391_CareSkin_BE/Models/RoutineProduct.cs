@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.Models
         public int ProductId { get; set; }
         
         [ForeignKey("RoutineStep")]
-        public int RoutineStepId { get; set; }
+        public int? RoutineStepId { get; set; }
 
         public virtual Product Product { get; set; }
         public virtual RoutineStep RoutineStep { get; set; }

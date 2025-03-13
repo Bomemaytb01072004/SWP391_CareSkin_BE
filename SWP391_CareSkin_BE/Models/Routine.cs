@@ -19,6 +19,6 @@ namespace SWP391_CareSkin_BE.Models
         public int SkinTypeId { get; set; }
 
         public virtual SkinType SkinType { get; set; }
-        public virtual ICollection<RoutineStep> RoutineSteps { get; set; } = new List<RoutineStep>();
+        public virtual ICollection<RoutineStep>? RoutineSteps { get; set; } = new List<RoutineStep>();
     }
 }

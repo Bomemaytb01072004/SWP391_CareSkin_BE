@@ -18,6 +18,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             return await _context.Carts
                 .Include(c => c.Product)
+                    .ThenInclude(p => p.ProductVariations)
                 .Include(c => c.ProductVariation)
                 .Where(c => c.CustomerId == customerId)
                 .ToListAsync();
@@ -46,6 +47,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             return await _context.Carts
                 .Include(c => c.Product)
+                    .ThenInclude(p => p.ProductVariations)
                 .Include(c => c.ProductVariation)
                 .FirstOrDefaultAsync(c => c.CartId == cartId);
         }
