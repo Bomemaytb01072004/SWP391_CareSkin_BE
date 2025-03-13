@@ -21,12 +21,12 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductDetailIngredient> productDetailIngredients { get; set; }
+        public DbSet<ProductDetailIngredient> ProductDetailIngredients { get; set; }
         public DbSet<ProductMainIngredient> ProductMainIngredients { get; set; }
         public DbSet<ProductPicture> ProductPictures { get; set; }
         public DbSet<ProductUsage> ProductUsages { get; set; }
         public DbSet<ProductVariation> ProductVariations { get; set; }
-        public DbSet<ProductForSkinType> productForSkinTypes { get; set; }
+        public DbSet<ProductForSkinType> ProductForSkinTypes { get; set; }
         public DbSet<PromotionCustomer> PromotionCustomers { get; set; }
         public DbSet<PromotionProduct> PromotionProducts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }

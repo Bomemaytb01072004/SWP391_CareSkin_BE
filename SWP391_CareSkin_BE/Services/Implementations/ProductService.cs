@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -17,15 +17,30 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly IProductRepository _productRepository;
         private readonly IFirebaseService _firebaseService;
         private readonly IProductPictureService _productPictureService;
+        private readonly IProductUsageRepository _productUsageRepository;
+        private readonly IProductForSkinTypeRepository _productForSkinTypeRepository;
+        private readonly IProductVariationRepository _productVariationRepository;
+        private readonly IProductMainIngredientRepository _productMainIngredientRepository;
+        private readonly IProductDetailIngredientRepository _productDetailIngredientRepository;
 
         public ProductService(
             IProductRepository productRepository, 
             IFirebaseService firebaseService,
-            IProductPictureService productPictureService)
+            IProductPictureService productPictureService,
+            IProductUsageRepository productUsageRepository,
+            IProductForSkinTypeRepository productForSkinTypeRepository,
+            IProductVariationRepository productVariationRepository,
+            IProductMainIngredientRepository productMainIngredientRepository,
+            IProductDetailIngredientRepository productDetailIngredientRepository)
         {
             _productRepository = productRepository;
             _firebaseService = firebaseService;
             _productPictureService = productPictureService;
+            _productUsageRepository = productUsageRepository;
+            _productForSkinTypeRepository = productForSkinTypeRepository;
+            _productVariationRepository = productVariationRepository;
+            _productMainIngredientRepository = productMainIngredientRepository;
+            _productDetailIngredientRepository = productDetailIngredientRepository;
         }
 
         public async Task<List<ProductDTO>> GetAllProductsAsync()
@@ -117,7 +132,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 foreach (var skinType in request.ProductForSkinTypes)
                 {
                     var existingSkinType = existingProduct.ProductForSkinTypes
-                        .FirstOrDefault(s => s.SkinTypeId == skinType.SkinTypeId); // Kiểm tra xem SkinType đã có chưa
+                        .FirstOrDefault(s => s.ProductForSkinTypeId == skinType.ProductForSkinTypeId); // Kiểm tra xem SkinType đã có chưa
 
                     if (existingSkinType != null)
                     {
@@ -324,6 +339,51 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             await _productPictureService.DeleteProductPicturesByProductIdAsync(productId);
 
             await _productRepository.DeleteProductAsync(productId);
+            return true;
+        }
+
+        public async Task<bool> DeleteProductUsageAsync(int id)
+        {
+            var productUsage = await _productUsageRepository.GetByIdAsync(id);
+            if (productUsage == null) return false;
+
+            await _productUsageRepository.DeleteAsync(productUsage);
+            return true;
+        }
+
+        public async Task<bool> DeleteProductForSkinTypeAsync(int id)
+        {
+            var productForSkinType = await _productForSkinTypeRepository.GetByIdAsync(id);
+            if (productForSkinType == null) return false;
+
+            await _productForSkinTypeRepository.DeleteAsync(productForSkinType);
+            return true;
+        }
+
+        public async Task<bool> DeleteProductVariationAsync(int id)
+        {
+            var productVariation = await _productVariationRepository.GetByIdAsync(id);
+            if (productVariation == null) return false;
+
+            await _productVariationRepository.DeleteAsync(productVariation);
+            return true;
+        }
+
+        public async Task<bool> DeleteProductMainIngredientAsync(int id)
+        {
+            var productMainIngredient = await _productMainIngredientRepository.GetByIdAsync(id);
+            if (productMainIngredient == null) return false;
+
+            await _productMainIngredientRepository.DeleteAsync(productMainIngredient);
+            return true;
+        }
+
+        public async Task<bool> DeleteProductDetailIngredientAsync(int id)
+        {
+            var productDetailIngredient = await _productDetailIngredientRepository.GetByIdAsync(id);
+            if (productDetailIngredient == null) return false;
+
+            await _productDetailIngredientRepository.DeleteAsync(productDetailIngredient);
             return true;
         }
 

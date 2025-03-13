@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
@@ -137,5 +137,39 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(categories);
         }
 
+        [HttpDelete("usage/{id}")]
+        public async Task<IActionResult> DeleteProductUsage(int id)
+        {
+            var result = await _productService.DeleteProductUsageAsync(id);
+            return result ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("skin-type/{id}")]
+        public async Task<IActionResult> DeleteProductForSkinType(int id)
+        {
+            var result = await _productService.DeleteProductForSkinTypeAsync(id);
+            return result ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("variation/{id}")]
+        public async Task<IActionResult> DeleteProductVariation(int id)
+        {
+            var result = await _productService.DeleteProductVariationAsync(id);
+            return result ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("main-ingredient/{id}")]
+        public async Task<IActionResult> DeleteProductMainIngredient(int id)
+        {
+            var result = await _productService.DeleteProductMainIngredientAsync(id);
+            return result ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("detail-ingredient/{id}")]
+        public async Task<IActionResult> DeleteProductDetailIngredient(int id)
+        {
+            var result = await _productService.DeleteProductDetailIngredientAsync(id);
+            return result ? NoContent() : NotFound();
+        }
     }
 }

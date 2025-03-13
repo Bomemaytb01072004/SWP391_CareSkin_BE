@@ -135,6 +135,16 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IResultRepository, ResultRepository>();
             builder.Services.AddScoped<IResultService, ResultService>();
 
+            builder.Services.AddScoped<IProductDetailIngredientRepository, ProductDetailIngredientRepository>();
+
+            builder.Services.AddScoped<IProductForSkinTypeRepository, ProductForSkinTypeRepository>();
+
+            builder.Services.AddScoped<IProductMainIngredientRepository, ProductMainIngredientRepository>();
+
+            builder.Services.AddScoped<IProductUsageRepository, ProductUsageRepository>();
+
+            builder.Services.AddScoped<IProductVariationRepository, ProductVariationRepository>();
+
             builder.Services.AddScoped<IUserQuizAttemptRepository, UserQuizAttemptRepository>();
             builder.Services.AddScoped<IUserQuizAttemptService, UserQuizAttemptService>();
 
