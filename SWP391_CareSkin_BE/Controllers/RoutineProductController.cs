@@ -39,12 +39,12 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpGet("routine/{routineStepId}")]
-        public async Task<ActionResult<List<RoutineProductDTO>>> GetRoutineProductsByRoutineId(int routineStepId)
+        [HttpGet("routine/{routineId}")]
+        public async Task<ActionResult<List<RoutineProductDTO>>> GetRoutineProductsByRoutineId(int routineId)
         {
             try
             {
-                var routineProducts = await _routineProductService.GetRoutineProductsByRoutineIdAsync(routineStepId);
+                var routineProducts = await _routineProductService.GetRoutineProductsByRoutineIdAsync(routineId);
                 return Ok(routineProducts);
             }
             catch (NotFoundException ex)
@@ -68,7 +68,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult<RoutineProductDTO>> CreateRoutineProduct([FromBody] RoutineProductCreateRequestDTO request)
         {
             try
@@ -87,7 +86,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult<RoutineProductDTO>> UpdateRoutineProduct(int id, [FromBody] RoutineProductUpdateRequestDTO request)
         {
             try
@@ -106,7 +104,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult> DeleteRoutineProduct(int id)
         {
             try

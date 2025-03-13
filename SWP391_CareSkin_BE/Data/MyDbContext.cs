@@ -273,13 +273,13 @@ namespace SWP391_CareSkin_BE.Data
                 .HasMany(r => r.RoutineSteps)
                 .WithOne(rs => rs.Routine)
                 .HasForeignKey(rs => rs.RoutineId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RoutineStep>()
                 .HasMany(rs => rs.RoutineProducts)
                 .WithOne(rp => rp.RoutineStep)
                 .HasForeignKey(rp => rp.RoutineStepId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RoutineProduct>()
                 .HasOne(rp => rp.Product)
@@ -291,7 +291,7 @@ namespace SWP391_CareSkin_BE.Data
                 .HasOne(rp => rp.RoutineStep)
                 .WithMany(rs => rs.RoutineProducts)
                 .HasForeignKey(rp => rp.RoutineStepId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SkinType>()
                 .HasMany(s => s.Results)
