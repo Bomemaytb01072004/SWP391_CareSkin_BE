@@ -163,6 +163,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IRoutineProductRepository, RoutineProductRepository>();
             builder.Services.AddScoped<IRoutineProductService, RoutineProductService>();
 
+            builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
+            builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
+
             // Configure Hangfire
             builder.Services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
