@@ -8,9 +8,9 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     {
         Task<List<BlogNewsDTO>> GetAllNewsAsync();
         Task<BlogNewsDTO> GetNewsByIdAsync(int blogId);
-        Task<BlogNewsDTO> GetNewsByNameAsync(string title);
+        //Task<BlogNewsDTO> GetNewsByNameAsync(string title);
         Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, string pictureUrl);
-        Task<BlogNewsDTO> UpdateNewsAsync(int blogId, BlogNewsUpdateRequest request);
+        Task<BlogNewsDTO> UpdateNewsAsync(int blogId, BlogNewsUpdateRequest request, string pictureUrl);
         Task<bool> DeleteNewsAsync(int blogId);
     }
 }

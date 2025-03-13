@@ -6,13 +6,14 @@ namespace SWP391_CareSkin_BE.Models
     [Table("BlogNew")]
     public class BlogNew
     {
+        [Key]
         public int BlogId { get; set; }
 
         public string Title { get; set; }
 
         public string Content { get; set; }
 
-        public string PictureUrl { get; set; }
+        public string? PictureUrl { get; set; }
 
         public int CustomerId { get; set; }
 

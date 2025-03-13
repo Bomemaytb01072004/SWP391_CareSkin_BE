@@ -14,11 +14,12 @@ namespace SWP391_CareSkin_BE.Mappers
             if (blog == null) return null;
 
             return new BlogNewsDTO
-            {
+            {              
                 BlogId = blog.BlogId,
-                Title = blog.Title,
-                Content = blog.Content,
-                PictureUrl = blog.PictureUrl,
+                CustomerId = blog.CustomerId,
+                Title = blog.Title ,
+                Content = blog.Content ,
+                PictureUrl = blog.PictureUrl ,
             };
         }
 
@@ -31,17 +32,23 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 Title = request.Title,
                 Content = request.Content,
-                PictureUrl = pictureUrl
+                PictureUrl = pictureUrl,
+                CustomerId = request.CustomerId
             };
         }
 
-        public static void UpdateEntity(BlogNew blog, BlogNewsUpdateRequest request)
+        public static void UpdateEntity(BlogNew blog, BlogNewsUpdateRequest request, string pictureUrl = null)
         {
             if (blog == null || request == null) return;
 
             blog.Title = request.Title;
+
             blog.Content = request.Content;
-            blog.PictureUrl = request.PictureUrl;
+
+            if (pictureUrl != null)
+            {
+                blog.PictureUrl = pictureUrl;
+            }
         }
 
 
