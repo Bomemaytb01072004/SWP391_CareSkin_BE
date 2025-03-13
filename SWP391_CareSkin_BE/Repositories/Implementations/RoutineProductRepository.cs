@@ -49,6 +49,18 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<List<RoutineProduct>> GetByRoutineStepIdAsync(int routineStepId)
+        {
+            return await _context.RoutineProducts
+                .Where(rp => rp.RoutineStepId == routineStepId)
+                .Include(rp => rp.Product)
+                    .ThenInclude(p => p.ProductVariations)
+                .Include(rp => rp.Product)
+                    .ThenInclude(p => p.Brand)
+                .Include(rp => rp.RoutineStep)
+                .ToListAsync();
+        }
+
         public async Task<RoutineProduct> GetByRoutineIdAndProductIdAsync(int routineId, int productId)
         {
             return await _context.RoutineProducts

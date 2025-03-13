@@ -13,15 +13,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly IRoutineProductRepository _routineProductRepository;
         private readonly IRoutineRepository _routineRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IRoutineStepRepository _routineStepRepository;
 
         public RoutineProductService(
             IRoutineProductRepository routineProductRepository,
             IRoutineRepository routineRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IRoutineStepRepository routineStepRepository)
         {
             _routineProductRepository = routineProductRepository;
             _routineRepository = routineRepository;
             _productRepository = productRepository;
+            _routineStepRepository = routineStepRepository;
         }
 
         public async Task<List<RoutineProductDTO>> GetAllRoutineProductsAsync()
@@ -51,6 +54,19 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             var routineProducts = await _routineProductRepository.GetByRoutineIdAsync(routineId);
+            return RoutineProductMapper.ToDTOList(routineProducts);
+        }
+
+        public async Task<List<RoutineProductDTO>> GetRoutineProductsByRoutineStepIdAsync(int routineStepId)
+        {
+            // Check if the routine step exists 
+            var routineStep = await _routineStepRepository.GetByIdAsync(routineStepId);
+            if (routineStep == null)
+            {
+                throw new NotFoundException($"RoutineStep with ID {routineStepId} not found");
+            }
+
+            var routineProducts = await _routineProductRepository.GetByRoutineStepIdAsync(routineStepId);
             return RoutineProductMapper.ToDTOList(routineProducts);
         }
 

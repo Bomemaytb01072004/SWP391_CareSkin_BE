@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests.Routine;
+using SWP391_CareSkin_BE.DTOS.Requests.Routine;
 using SWP391_CareSkin_BE.DTOS.Responses.Routine;
 using SWP391_CareSkin_BE.Models;
 
@@ -16,6 +16,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 RoutineProductId = routineProduct.RoutineProductId,
                 RoutineId = routineProduct.RoutineId,
                 ProductId = routineProduct.ProductId,
+                RoutineStepId = routineProduct.RoutineStepId,
                 Product = routineProduct.Product != null ? ProductMapper.ToDTO(routineProduct.Product) : null // Chuyển thông tin sản phẩm
             };
         }

@@ -7,6 +7,7 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task<List<RoutineProduct>> GetAllAsync();
         Task<RoutineProduct> GetByIdAsync(int id);
         Task<List<RoutineProduct>> GetByRoutineIdAsync(int routineId);
+        Task<List<RoutineProduct>> GetByRoutineStepIdAsync(int routineStepId);
         Task<RoutineProduct> GetByRoutineIdAndProductIdAsync(int routineId, int productId);
         Task CreateAsync(RoutineProduct routineProduct);
         Task UpdateAsync(RoutineProduct routineProduct);

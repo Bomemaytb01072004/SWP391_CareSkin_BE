@@ -53,6 +53,20 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
+        [HttpGet("routineStep/{routineStepId}")]
+        public async Task<ActionResult<List<RoutineProductDTO>>> GetRoutineProductsByRoutineStepId(int routineStepId)
+        {
+            try
+            {
+                var routineProducts = await _routineProductService.GetRoutineProductsByRoutineStepIdAsync(routineStepId);
+                return Ok(routineProducts);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult<RoutineProductDTO>> CreateRoutineProduct([FromBody] RoutineProductCreateRequestDTO request)
