@@ -120,6 +120,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<ISkinTypeRepository, SkinTypeRepository>();
             builder.Services.AddScoped<ISkinTypeService, SkinTypeService>();
 
+            builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
+            builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
+
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
