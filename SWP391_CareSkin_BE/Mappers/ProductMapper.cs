@@ -4,6 +4,7 @@ using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.DTOS.ProductPicture;
+using SWP391_CareSkin_BE.DTOS.Responses.Routine;
 
 namespace SWP391_CareSkin_BE.Mappers
 {
@@ -85,6 +86,81 @@ namespace SWP391_CareSkin_BE.Mappers
                 return new List<ProductDTO>();
 
             return products.Select(ToDTO).ToList();
+        }
+
+        // Convert from Product Entity to ProductForRoutineDTO
+        public static ProductForRoutineDTO ToProductForRoutineDTO(Product product)
+        {
+            if (product == null)
+                return null;
+
+            return new ProductForRoutineDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                Description = product.Description,
+                Category = product.Category,
+                BrandName = product.Brand?.Name,
+                PictureUrl = product.PictureUrl,
+                AverageRating = product.AverageRating,
+                Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
+                {
+                    ProductVariationId = v.ProductVariationId,
+                    Ml = v.Ml,
+                    Price = v.Price,
+                    SalePrice = v.SalePrice
+                }).ToList()
+            };
+        }
+
+        // Convert a list of Product entities to a list of ProductForRoutineDTOs
+        public static List<ProductForRoutineDTO> ToProductForRoutineDTOList(IEnumerable<Product> products)
+        {
+            if (products == null)
+                return new List<ProductForRoutineDTO>();
+
+            return products.Select(ToProductForRoutineDTO).ToList();
+        }
+
+        // Convert from Product Entity to simplified ProductDTO for routine responses
+        public static ProductDTO ToSimplifiedDTO(Product product)
+        {
+            if (product == null)
+                return null;
+
+            return new ProductDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                Description = product.Description,
+                Category = product.Category,
+                BrandName = product.Brand?.Name,
+                PictureUrl = product.PictureUrl,
+                AverageRating = product.AverageRating,
+                Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
+                {
+                    ProductVariationId = v.ProductVariationId,
+                    Ml = v.Ml,
+                    Price = v.Price,
+                    SalePrice = v.SalePrice
+                }).ToList(),
+                // Initialize other properties as empty lists to avoid null reference exceptions
+                PromotionProducts = new List<PromotionProductDTO>(),
+                ProductForSkinTypes = new List<ProductForSkinTypeDTO>(),
+                MainIngredients = new List<ProductMainIngredientDTO>(),
+                DetailIngredients = new List<ProductDetailIngredientDTO>(),
+                Usages = new List<ProductUsageDTO>(),
+                ProductPictures = new List<ProductPictureDTO>()
+            };
+        }
+
+        // Convert a list of Product entities to a list of simplified ProductDTOs for routine responses
+        public static List<ProductDTO> ToSimplifiedDTOList(IEnumerable<Product> products)
+        {
+            if (products == null)
+                return new List<ProductDTO>();
+
+            return products.Select(ToSimplifiedDTO).ToList();
         }
 
         // Convert from ProductCreateRequestDTO to Product Entity

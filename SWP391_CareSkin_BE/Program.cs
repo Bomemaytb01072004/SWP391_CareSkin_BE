@@ -162,6 +162,8 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IRoutineService, RoutineService>();
             builder.Services.AddScoped<IRoutineProductRepository, RoutineProductRepository>();
             builder.Services.AddScoped<IRoutineProductService, RoutineProductService>();
+            builder.Services.AddScoped<IRoutineStepRepository, RoutineStepRepository>();
+            builder.Services.AddScoped<IRoutineStepService, RoutineStepService>();
 
             // Configure Hangfire
             builder.Services.AddHangfire(config => config

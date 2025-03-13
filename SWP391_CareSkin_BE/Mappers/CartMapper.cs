@@ -21,6 +21,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 ProductVariationId = cart.ProductVariationId,
                 Quantity = cart.Quantity,
                 ProductName = cart.Product?.ProductName,
+                PictureUrl = cart.Product?.PictureUrl,
                 Ml = cart.ProductVariation?.Ml ?? 0,
                 Price = cart.ProductVariation?.Price ?? 0,
                 TotalPrice = 0, // Will be calculated in service

@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SWP391_CareSkin_BE.Repositories.Implementations
 {
@@ -17,36 +20,23 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<List<RoutineProduct>> GetAllAsync()
         {
             return await _context.RoutineProducts
-                .Include(rp => rp.RoutineStep)
-                    .ThenInclude(rs => rs.Routine)
                 .Include(rp => rp.Product)
                     .ThenInclude(p => p.ProductVariations)
                 .Include(rp => rp.Product)
                     .ThenInclude(p => p.Brand)
+                .Include(rp => rp.RoutineStep)
                 .ToListAsync();
         }
 
         public async Task<RoutineProduct> GetByIdAsync(int id)
         {
             return await _context.RoutineProducts
+                .Include(rp => rp.Product)
+                    .ThenInclude(p => p.ProductVariations)
+                .Include(rp => rp.Product)
+                    .ThenInclude(p => p.Brand)
                 .Include(rp => rp.RoutineStep)
-                    .ThenInclude(rs => rs.Routine)
-                .Include(rp => rp.Product)
-                    .ThenInclude(p => p.ProductVariations)
-                .Include(rp => rp.Product)
-                    .ThenInclude(p => p.Brand)
                 .FirstOrDefaultAsync(rp => rp.RoutineProductId == id);
-        }
-
-        public async Task<List<RoutineProduct>> GetByRoutineIdAsync(int routineId)
-        {
-            return await _context.RoutineProducts
-                .Where(rp => rp.RoutineId == routineId)
-                .Include(rp => rp.Product)
-                    .ThenInclude(p => p.ProductVariations)
-                .Include(rp => rp.Product)
-                    .ThenInclude(p => p.Brand)
-                .ToListAsync();
         }
 
         public async Task<List<RoutineProduct>> GetByRoutineStepIdAsync(int routineStepId)
@@ -61,20 +51,15 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<RoutineProduct> GetByRoutineIdAndProductIdAsync(int routineId, int productId)
+        public async Task<RoutineProduct> GetByStepIdAndProductIdAsync(int stepId, int productId)
         {
             return await _context.RoutineProducts
-                .Where(rp => rp.RoutineId == routineId && rp.ProductId == productId)
-                .Include(rp => rp.Product)
-                    .ThenInclude(p => p.ProductVariations)
-                .Include(rp => rp.Product)
-                    .ThenInclude(p => p.Brand)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(rp => rp.RoutineStepId == stepId && rp.ProductId == productId);
         }
 
         public async Task CreateAsync(RoutineProduct routineProduct)
         {
-            await _context.RoutineProducts.AddAsync(routineProduct);
+            _context.RoutineProducts.Add(routineProduct);
             await _context.SaveChangesAsync();
         }
 

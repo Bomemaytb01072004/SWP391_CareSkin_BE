@@ -125,45 +125,5 @@ namespace SWP391_CareSkin_BE.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        [HttpGet("{id}/details")]
-        public async Task<ActionResult<RoutineStepDTO>> GetStepDetails(int id)
-        {
-            try
-            {
-                var step = await _routineStepService.GetRoutineStepByIdAsync(id);
-                
-                // The service already handles mapping to DTO with associated products
-                var details = new RoutineStepDTO
-                {
-                    RoutineStepId = step.RoutineStepId,
-                    RoutineId = step.RoutineId,
-                    StepOrder = step.StepOrder,
-                    StepName = step.StepName,
-                    Description = step.Description,
-                    RoutineProducts = step.RoutineProducts?.Select(rp => new RoutineProductDTO 
-                    {
-                        RoutineProductId = rp.RoutineProductId,
-                        ProductId = rp.ProductId,
-                        Product = rp.Product != null ? new ProductDTO 
-                        {
-                            ProductId = rp.Product.ProductId,
-                            ProductName = rp.Product.ProductName,
-                            // Add other necessary product properties
-                        } : null
-                    }).ToList() ?? new List<RoutineProductDTO>()
-                };
-
-                return Ok(details);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
     }
 }

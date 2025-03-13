@@ -16,6 +16,8 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
 
         public string ProductName { get; set; }
 
+        public string PictureUrl { get; set; }
+
         public int Ml { get; set; }
 
         public decimal Price { get; set; }

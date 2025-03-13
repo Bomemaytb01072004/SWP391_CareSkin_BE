@@ -53,6 +53,24 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
+        [HttpGet("skinType/{skinTypeId}")]
+        public async Task<ActionResult<List<RoutineDTO>>> GetRoutineBySkinTypeId(int skinTypeId)
+        {
+            try
+            {
+                var routines = await _routineService.GetRoutinesBySkinTypeIdAsync(skinTypeId);
+                return Ok(routines);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<RoutineDTO>> CreateRoutine([FromBody] RoutineCreateRequestDTO request)
         {

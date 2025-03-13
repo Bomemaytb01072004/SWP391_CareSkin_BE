@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -56,6 +56,15 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             return await _context.RoutineSteps
                 .FirstOrDefaultAsync(rs => rs.RoutineId == routineId && rs.StepOrder == stepOrder); // Lấy theo RoutineId và StepOrder
+        }
+
+        // Lấy sản phẩm theo RoutineStepId
+        public async Task<List<RoutineProduct>> GetProductsByStepIdAsync(int stepId)
+        {
+            return await _context.RoutineProducts
+                .Where(rp => rp.RoutineStepId == stepId)
+                .Include(rp => rp.Product)
+                .ToListAsync();
         }
 
         // Tạo mới RoutineStep

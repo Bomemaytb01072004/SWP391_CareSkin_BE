@@ -14,10 +14,23 @@ namespace SWP391_CareSkin_BE.Mappers
             return new RoutineProductDTO
             {
                 RoutineProductId = routineProduct.RoutineProductId,
-                RoutineId = routineProduct.RoutineId,
                 ProductId = routineProduct.ProductId,
                 RoutineStepId = routineProduct.RoutineStepId,
-                Product = routineProduct.Product != null ? ProductMapper.ToDTO(routineProduct.Product) : null // Chuyển thông tin sản phẩm
+                Product = routineProduct.Product != null ? ProductMapper.ToProductForRoutineDTO(routineProduct.Product) : null // Chuyển thông tin sản phẩm cho routine
+            };
+        }
+
+        // Chuyển từ Entity RoutineProduct thành DTO với thông tin sản phẩm đơn giản hóa
+        public static RoutineProductDTO ToSimplifiedDTO(RoutineProduct routineProduct)
+        {
+            if (routineProduct == null) return null;
+
+            return new RoutineProductDTO
+            {
+                RoutineProductId = routineProduct.RoutineProductId,
+                ProductId = routineProduct.ProductId,
+                RoutineStepId = routineProduct.RoutineStepId,
+                Product = routineProduct.Product != null ? ProductMapper.ToProductForRoutineDTO(routineProduct.Product) : null // Chuyển thông tin sản phẩm cho routine
             };
         }
 
@@ -27,6 +40,12 @@ namespace SWP391_CareSkin_BE.Mappers
             return routineProducts?.Select(ToDTO).ToList() ?? new List<RoutineProductDTO>();
         }
 
+        // Chuyển danh sách RoutineProduct thành danh sách DTO với thông tin sản phẩm đơn giản hóa
+        public static List<RoutineProductDTO> ToSimplifiedDTOList(IEnumerable<RoutineProduct> routineProducts)
+        {
+            return routineProducts?.Select(ToSimplifiedDTO).ToList() ?? new List<RoutineProductDTO>();
+        }
+
         // Chuyển từ DTO tạo RoutineProduct thành Entity
         public static RoutineProduct ToEntity(RoutineProductCreateRequestDTO dto)
         {
@@ -34,7 +53,7 @@ namespace SWP391_CareSkin_BE.Mappers
 
             return new RoutineProduct
             {
-                RoutineId = dto.RoutineId,
+                RoutineStepId = dto.RoutineStepId,
                 ProductId = dto.ProductId
             };
         }

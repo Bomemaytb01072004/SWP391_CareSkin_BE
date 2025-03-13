@@ -8,9 +8,6 @@ namespace SWP391_CareSkin_BE.DTOS.Requests.Routine
         public int RoutineId { get; set; }
         
         [Required]
-        public int RoutineProductId { get; set; }
-        
-        [Required]
         public int StepOrder { get; set; }
         
         [Required]

@@ -39,12 +39,12 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
-        [HttpGet("routine/{routineId}")]
-        public async Task<ActionResult<List<RoutineProductDTO>>> GetRoutineProductsByRoutineId(int routineId)
+        [HttpGet("routine/{routineStepId}")]
+        public async Task<ActionResult<List<RoutineProductDTO>>> GetRoutineProductsByRoutineId(int routineStepId)
         {
             try
             {
-                var routineProducts = await _routineProductService.GetRoutineProductsByRoutineIdAsync(routineId);
+                var routineProducts = await _routineProductService.GetRoutineProductsByRoutineIdAsync(routineStepId);
                 return Ok(routineProducts);
             }
             catch (NotFoundException ex)

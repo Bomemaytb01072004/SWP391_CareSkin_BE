@@ -53,8 +53,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"Routine with ID {routineId} not found");
             }
 
-            var routineProducts = await _routineProductRepository.GetByRoutineIdAsync(routineId);
-            return RoutineProductMapper.ToDTOList(routineProducts);
+            // Get all steps for this routine
+            var routineSteps = await _routineStepRepository.GetByRoutineIdAsync(routineId);
+            
+            // Get all products for each step
+            var allProducts = new List<RoutineProduct>();
+            foreach (var step in routineSteps)
+            {
+                var products = await _routineStepRepository.GetProductsByStepIdAsync(step.RoutineStepId);
+                allProducts.AddRange(products);
+            }
+
+            return RoutineProductMapper.ToDTOList(allProducts);
         }
 
         public async Task<List<RoutineProductDTO>> GetRoutineProductsByRoutineStepIdAsync(int routineStepId)
@@ -72,11 +82,11 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<RoutineProductDTO> CreateRoutineProductAsync(RoutineProductCreateRequestDTO request)
         {
-            // Validate routine exists
-            var routine = await _routineRepository.GetByIdAsync(request.RoutineId);
-            if (routine == null)
+            // Validate routine step exists
+            var routineStep = await _routineStepRepository.GetByIdAsync(request.RoutineStepId);
+            if (routineStep == null)
             {
-                throw new NotFoundException($"Routine with ID {request.RoutineId} not found");
+                throw new NotFoundException($"RoutineStep with ID {request.RoutineStepId} not found");
             }
 
             // Validate product exists
@@ -86,16 +96,20 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"Product with ID {request.ProductId} not found");
             }
 
-            // Check if the combination already exists
-            var existingRoutineProduct = await _routineProductRepository.GetByRoutineIdAndProductIdAsync(
-                request.RoutineId, request.ProductId);
+            // Check if the product is already in this step
+            var existingRoutineProduct = await _routineProductRepository.GetByStepIdAndProductIdAsync(
+                request.RoutineStepId, request.ProductId);
             if (existingRoutineProduct != null)
             {
-                throw new Exception($"Product with ID {request.ProductId} is already in routine with ID {request.RoutineId}");
+                throw new BadRequestException($"Product with ID {request.ProductId} is already in step with ID {request.RoutineStepId}");
             }
 
             // Create new routine product
-            var routineProduct = RoutineProductMapper.ToEntity(request);
+            var routineProduct = new RoutineProduct
+            {
+                RoutineStepId = request.RoutineStepId,
+                ProductId = request.ProductId
+            };
             await _routineProductRepository.CreateAsync(routineProduct);
 
             // Get the created routine product with all related data
@@ -112,6 +126,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"RoutineProduct with ID {id} not found");
             }
 
+            // Validate routine step exists
+            var routineStep = await _routineStepRepository.GetByIdAsync(request.RoutineStepId);
+            if (routineStep == null)
+            {
+                throw new NotFoundException($"RoutineStep with ID {request.RoutineStepId} not found");
+            }
+
             // Validate product exists
             var product = await _productRepository.GetProductByIdAsync(request.ProductId);
             if (product == null)
@@ -119,16 +140,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"Product with ID {request.ProductId} not found");
             }
 
-            // Check if the new combination already exists (but not this one)
-            var existingRoutineProduct = await _routineProductRepository.GetByRoutineIdAndProductIdAsync(
-                routineProduct.RoutineId, request.ProductId);
+            // Check if the product is already in this step (but not this one)
+            var existingRoutineProduct = await _routineProductRepository.GetByStepIdAndProductIdAsync(
+                request.RoutineStepId, request.ProductId);
             if (existingRoutineProduct != null && existingRoutineProduct.RoutineProductId != id)
             {
-                throw new Exception($"Product with ID {request.ProductId} is already in routine with ID {routineProduct.RoutineId}");
+                throw new BadRequestException($"Product with ID {request.ProductId} is already in step with ID {request.RoutineStepId}");
             }
 
             // Update routine product
-            RoutineProductMapper.UpdateEntity(routineProduct, request);
+            routineProduct.RoutineStepId = request.RoutineStepId;
+            routineProduct.ProductId = request.ProductId;
             await _routineProductRepository.UpdateAsync(routineProduct);
 
             // Get the updated routine product with all related data
