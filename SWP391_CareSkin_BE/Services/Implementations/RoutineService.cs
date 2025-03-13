@@ -36,6 +36,20 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RoutineMapper.ToDTO(routine);
         }
 
+        public async Task<List<RoutineDTO>> GetRoutinesBySkinTypeIdAsync(int skinTypeId)
+        {
+            // Validate skin type exists
+            var skinType = await _skinTypeRepository.GetByIdAsync(skinTypeId);
+            if (skinType == null)
+            {
+                throw new NotFoundException($"SkinType with ID {skinTypeId} not found");
+            }
+
+            // Get routines by skin type ID
+            var routines = await _routineRepository.GetBySkinTypeIdAsync(skinTypeId);
+            return RoutineMapper.ToDTOList(routines);
+        }
+
         public async Task<RoutineDTO> CreateRoutineAsync(RoutineCreateRequestDTO request)
         {
             // Validate skin type exists

@@ -12,16 +12,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     {
         private readonly IRoutineStepRepository _routineStepRepository;
         private readonly IRoutineRepository _routineRepository;
-        private readonly IRoutineProductRepository _routineProductRepository;
 
         public RoutineStepService(
             IRoutineStepRepository routineStepRepository,
-            IRoutineRepository routineRepository,
-            IRoutineProductRepository routineProductRepository)
+            IRoutineRepository routineRepository)
         {
             _routineStepRepository = routineStepRepository;
             _routineRepository = routineRepository;
-            _routineProductRepository = routineProductRepository;
         }
 
         public async Task<List<RoutineStepDTO>> GetAllRoutineStepsAsync()
@@ -54,6 +51,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RoutineStepMapper.ToDTOList(routineSteps);
         }
 
+        public async Task<List<RoutineProductDTO>> GetProductsByStepIdAsync(int stepId)
+        {
+            var routineStep = await _routineStepRepository.GetByIdAsync(stepId);
+            if (routineStep == null)
+            {
+                throw new NotFoundException($"RoutineStep with ID {stepId} not found");
+            }
+
+            var products = await _routineStepRepository.GetProductsByStepIdAsync(stepId);
+            return RoutineProductMapper.ToDTOList(products);
+        }
+
         public async Task<RoutineStepDTO> CreateRoutineStepAsync(RoutineStepCreateRequestDTO request)
         {
             // Validate routine exists
@@ -61,18 +70,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (routine == null)
             {
                 throw new NotFoundException($"Routine with ID {request.RoutineId} not found");
-            }
-
-            // Validate routineProduct exists and belongs to the routine
-            var routineProduct = await _routineProductRepository.GetByIdAsync(request.RoutineProductId);
-            if (routineProduct == null)
-            {
-                throw new NotFoundException($"RoutineProduct with ID {request.RoutineProductId} not found");
-            }
-
-            if (routineProduct.RoutineId != request.RoutineId)
-            {
-                throw new BadRequestException($"RoutineProduct with ID {request.RoutineProductId} does not belong to Routine with ID {request.RoutineId}");
             }
 
             // Check if step order already exists for this routine
@@ -99,18 +96,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (routineStep == null)
             {
                 throw new NotFoundException($"RoutineStep with ID {id} not found");
-            }
-
-            // Validate routineProduct exists and belongs to the routine
-            var routineProduct = await _routineProductRepository.GetByIdAsync(request.RoutineProductId);
-            if (routineProduct == null)
-            {
-                throw new NotFoundException($"RoutineProduct with ID {request.RoutineProductId} not found");
-            }
-
-            if (routineProduct.RoutineId != routineStep.RoutineId)
-            {
-                throw new BadRequestException($"RoutineProduct with ID {request.RoutineProductId} does not belong to Routine with ID {routineStep.RoutineId}");
             }
 
             // Check if step order already exists for this routine (but not this one)

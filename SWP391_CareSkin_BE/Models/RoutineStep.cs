@@ -10,13 +10,11 @@ namespace SWP391_CareSkin_BE.Models
         [Key]
         public int RoutineStepId { get; set; }
 
-        [ForeignKey("Routine")]
         public int RoutineId { get; set; }
 
         public int StepOrder { get; set; }
 
         [Required]
-        [StringLength(100)]
         public string StepName { get; set; }
 
         [StringLength(500)]

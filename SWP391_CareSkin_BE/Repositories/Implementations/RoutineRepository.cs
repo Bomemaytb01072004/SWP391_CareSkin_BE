@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -43,6 +43,23 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                         .ThenInclude(rp => rp.Product)
                             .ThenInclude(p => p.Brand) // Kết nối với Brand của Product
                 .FirstOrDefaultAsync(r => r.RoutineId == id); // Truy vấn theo RoutineId
+        }
+
+        // Lấy Routine theo SkinTypeId
+        public async Task<List<Routine>> GetBySkinTypeIdAsync(int skinTypeId)
+        {
+            return await _context.Routines
+                .Where(r => r.SkinTypeId == skinTypeId) // Lọc theo SkinTypeId
+                .Include(r => r.SkinType) // Kết nối với SkinType
+                .Include(r => r.RoutineSteps) // Kết nối với RoutineSteps
+                    .ThenInclude(rs => rs.RoutineProducts) // Kết nối với RoutineProducts
+                        .ThenInclude(rp => rp.Product) // Kết nối với Product trong RoutineProduct
+                            .ThenInclude(p => p.ProductVariations) // Kết nối với ProductVariations trong Product
+                .Include(r => r.RoutineSteps)
+                    .ThenInclude(rs => rs.RoutineProducts)
+                        .ThenInclude(rp => rp.Product)
+                            .ThenInclude(p => p.Brand) // Kết nối với Brand của Product
+                .ToListAsync();
         }
 
         // Lấy Routine theo SkinType và Period
