@@ -97,10 +97,12 @@ namespace SWP391_CareSkin_BE
             // 4) Cấu hình Authentication (JWT & Google)
             builder.Services.AddAuthentication(options =>
             {
-                // Mặc định scheme là JWT
+                // Mặc định dùng JWT cho xác thực API
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme; // Google sẽ được dùng khi user nhấn đăng nhập
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Google cần cookie để xử lý đăng nhập
             })
+            .AddCookie() // Cookie Authentication để hỗ trợ Google login
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
@@ -116,11 +118,10 @@ namespace SWP391_CareSkin_BE
                     IssuerSigningKey = key
                 };
             })
-            // Thêm Google Auth (nếu cần)
             .AddGoogle(options =>
             {
-                options.ClientId = googleClientId;
-                options.ClientSecret = googleClientSecret;
+                options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
+                options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
             });
 
             // Đăng ký các DI Services, Repositories
