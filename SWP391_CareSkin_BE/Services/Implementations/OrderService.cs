@@ -52,6 +52,34 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 totalPrice += itemTotal;
             }
 
+            return decimal.Round(totalPrice, 2);
+        }
+
+        private async Task<decimal> CalculateCartTotalPriceSale(List<Cart> cartItems, int? promotionId)
+        {
+            decimal totalPrice = 0;
+
+            foreach (var cartItem in cartItems)
+            {
+                // Lấy thông tin sản phẩm (bao gồm ProductVariations)
+                var product = await _productRepository.GetProductByIdAsync(cartItem.ProductId);
+                if (product == null)
+                    continue;
+
+                // Lấy variation tương ứng
+                var variation = product.ProductVariations.FirstOrDefault(v => v.ProductVariationId == cartItem.ProductVariationId);
+                if (variation == null)
+                    continue;
+
+                decimal basePrice = variation.Price;
+
+                // Sử dụng SalePrice từ ProductVariation nếu có (> 0)
+                decimal finalPrice = variation.SalePrice > 0 ? variation.SalePrice : basePrice;
+
+                decimal itemTotal = finalPrice * cartItem.Quantity;
+                totalPrice += itemTotal;
+            }
+
 
             // Áp dụng giảm giá đơn hàng nếu có
             if (promotionId.HasValue)
@@ -100,7 +128,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             // Tính tổng tiền dựa trên giá của các sản phẩm trong cart
             orderEntity.TotalPrice = await CalculateCartTotalPrice(cartItems, request.PromotionId);
-
+            orderEntity.TotalPriceSale = await CalculateCartTotalPriceSale(cartItems, request.PromotionId);
             // Thêm Order vào database
             await _orderRepository.AddOrderAsync(orderEntity);
 
@@ -186,7 +214,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
                 // Recalculate total price with new promotion
                 order.TotalPrice = await CalculateCartTotalPrice(cartItems, request.PromotionId);
-                
+                order.TotalPriceSale = await CalculateCartTotalPriceSale(cartItems, request.PromotionId);
                 // Update SalePrice in OrderProducts if needed
                 foreach (var orderProduct in orderProducts)
                 {
@@ -228,24 +256,11 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return orders.Select(o => OrderMapper.ToDTO(o)).ToList();
         }
 
-        public async Task<PagedResult<OrderDTO>> GetOrderHistoryAsync(OrderHistoryRequestDTO request)
+        public async Task<List<OrderDTO>> GetOrderHistoryAsync()
         {
-            var orders = await _orderRepository.GetOrderHistoryAsync(
-                request.CustomerId,
-                request.StatusId,
-                request.FromDate,
-                request.ToDate,
-                request.Page,
-                request.PageSize
-            );
+            var orders = await _orderRepository.GetOrderHistoryAsync();
 
-            return new PagedResult<OrderDTO>
-            {
-                Items = orders.Items.Select(o => OrderMapper.ToDTO(o)).ToList(),
-                TotalItems = orders.TotalItems,
-                Page = orders.Page,
-                PageSize = orders.PageSize
-            };
+            return OrderMapper.ToDTOList(orders);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
         public int? PromotionId { get; set; }
         public string PromotionName { get; set; } 
         public decimal TotalPrice { get; set; }
+        public decimal TotalPriceSale { get; set; }
         public DateOnly OrderDate { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
