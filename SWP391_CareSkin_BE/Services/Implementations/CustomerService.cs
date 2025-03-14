@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -82,6 +82,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         {
             var authResult = await _customerRepository.LoginCustomer(loginDto);
             return CustomerMapper.ToCustomerResponseDTO(authResult);
+        }
+
+        public async Task<Customer?> GetCustomerByEmailAsync(string email)
+        {
+            return await _customerRepository.GetCustomerByEmailAsync(email);
+        }
+
+        public async Task<CustomerDTO> CreateGoogleUserAsync(Customer customer)
+        {
+            await _customerRepository.AddCustomerAsync(customer);
+            return CustomerMapper.ToCustomerResponseDTO(customer);
         }
     }
 }

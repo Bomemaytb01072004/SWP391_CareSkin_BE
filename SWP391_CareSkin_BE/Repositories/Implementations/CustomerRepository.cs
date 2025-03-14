@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOS;
@@ -51,6 +51,12 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             return await _context.Customers
                 .FirstOrDefaultAsync(c => c.Email == email || c.UserName == username);
+        }
+
+        public async Task<Customer?> GetCustomerByEmailAsync(string email)
+        {
+            return await _context.Customers
+                .FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task<Customer> LoginCustomer(LoginDTO request)
