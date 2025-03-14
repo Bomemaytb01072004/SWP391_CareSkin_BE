@@ -1,5 +1,6 @@
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Mappers
@@ -21,6 +22,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 PromotionId = order.PromotionId,
                 PromotionName = order.Promotion?.PromotionName,
                 TotalPrice = order.TotalPrice,
+                TotalPriceSale = order.TotalPriceSale,
                 OrderDate = order.OrderDate,
                 Name = order.Name,
                 Phone = order.Phone,
@@ -30,9 +32,20 @@ namespace SWP391_CareSkin_BE.Mappers
                     ProductId = op.ProductId,
                     Quantity = op.Quantity,
                     ProductVariationId = op.ProductVariationId,
-                    ProductName = op.Product?.ProductName
+                    ProductName = op.Product?.ProductName,
+                    PictureUrl = op.Product?.PictureUrl,
+                    Price = op.Price,
+                    SalePrice = op.SalePrice
                 }).ToList()
             };
+        }
+
+        public static List<OrderDTO> ToDTOList(IEnumerable<Order> orders)
+        {
+            if (orders == null)
+                return new List<OrderDTO>();
+
+            return orders.Select(ToDTO).ToList();
         }
 
         // Chuyển từ CreateOrderRequestDTO sang Order Entity
@@ -47,6 +60,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 OrderStatusId = request.OrderStatusId,
                 PromotionId = request.PromotionId,
                 TotalPrice = 0, // Sẽ tính toán sau trong OrderService
+                TotalPriceSale = 0, // Sẽ tính toán sau trong OrderService
                 OrderDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = request.Name,
                 Phone = request.Phone,

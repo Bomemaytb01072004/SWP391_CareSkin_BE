@@ -1,4 +1,5 @@
 using SWP391_CareSkin_BE.DTOs.Common;
+using SWP391_CareSkin_BE.DTOs.Responses;
 using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Repositories.Interfaces
@@ -11,13 +12,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task UpdateOrderAsync(Order order);
         Task DeleteOrderAsync(int orderId);
         Task<List<Order>> GetOrdersByCustomerAndStatusAsync(int customerId, int statusId);
-        Task<PagedResult<Order>> GetOrderHistoryAsync(
-            int? customerId,
-            int? statusId,
-            DateOnly? fromDate,
-            DateOnly? toDate,
-            int page,
-            int pageSize
-        );
+        Task<List<Order>> GetOrderHistoryAsync();
     }
 }

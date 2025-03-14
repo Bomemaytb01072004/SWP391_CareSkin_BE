@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Requests.Order;
+using SWP391_CareSkin_BE.DTOs.Responses;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -90,9 +92,9 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Order/history
         [HttpGet("history")]
-        public async Task<IActionResult> GetOrderHistory([FromQuery] OrderHistoryRequestDTO request)
+        public async Task<ActionResult<List<OrderDTO>>> GetOrderHistory()
         {
-            var orders = await _orderService.GetOrderHistoryAsync(request);
+            var orders = await _orderService.GetOrderHistoryAsync();
             return Ok(orders);
         }
     }

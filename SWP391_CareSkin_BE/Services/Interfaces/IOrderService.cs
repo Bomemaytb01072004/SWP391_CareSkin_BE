@@ -14,6 +14,6 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<OrderDTO> UpdateOrderAsync(int id, OrderUpdateRequestDTO request);
         Task<bool> CancelOrderAsync(int id);
         Task<List<OrderDTO>> GetOrdersByCustomerAndStatusAsync(int customerId, int statusId);
-        Task<PagedResult<OrderDTO>> GetOrderHistoryAsync(OrderHistoryRequestDTO request);
+        Task<List<OrderDTO>> GetOrderHistoryAsync();
     }
 }
