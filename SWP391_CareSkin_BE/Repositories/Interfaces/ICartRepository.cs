@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.Models;
+using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
@@ -9,6 +9,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task UpdateCartItemAsync(Cart cart);
         Task RemoveCartItemAsync(int cartId);
         Task<Cart> GetCartItemByIdAsync(int cartId);
-
+        Task RemoveCartItemsByProductVariationIdAsync(int productVariationId);
     }
 }

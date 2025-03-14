@@ -22,6 +22,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly IProductVariationRepository _productVariationRepository;
         private readonly IProductMainIngredientRepository _productMainIngredientRepository;
         private readonly IProductDetailIngredientRepository _productDetailIngredientRepository;
+        private readonly ICartRepository _cartRepository;
 
         public ProductService(
             IProductRepository productRepository, 
@@ -31,7 +32,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             IProductForSkinTypeRepository productForSkinTypeRepository,
             IProductVariationRepository productVariationRepository,
             IProductMainIngredientRepository productMainIngredientRepository,
-            IProductDetailIngredientRepository productDetailIngredientRepository)
+            IProductDetailIngredientRepository productDetailIngredientRepository,
+            ICartRepository cartRepository)
         {
             _productRepository = productRepository;
             _firebaseService = firebaseService;
@@ -41,6 +43,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _productVariationRepository = productVariationRepository;
             _productMainIngredientRepository = productMainIngredientRepository;
             _productDetailIngredientRepository = productDetailIngredientRepository;
+            _cartRepository = cartRepository;
         }
 
         public async Task<List<ProductDTO>> GetAllProductsAsync()
@@ -364,6 +367,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         {
             var productVariation = await _productVariationRepository.GetByIdAsync(id);
             if (productVariation == null) return false;
+
+            // First, delete any cart items that reference this product variation
+            await _cartRepository.RemoveCartItemsByProductVariationIdAsync(id);
 
             await _productVariationRepository.DeleteAsync(productVariation);
             return true;

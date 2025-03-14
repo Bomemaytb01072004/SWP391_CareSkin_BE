@@ -51,5 +51,18 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(c => c.ProductVariation)
                 .FirstOrDefaultAsync(c => c.CartId == cartId);
         }
+
+        public async Task RemoveCartItemsByProductVariationIdAsync(int productVariationId)
+        {
+            var cartItems = await _context.Carts
+                .Where(c => c.ProductVariationId == productVariationId)
+                .ToListAsync();
+
+            if (cartItems.Any())
+            {
+                _context.Carts.RemoveRange(cartItems);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
