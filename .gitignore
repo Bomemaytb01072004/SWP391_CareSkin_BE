@@ -60,3 +60,4 @@ __pycache__/
 *.cr
 .ntvs_analysis.dat
 firebasekey.json
+googleauth.json

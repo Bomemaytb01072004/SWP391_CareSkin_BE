@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Implementations;
@@ -17,6 +17,10 @@ using SWP391_CareSkin_BE.Jobs;
 using Microsoft.Extensions.Logging;
 using Hangfire.Storage;
 
+// Thêm namespace cho Google Authentication
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace SWP391_CareSkin_BE
 {
     public class Program
@@ -26,27 +30,35 @@ namespace SWP391_CareSkin_BE
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            // 1) Load appsettings.json
+            // (Đã được load mặc định trong CreateBuilder)
 
+            // 2) Load googleauth.json (nếu có)
+            var googleAuthPath = Path.Combine(Directory.GetCurrentDirectory(), "googleauth.json");
+            if (File.Exists(googleAuthPath))
+            {
+                builder.Configuration.AddJsonFile(googleAuthPath, optional: false, reloadOnChange: true);
+            }
+
+            // Lấy connection string
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
-                throw new Exception("Error: Connection String not create. Check again appsettings.json!");
+                throw new Exception("Error: Connection String not created. Check again appsettings.json!");
             }
 
             builder.Services.AddDbContext<MyDbContext>(options =>
                 options.UseSqlServer(
-                connectionString,
-                sqlOptions => sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,           
-                maxRetryDelay: TimeSpan.FromSeconds(30), 
-                errorNumbersToAdd: null
-        )
-    )
-);
+                    connectionString,
+                    sqlOptions => sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null
+                    )
+                )
+            );
 
-
-            // Add services to the container.
-
+            // CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -58,7 +70,7 @@ namespace SWP391_CareSkin_BE
                 });
             });
 
-
+            // JWT
             var jwtIssuer = builder.Configuration["Jwt:Issuer"];
             var jwtAudience = builder.Configuration["Jwt:Audience"];
             var jwtKey = builder.Configuration["Jwt:Key"];
@@ -72,24 +84,46 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddSingleton<JwtHelper>();
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            // 3) Lấy Google Client ID & Secret từ googleauth.json
+            var googleClientId = builder.Configuration["GoogleAuth:ClientId"];
+            var googleClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
+
+            // Có thể kiểm tra nếu chưa khai báo -> thông báo hoặc bỏ qua
+            if (string.IsNullOrEmpty(googleClientId) || string.IsNullOrEmpty(googleClientSecret))
+            {
+                Console.WriteLine("Warning: Google ClientId/ClientSecret is missing. Check googleauth.json if you need Google OAuth.");
+            }
+
+            // 4) Cấu hình Authentication (JWT & Google)
+            builder.Services.AddAuthentication(options =>
+            {
+                // Mặc định scheme là JWT
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtIssuer,
-                        ValidAudience = jwtAudience,
-                        IssuerSigningKey = key
-                    };
-                });
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = key
+                };
+            })
+            // Thêm Google Auth (nếu cần)
+            .AddGoogle(options =>
+            {
+                options.ClientId = googleClientId;
+                options.ClientSecret = googleClientSecret;
+            });
 
-
+            // Đăng ký các DI Services, Repositories
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminService, AdminService>();
 
@@ -136,28 +170,22 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IResultService, ResultService>();
 
             builder.Services.AddScoped<IProductDetailIngredientRepository, ProductDetailIngredientRepository>();
-
             builder.Services.AddScoped<IProductForSkinTypeRepository, ProductForSkinTypeRepository>();
-
             builder.Services.AddScoped<IProductMainIngredientRepository, ProductMainIngredientRepository>();
-
             builder.Services.AddScoped<IProductUsageRepository, ProductUsageRepository>();
-
             builder.Services.AddScoped<IProductVariationRepository, ProductVariationRepository>();
-
             builder.Services.AddScoped<IUserQuizAttemptRepository, UserQuizAttemptRepository>();
             builder.Services.AddScoped<IUserQuizAttemptService, UserQuizAttemptService>();
 
             builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
-
             builder.Services.AddScoped<IFirebaseService, FirebaseService>();
-            
-            // Register Rating & Feedback services and repositories
+
+            // Rating & Feedback
             builder.Services.AddScoped<IRatingFeedbackRepository, RatingFeedbackRepository>();
             builder.Services.AddScoped<IRatingFeedbackImageRepository, RatingFeedbackImageRepository>();
             builder.Services.AddScoped<IRatingFeedbackService, RatingFeedbackService>();
 
-            // Register Routine and RoutineProduct services and repositories
+            // Routine & RoutineProduct
             builder.Services.AddScoped<IRoutineRepository, RoutineRepository>();
             builder.Services.AddScoped<IRoutineService, RoutineService>();
             builder.Services.AddScoped<IRoutineProductRepository, RoutineProductRepository>();
@@ -168,7 +196,7 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
             builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
 
-            // Configure Hangfire
+            // Hangfire
             builder.Services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -181,82 +209,75 @@ namespace SWP391_CareSkin_BE
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 }));
-
-            // Add Hangfire server
             builder.Services.AddHangfireServer();
 
-            // Register the PromotionUpdaterJob
+            // PromotionUpdaterJob
             builder.Services.AddScoped<PromotionUpdaterJob>();
 
+            // Controllers & JSON Options
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
-
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Middleware Configuration
-
+            // Tự động migrate DB
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
                 dbContext.Database.Migrate();
             }
-
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Migrate lần nữa (nếu cần)
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
                 dbContext.Database.Migrate();
             }
 
+            // Middleware
             app.UseHttpsRedirection();
-
             app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Configure Hangfire dashboard
+            // Hangfire Dashboard
             app.UseHangfireDashboard();
 
-            // Schedule recurring job to update promotion statuses daily at midnight
+            // Schedule recurring job để update promotion statuses hằng ngày lúc nửa đêm
             RecurringJob.AddOrUpdate<PromotionUpdaterJob>(
                 "update-promotion-statuses",
                 job => job.UpdatePromotionStatusesAsync(),
-                "0 0 * * *");
+                "0 0 * * *"
+            );
 
-            // Check if we need to run a missed job when the application starts
+            // Kiểm tra missed job khi app khởi động
             using (var scope = app.Services.CreateScope())
             {
                 var promotionUpdaterJob = scope.ServiceProvider.GetRequiredService<PromotionUpdaterJob>();
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                
-                // Get the current time
+
                 var now = DateTime.Now;
                 var lastMidnight = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
-                
-                // If the app is started after midnight but before the next scheduled run,
-                // and if the job hasn't run today yet, run it immediately
+
                 var jobStorage = JobStorage.Current;
                 using (var connection = jobStorage.GetConnection())
                 {
                     var recurringJob = connection.GetRecurringJobs(new[] { "update-promotion-statuses" }).FirstOrDefault();
-                    
                     if (recurringJob != null)
                     {
-                        // Check if the job has run today
                         var lastExecution = recurringJob.LastExecution;
-                        
                         if (lastExecution == null || lastExecution.Value.Date < now.Date)
                         {
                             logger.LogInformation("Detected missed promotion update job. Running it now...");

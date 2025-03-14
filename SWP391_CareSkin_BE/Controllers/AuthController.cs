@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,38 @@ namespace SWP391_CareSkin_BE.Data.Controllers
             return BadRequest("Invalid username or password.");
 
 
+        }
+
+        [HttpGet("google-login")]
+        public IActionResult GoogleLogin()
+        {
+            // Gọi Challenge để redirect user tới Google
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleCallback", "Auth")
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("google-callback")]
+        public async Task<IActionResult> GoogleCallback()
+        {
+            var authResult = await HttpContext.AuthenticateAsync();
+            if (!authResult.Succeeded)
+            {
+                return BadRequest("Google authentication failed.");
+            }
+
+            // Lấy claim từ Google
+            var claims = authResult.Principal.Identities.FirstOrDefault()?.Claims
+                .Select(c => new { c.Type, c.Value });
+
+            // 1) Lấy email / info từ claim
+            // 2) Tạo tài khoản hoặc lấy tài khoản đã có trong DB
+            // 3) Tạo JWT (nếu muốn) hoặc session
+            // 4) Trả về cho frontend
+
+            return Ok(claims);
         }
 
     }
