@@ -4,7 +4,7 @@ namespace SWP391_CareSkin_BE.DTOs.Requests.Product
 {
     public class ProductForSkinTypeUpdateRequestDTO
     {
-        public int ProductForSkinTypeId { get; set; }
+        public int? ProductForSkinTypeId { get; set; }
         
         [Required(ErrorMessage = "Skin type ID is required")]
         public int SkinTypeId { get; set; }
