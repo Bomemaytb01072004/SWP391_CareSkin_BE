@@ -215,7 +215,7 @@ namespace SWP391_CareSkin_BE.Data
                 .HasMany(p => p.Carts)
                 .WithOne(c => c.ProductVariation)
                 .HasForeignKey(c => c.ProductVariationId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProductVariation>()
                 .HasMany(p => p.OrderProducts)
