@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
@@ -29,3 +29,4 @@ namespace SWP391_CareSkin_BE.Models
         public virtual ProductVariation ProductVariation { get; set; }
     }
 }
+    

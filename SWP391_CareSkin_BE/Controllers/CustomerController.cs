@@ -82,7 +82,6 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpDelete("delete/{customerId}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCustomer(int customerId, [FromBody] string password)
         {
             try
