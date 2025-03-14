@@ -83,34 +83,34 @@ namespace SWP391_CareSkin_BE.Data.Controllers
         [HttpGet("google-login")]
         public IActionResult GoogleLogin()
         {
-            // Gọi Challenge để redirect user tới Google
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GoogleCallback", "Auth")
+                RedirectUri = Url.Action("GoogleCallback", "Auth", null, Request.Scheme)
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        [HttpGet("google-callback")]
+        [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleCallback()
         {
-            var authResult = await HttpContext.AuthenticateAsync();
+            var authResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
             if (!authResult.Succeeded)
             {
-                return BadRequest("Google authentication failed.");
+                var errorDetails = HttpContext.Request.Query["error"];
+                Console.WriteLine($"Authentication failed. Error: {errorDetails}");
+
+                return BadRequest($"Google authentication failed. Error: {errorDetails}");
             }
 
-            // Lấy claim từ Google
             var claims = authResult.Principal.Identities.FirstOrDefault()?.Claims
                 .Select(c => new { c.Type, c.Value });
 
-            // 1) Lấy email / info từ claim
-            // 2) Tạo tài khoản hoặc lấy tài khoản đã có trong DB
-            // 3) Tạo JWT (nếu muốn) hoặc session
-            // 4) Trả về cho frontend
-
             return Ok(claims);
         }
+
+
+
 
     }
 }
