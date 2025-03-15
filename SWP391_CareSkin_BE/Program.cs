@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Implementations;
@@ -40,6 +40,13 @@ namespace SWP391_CareSkin_BE
                 builder.Configuration.AddJsonFile(googleAuthPath, optional: false, reloadOnChange: true);
             }
 
+            // Đọc file facebookkey.json
+            var facebookAuthPath = Path.Combine(Directory.GetCurrentDirectory(), "facebookkey.json");
+            if (File.Exists(facebookAuthPath))
+            {
+                builder.Configuration.AddJsonFile(facebookAuthPath, optional: false, reloadOnChange: true);
+            }
+
             // Lấy connection string
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
@@ -57,6 +64,9 @@ namespace SWP391_CareSkin_BE
                     )
                 )
             );
+
+            // Add HttpClient Factory for Facebook/Google API calls
+            builder.Services.AddHttpClient();
 
             // CORS
             builder.Services.AddCors(options =>
@@ -194,6 +204,14 @@ namespace SWP391_CareSkin_BE
                 Console.WriteLine("Warning: Google ClientId/ClientSecret is missing. Check googleauth.json if you need Google OAuth.");
             }
 
+            // Lấy Facebook AppId & AppSecret
+            var facebookAppId = builder.Configuration["FacebookAuth:AppId"];
+            var facebookAppSecret = builder.Configuration["FacebookAuth:AppSecret"];
+            if (string.IsNullOrEmpty(facebookAppId) || string.IsNullOrEmpty(facebookAppSecret))
+            {
+                Console.WriteLine("Warning: Facebook AppId/AppSecret is missing. Check facebookkey.json if needed.");
+            }
+
             // 4) Cấu hình Authentication (JWT & Google)
             builder.Services.AddAuthentication(options =>
             {
@@ -226,6 +244,17 @@ namespace SWP391_CareSkin_BE
                 options.Scope.Add("profile");
                 options.Scope.Add("email");
                 options.CallbackPath = "/signin-google";
+                options.SaveTokens = true;
+            })
+            .AddFacebook(options =>
+            {
+                options.AppId = facebookAppId;
+                options.AppSecret = facebookAppSecret;
+                options.Scope.Add("email");
+                options.Fields.Add("email");
+                options.Fields.Add("name");
+                options.Fields.Add("picture");
+                options.CallbackPath = "/signin-facebook";
                 options.SaveTokens = true;
             });
 
