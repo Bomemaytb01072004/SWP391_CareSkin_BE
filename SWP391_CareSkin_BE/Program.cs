@@ -16,6 +16,7 @@ using Hangfire.SqlServer;
 using SWP391_CareSkin_BE.Jobs;
 using Microsoft.Extensions.Logging;
 using Hangfire.Storage;
+using System.Text.Json.Serialization;
 
 namespace SWP391_CareSkin_BE
 {
@@ -157,11 +158,12 @@ namespace SWP391_CareSkin_BE
             // Register the PromotionUpdaterJob
             builder.Services.AddScoped<PromotionUpdaterJob>();
 
-            builder.Services.AddControllers().AddJsonOptions(options =>
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             });
-
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

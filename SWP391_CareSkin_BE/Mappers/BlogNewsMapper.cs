@@ -13,15 +13,37 @@ namespace SWP391_CareSkin_BE.Mappers
         {
             if (blog == null) return null;
 
-            return new BlogNewsDTO
-            {              
+            //return new BlogNewsDTO
+            //{              
+            //    BlogId = blog.BlogId,
+            //    Title = blog.Title ,
+            //    Content = blog.Content ,
+            //    PictureUrl = blog.PictureUrl ,
+            //    AdminId = blog.AdminId,
+            //    StaffId = blog.StaffId
+            //};
+
+            var dto = new BlogNewsDTO
+            {
                 BlogId = blog.BlogId,
-                Title = blog.Title ,
-                Content = blog.Content ,
-                PictureUrl = blog.PictureUrl ,
-                AdminId = blog.AdminId,
-                StaffId = blog.StaffId
+                Title = blog.Title,
+                Content = blog.Content,
+                PictureUrl = blog.PictureUrl,
+                
             };
+
+            if (blog.AdminId.HasValue)
+            {
+                dto.AdminId = blog.AdminId.Value;
+            }
+
+            if (blog.StaffId.HasValue)
+            {
+                dto.StaffId = blog.StaffId.Value;
+            }
+
+            return dto;
+
         }
 
         // Từ BlogNewsCreateRequestDTO -> Entity
