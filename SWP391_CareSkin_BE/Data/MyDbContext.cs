@@ -17,7 +17,7 @@ namespace SWP391_CareSkin_BE.Data
         //region Dbset
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Answer> Answers { get; set; }
-        public DbSet<BlogNew> BlogNews { get; set; }
+        public DbSet<BlogNews> BlogNews { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Customer> Customers { get; set; }
@@ -59,7 +59,7 @@ namespace SWP391_CareSkin_BE.Data
             //primary key 
             modelBuilder.Entity<Admin>().HasKey(a => a.AdminId);
             modelBuilder.Entity<Answer>().HasKey(a => a.AnswerId);
-            modelBuilder.Entity<BlogNew>().HasKey(b => b.BlogId);
+            modelBuilder.Entity<BlogNews>().HasKey(b => b.BlogId);
             modelBuilder.Entity<Brand>().HasKey(b => b.BrandId);
             modelBuilder.Entity<Cart>().HasKey(c => c.CartId);
             modelBuilder.Entity<Customer>().HasKey(c => c.CustomerId);
@@ -99,6 +99,10 @@ namespace SWP391_CareSkin_BE.Data
             //relationship
 
 
+            modelBuilder.Entity<Admin>()
+                .HasMany(a => a.BlogNews)
+                .WithOne(b => b.Admin)
+                .HasForeignKey(b => b.AdminId);
 
             modelBuilder.Entity<Answer>()
                 .HasMany(a => a.Historys)
@@ -110,10 +114,15 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(p => p.Brand)
                 .HasForeignKey(p => p.BrandId);
 
-            modelBuilder.Entity<Customer>()
-                .HasMany(c => c.BlogNews)
-                .WithOne(b => b.Customer)
-                .HasForeignKey(b => b.CustomerId);
+            modelBuilder.Entity<BlogNews>()
+               .HasOne(b => b.Admin)
+               .WithMany(a => a.BlogNews) 
+               .HasForeignKey(b => b.AdminId);
+
+            modelBuilder.Entity<BlogNews>()
+                .HasOne(b => b.Staff)
+                .WithMany(s => s.BlogNews)
+                .HasForeignKey(b => b.StaffId);
 
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.UserQuizAttempts)

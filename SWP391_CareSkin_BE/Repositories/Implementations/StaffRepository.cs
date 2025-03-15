@@ -70,7 +70,7 @@ namespace SWP391_CareSkin_BE.Repositories
             }
 
             string role = "Staff";
-            var token = _jwtHelper.GenerateToken(request.UserName, role);
+            var token = _jwtHelper.GenerateToken(request.UserName, role, staff.StaffId);
             staff.Token = token;
             staff.Role = role;
             return staff;

@@ -87,7 +87,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.ToTable("Answer");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNews", b =>
                 {
                     b.Property<int>("BlogId")
                         .ValueGeneratedOnAdd()
@@ -95,16 +95,18 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogId"));
 
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PictureUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -112,9 +114,11 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("BlogId");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("AdminId");
 
-                    b.ToTable("BlogNew");
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("BlogNews");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Brand", b =>
@@ -973,15 +977,19 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNews", b =>
                 {
-                    b.HasOne("SWP391_CareSkin_BE.Models.Customer", "Customer")
+                    b.HasOne("SWP391_CareSkin_BE.Models.Admin", "Admin")
                         .WithMany("BlogNews")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AdminId");
 
-                    b.Navigation("Customer");
+                    b.HasOne("SWP391_CareSkin_BE.Models.Staff", "Staff")
+                        .WithMany("BlogNews")
+                        .HasForeignKey("StaffId");
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Cart", b =>
@@ -1360,6 +1368,11 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("order");
                 });
 
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.Admin", b =>
+                {
+                    b.Navigation("BlogNews");
+                });
+
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
                 {
                     b.Navigation("Historys");
@@ -1372,8 +1385,6 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Customer", b =>
                 {
-                    b.Navigation("BlogNews");
-
                     b.Navigation("Carts");
 
                     b.Navigation("Orders");
@@ -1479,6 +1490,8 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Staff", b =>
                 {
+                    b.Navigation("BlogNews");
+
                     b.Navigation("Supports");
                 });
 

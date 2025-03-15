@@ -2,7 +2,7 @@
 {
     public class BlogNewsDTO
     {
-        public int CustomerId { get; set; }
+        //public int CustomerId { get; set; }
 
         public int BlogId { get; set; }
 
@@ -11,5 +11,8 @@
         public string Content { get; set; }
 
         public string? PictureUrl { get; set; }
+
+        public int? AdminId { get; set; } // Cho phép null
+        public int? StaffId { get; set; } // Cho phép null
     }
 }

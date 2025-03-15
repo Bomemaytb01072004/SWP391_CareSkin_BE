@@ -178,25 +178,34 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BlogNew",
+                name: "BlogNews",
                 columns: table => new
                 {
                     BlogId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdminId = table.Column<int>(type: "int", nullable: true), 
+                    StaffId = table.Column<int>(type: "int", nullable: true)  
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BlogNew", x => x.BlogId);
+                    table.PrimaryKey("PK_BlogNews", x => x.BlogId);
+
                     table.ForeignKey(
-                        name: "FK_BlogNew_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_BlogNews_Admin_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "Admin",  
+                        principalColumn: "AdminId", 
+                        onDelete: ReferentialAction.SetNull);
+
+                    table.ForeignKey(
+                        name: "FK_BlogNews_Staff_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "Staff", 
+                        principalColumn: "StaffId",
+                        onDelete: ReferentialAction.SetNull); 
                 });
 
             migrationBuilder.CreateTable(
@@ -656,9 +665,14 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BlogNew_CustomerId",
-                table: "BlogNew",
-                column: "CustomerId");
+                   name: "IX_BlogNews_AdminId",
+                   table: "BlogNews",
+                   column: "AdminId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlogNews_StaffId",
+                table: "BlogNews",
+                column: "StaffId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cart_CustomerId",
@@ -808,7 +822,7 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "Admin");
 
             migrationBuilder.DropTable(
-                name: "BlogNew");
+                name: "BlogNews");
 
             migrationBuilder.DropTable(
                 name: "Cart");
