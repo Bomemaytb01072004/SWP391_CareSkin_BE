@@ -29,6 +29,32 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .ToListAsync();
         }
 
+        // Lấy các Routine đang hoạt động
+        public async Task<List<Routine>> GetActiveAsync()
+        {
+            return await _context.Routines
+                .Include(r => r.SkinType) // Kết nối với SkinType
+                .Include(r => r.RoutineSteps) // Kết nối với RoutineSteps
+                    .ThenInclude(rs => rs.RoutineProducts) // Kết nối với RoutineProducts của RoutineSteps
+                        .ThenInclude(rp => rp.Product) // Kết nối với Product trong RoutineProduct
+                            .ThenInclude(p => p.ProductVariations) // Kết nối với ProductVariations trong Product
+                .Where(r => r.IsActive)
+                .ToListAsync();
+        }
+
+        // Lấy các Routine không hoạt động
+        public async Task<List<Routine>> GetInactiveAsync()
+        {
+            return await _context.Routines
+                .Include(r => r.SkinType) // Kết nối với SkinType
+                .Include(r => r.RoutineSteps) // Kết nối với RoutineSteps
+                    .ThenInclude(rs => rs.RoutineProducts) // Kết nối với RoutineProducts của RoutineSteps
+                        .ThenInclude(rp => rp.Product) // Kết nối với Product trong RoutineProduct
+                            .ThenInclude(p => p.ProductVariations) // Kết nối với ProductVariations trong Product
+                .Where(r => !r.IsActive)
+                .ToListAsync();
+        }
+
         // Lấy Routine theo ID
         public async Task<Routine> GetByIdAsync(int id)
         {
@@ -93,11 +119,13 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             await _context.SaveChangesAsync(); // Lưu thay đổi
         }
 
-        // Xóa Routine
-        public async Task DeleteAsync(Routine routine)
+        // Kiểm tra Routine theo tên và giai đoạn
+        public async Task<Routine> GetByNameAndPeriodAsync(string name, string period, int skinTypeId)
         {
-            _context.Routines.Remove(routine); // Xóa Routine
-            await _context.SaveChangesAsync(); // Lưu thay đổi
+            return await _context.Routines
+                .FirstOrDefaultAsync(r => r.RoutineName.ToLower() == name.ToLower() 
+                                       && r.RoutinePeriod.ToLower() == period.ToLower()
+                                       && r.SkinTypeId == skinTypeId);
         }
     }
 }

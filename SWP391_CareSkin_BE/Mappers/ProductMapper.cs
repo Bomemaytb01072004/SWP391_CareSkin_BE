@@ -25,6 +25,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 BrandName = product.Brand?.Name,
                 PictureUrl = product.PictureUrl,
                 AverageRating = product.AverageRating,
+                IsActive = product.IsActive,
 
                 PromotionProducts = product.PromotionProducts?
                     .Where(p => p.IsActive) // Only include active promotions
@@ -137,6 +138,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 BrandName = product.Brand?.Name,
                 PictureUrl = product.PictureUrl,
                 AverageRating = product.AverageRating,
+                IsActive = product.IsActive,
                 Variations = product.ProductVariations?.Select(v => new ProductVariationDTO
                 {
                     ProductVariationId = v.ProductVariationId,
@@ -177,6 +179,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Description = request.Description,
                 PictureUrl = pictureUrl,
                 AverageRating = 0, // Initialize average rating to 0 for new products
+                IsActive = true, // Set IsActive to true when creating a new product
 
                 ProductForSkinTypes = request.ProductForSkinTypes?.Select(s => new ProductForSkinType
                 {

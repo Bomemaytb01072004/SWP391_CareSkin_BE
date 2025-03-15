@@ -25,7 +25,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 FeedBack = ratingFeedback.FeedBack,
                 CreatedDate = ratingFeedback.CreatedDate,
                 UpdatedDate = ratingFeedback.UpdatedDate,
-                IsVisible = ratingFeedback.IsVisible,
+                IsActive = ratingFeedback.IsActive,
                 FeedbackImages = ratingFeedback.RatingFeedbackImages?.Select(i => ToDTO(i)).ToList()
             };
         }
@@ -61,7 +61,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 FeedBack = createDto.FeedBack,
                 CreatedDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow,
-                IsVisible = true
+                IsActive = true 
             };
         }
 

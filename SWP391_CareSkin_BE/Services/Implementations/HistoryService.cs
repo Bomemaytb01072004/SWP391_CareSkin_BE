@@ -54,7 +54,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var createdHistory = await _historyRepository.CreateHistory(history);
 
             // Return the created history as DTO using mapper
-            return HistoryMapper.ToDTO(createdHistory);
+            return HistoryMapper.ToDTO(createdHistory, true);
         }
 
         public async Task<HistoryDTO> CreateOrUpdateHistoryAsync(int attemptId, CreateHistoryDTO historyDTO)

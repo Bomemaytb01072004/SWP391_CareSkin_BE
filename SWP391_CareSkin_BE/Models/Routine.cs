@@ -15,6 +15,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Description { get; set; }
 
+        public bool IsActive { get; set; }
+
         [ForeignKey("SkinType")]
         public int SkinTypeId { get; set; }
 

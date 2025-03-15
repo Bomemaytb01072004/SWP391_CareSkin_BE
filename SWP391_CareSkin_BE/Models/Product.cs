@@ -21,6 +21,8 @@ namespace SWP391_CareSkin_BE.Models
         
         public double AverageRating { get; set; } = 0;
 
+        public bool IsActive { get; set; }
+
         public virtual Brand Brand { get; set; }
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public virtual ICollection<RoutineProduct> RoutineProducts { get; set; } = new List<RoutineProduct>();

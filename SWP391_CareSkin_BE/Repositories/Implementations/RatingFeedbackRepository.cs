@@ -26,6 +26,26 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<RatingFeedback>> GetActiveRatingFeedbacksAsync()
+        {
+            return await _context.RatingFeedbacks
+                .Include(rf => rf.Customer)
+                .Include(rf => rf.Product)
+                .Include(rf => rf.RatingFeedbackImages)
+                .Where(rf => rf.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<RatingFeedback>> GetInactiveRatingFeedbacksAsync()
+        {
+            return await _context.RatingFeedbacks
+                .Include(rf => rf.Customer)
+                .Include(rf => rf.Product)
+                .Include(rf => rf.RatingFeedbackImages)
+                .Where(rf => !rf.IsActive)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<RatingFeedback>> GetRatingFeedbacksByProductIdAsync(int productId)
         {
             return await _context.RatingFeedbacks
@@ -68,26 +88,21 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return ratingFeedback;
         }
 
-        public async Task<bool> DeleteRatingFeedbackAsync(int id)
+        public async Task<bool> ToggleRatingFeedbackVisibilityAsync(int id, bool isActive)
         {
             var ratingFeedback = await _context.RatingFeedbacks.FindAsync(id);
             if (ratingFeedback == null)
                 return false;
 
-            _context.RatingFeedbacks.Remove(ratingFeedback);
+            ratingFeedback.IsActive = isActive;
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> ToggleRatingFeedbackVisibilityAsync(int id, bool isVisible)
+        public async Task<RatingFeedback> GetRatingFeedbackByCustomerAndProductAsync(int customerId, int productId)
         {
-            var ratingFeedback = await _context.RatingFeedbacks.FindAsync(id);
-            if (ratingFeedback == null)
-                return false;
-
-            ratingFeedback.IsVisible = isVisible;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.RatingFeedbacks
+                .FirstOrDefaultAsync(rf => rf.CustomerId == customerId && rf.ProductId == productId);
         }
 
         public async Task<bool> CustomerOwnsRatingFeedbackAsync(int customerId, int ratingFeedbackId)
@@ -99,7 +114,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public async Task<double> GetAverageRatingForProductAsync(int productId)
         {
             var ratings = await _context.RatingFeedbacks
-                .Where(rf => rf.ProductId == productId && rf.IsVisible)
+                .Where(rf => rf.ProductId == productId && rf.IsActive)
                 .Select(rf => rf.Rating)
                 .ToListAsync();
 

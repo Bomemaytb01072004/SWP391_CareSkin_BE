@@ -21,8 +21,8 @@ namespace SWP391_CareSkin_BE.Models
         public DateTime CreatedDate { get; set; }
         
         public DateTime? UpdatedDate { get; set; }
-        
-        public bool IsVisible { get; set; } = true;
+
+        public bool IsActive { get; set; }
 
         public virtual Customer Customer { get; set; }
 

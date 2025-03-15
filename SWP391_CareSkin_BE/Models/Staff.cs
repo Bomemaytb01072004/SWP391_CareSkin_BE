@@ -22,6 +22,9 @@ namespace SWP391_CareSkin_BE.Models
         public DateOnly? DoB {  get; set; }
 
         public string? PictureUrl { get; set; }
+
+        public bool IsActive { get; set; }
+
         [NotMapped]
         public string? Token { get; set; }
 

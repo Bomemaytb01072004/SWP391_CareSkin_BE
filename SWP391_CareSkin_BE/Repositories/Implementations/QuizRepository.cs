@@ -20,6 +20,24 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return await _context.Quizs.ToListAsync();
         }
 
+        public async Task<IEnumerable<Quiz>> GetActiveAsync()
+        {
+            return await _context.Quizs
+                .Include(q => q.Questions)
+                .ThenInclude(q => q.Answers)
+                .Where(q => q.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Quiz>> GetInactiveAsync()
+        {
+            return await _context.Quizs
+                .Include(q => q.Questions)
+                .ThenInclude(q => q.Answers)
+                .Where(q => !q.IsActive)
+                .ToListAsync();
+        }
+
         public async Task<Quiz?> GetByIdAsync(int quizId)
         {
             return await _context.Quizs
@@ -43,19 +61,15 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return quiz;
         }
 
-        public async Task DeleteAsync(int quizId)
-        {
-            var quiz = await _context.Quizs.FindAsync(quizId);
-            if (quiz != null)
-            {
-                _context.Quizs.Remove(quiz);
-                await _context.SaveChangesAsync();
-            }
-        }
-
         public async Task<bool> ExistsAsync(int quizId)
         {
             return await _context.Quizs.AnyAsync(q => q.QuizId == quizId);
+        }
+
+        public async Task<Quiz?> GetByTitleAsync(string title)
+        {
+            return await _context.Quizs
+                .FirstOrDefaultAsync(q => q.Title.ToLower() == title.ToLower());
         }
     }
 }

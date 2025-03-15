@@ -15,7 +15,7 @@ namespace SWP391_CareSkin_BE.DTOS.RatingFeedback
         public string FeedBack { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public bool IsVisible { get; set; }
+        public bool IsActive { get; set; }
         public List<RatingFeedbackImageDTO> FeedbackImages { get; set; }
     }
 }

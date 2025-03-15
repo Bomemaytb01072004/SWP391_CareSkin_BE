@@ -24,6 +24,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return QuizMapper.ToDTOList(quizzes);
         }
 
+        public async Task<List<QuizDTO>> GetActiveQuizzesAsync()
+        {
+            var quizzes = await _quizRepository.GetActiveAsync();
+            return QuizMapper.ToDTOList(quizzes);
+        }
+
+        public async Task<List<QuizDTO>> GetInactiveQuizzesAsync()
+        {
+            var quizzes = await _quizRepository.GetInactiveAsync();
+            return QuizMapper.ToDTOList(quizzes);
+        }
+
         public async Task<QuizDetailsDTO> GetQuizByIdAsync(int quizId)
         {
             var quiz = await _quizRepository.GetByIdAsync(quizId);
@@ -37,6 +49,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<QuizDTO> CreateQuizAsync(CreateQuizDTO createQuizDTO)
         {
+            // Kiểm tra xem Quiz với tiêu đề này đã tồn tại và đang active chưa
+            var existingQuiz = await _quizRepository.GetByTitleAsync(createQuizDTO.Title);
+            
+            if (existingQuiz != null && existingQuiz.IsActive)
+            {
+                throw new ArgumentException($"Bài kiểm tra với tiêu đề '{createQuizDTO.Title}' đã tồn tại.");
+            }
+            
             var quiz = QuizMapper.ToEntity(createQuizDTO);
             var createdQuiz = await _quizRepository.CreateAsync(quiz);
             
@@ -59,13 +79,15 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task DeleteQuizAsync(int quizId)
         {
-            var exists = await _quizRepository.ExistsAsync(quizId);
-            if (!exists)
+            var quiz = await _quizRepository.GetByIdAsync(quizId);
+            if (quiz == null)
             {
                 throw new ArgumentException($"Quiz with ID {quizId} not found");
             }
             
-            await _quizRepository.DeleteAsync(quizId);
+            // Implement soft delete by setting IsActive to false
+            quiz.IsActive = false;
+            await _quizRepository.UpdateAsync(quiz);
         }
     }
 }

@@ -27,6 +27,20 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(products);
         }
 
+        [HttpGet("active")]
+        public async Task<ActionResult<List<ProductDTO>>> GetActiveProducts()
+        {
+            var products = await _productService.GetActiveProductsAsync();
+            return Ok(products);
+        }
+
+        [HttpGet("inactive")]
+        public async Task<ActionResult<List<ProductDTO>>> GetInactiveProducts()
+        {
+            var products = await _productService.GetInactiveProductsAsync();
+            return Ok(products);
+        }
+
         // GET: api/Product/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProductById(int id)

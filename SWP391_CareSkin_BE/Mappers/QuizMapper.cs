@@ -14,7 +14,8 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 QuizId = quiz.QuizId,
                 Title = quiz.Title,
-                Description = quiz.Description
+                Description = quiz.Description,
+                IsActive = quiz.IsActive 
             };
 
             return quizDTO;
@@ -26,7 +27,8 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 QuizId = quiz.QuizId,
                 Title = quiz.Title,
-                Description = quiz.Description
+                Description = quiz.Description,
+                IsActive = quiz.IsActive 
             };
 
             if (quiz.Questions != null && quiz.Questions.Any())
@@ -51,7 +53,8 @@ namespace SWP391_CareSkin_BE.Mappers
             return new Quiz
             {
                 Title = createQuizDTO.Title,
-                Description = createQuizDTO.Description
+                Description = createQuizDTO.Description,
+                IsActive = true 
             };
         }
 

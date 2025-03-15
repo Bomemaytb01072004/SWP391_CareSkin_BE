@@ -14,6 +14,8 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public string PictureUrl { get; set; }
         public string Address { get; set; }
 
+        public bool IsActive { get; set; }
+
         public string? token { get; set; }
 
         public string? Role { get; set; }

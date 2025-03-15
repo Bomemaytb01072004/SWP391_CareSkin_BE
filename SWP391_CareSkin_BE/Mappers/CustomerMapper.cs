@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 
@@ -20,6 +20,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Gender = dto.Gender ?? "Unknown",
                 Address = dto.Address ?? "Not provided",
                 FullName = dto.FullName ?? "No name",
+                IsActive = true // Set IsActive to true when creating a new customer
             };
         }
 
@@ -45,6 +46,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Address = customer.Address,
                 token = customer.Token,
                 Role = customer.Role,
+                IsActive = customer.IsActive // Include IsActive in the response DTO
             };
         }
 

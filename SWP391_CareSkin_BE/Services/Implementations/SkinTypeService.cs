@@ -35,6 +35,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<SkinTypeDTO> CreateAsync(SkinTypeCreateRequestDTO request)
         {
+            // Kiểm tra xem SkinType với tên này đã tồn tại và đang active chưa
+            var existingSkinType = await _skinTypeRepository.GetByNameAsync(request.TypeName);
+            
+            if (existingSkinType != null && existingSkinType.IsActive)
+            {
+                throw new Exception($"Loại da với tên '{request.TypeName}' đã tồn tại.");
+            }
+
             var skinType = SkinTypeMapper.ToEntity(request);
             await _skinTypeRepository.CreateAsync(skinType);
 
@@ -63,7 +71,21 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"SkinType with ID {id} not found");
             }
 
-            await _skinTypeRepository.DeleteAsync(skinType);
+            // Implement soft delete by setting IsActive to false
+            skinType.IsActive = false;
+            await _skinTypeRepository.UpdateAsync(skinType);
+        }
+
+        public async Task<List<SkinTypeDTO>> GetActiveSkinTypesAsync()
+        {
+            var skinTypes = await _skinTypeRepository.GetActiveSkinTypesAsync();
+            return skinTypes.Select(SkinTypeMapper.ToDTO).ToList();
+        }
+
+        public async Task<List<SkinTypeDTO>> GetInactiveSkinTypesAsync()
+        {
+            var skinTypes = await _skinTypeRepository.GetInactiveSkinTypesAsync();
+            return skinTypes.Select(SkinTypeMapper.ToDTO).ToList();
         }
     }
 }

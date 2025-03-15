@@ -32,6 +32,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<BrandDTO> CreateBrandAsync(BrandCreateRequestDTO request, string pictureUrl)
         {
+            // Kiểm tra xem Brand với tên này đã tồn tại và đang active chưa
+            var existingBrand = await _brandRepository.GetBrandByNameAsync(request.Name);
+            
+            if (existingBrand != null && existingBrand.IsActive)
+            {
+                throw new Exception($"Thương hiệu với tên '{request.Name}' đã tồn tại.");
+            }
+
             var brandEntity = BrandMapper.ToEntity(request, pictureUrl);
             await _brandRepository.AddBrandAsync(brandEntity);
 
@@ -55,8 +63,26 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<bool> DeleteBrandAsync(int brandId)
         {
-            await _brandRepository.DeleteBrandAsync(brandId);
+            // Get the brand entity
+            var brand = await _brandRepository.GetBrandByIdAsync(brandId);
+            if (brand == null) return false;
+
+            // Implement soft delete by setting IsActive to false
+            brand.IsActive = false;
+            await _brandRepository.UpdateBrandAsync(brand);
             return true;
+        }
+
+        public async Task<List<BrandDTO>> GetActiveBrandsAsync()
+        {
+            var brands = await _brandRepository.GetActiveBrandsAsync();
+            return brands.Select(BrandMapper.ToDTO).ToList();
+        }
+
+        public async Task<List<BrandDTO>> GetInactiveBrandsAsync()
+        {
+            var brands = await _brandRepository.GetInactiveBrandsAsync();
+            return brands.Select(BrandMapper.ToDTO).ToList();
         }
     }
 }

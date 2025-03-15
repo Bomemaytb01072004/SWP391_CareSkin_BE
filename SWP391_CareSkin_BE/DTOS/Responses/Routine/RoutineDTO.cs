@@ -9,6 +9,8 @@
         public int SkinTypeId { get; set; }
         public string SkinTypeName { get; set; }
 
+        public bool IsActive { get; set; }
+
         // Danh sách các Step của Routine
         public List<RoutineStepDTO> RoutineStepDTOs { get; set; } = new List<RoutineStepDTO>();
 

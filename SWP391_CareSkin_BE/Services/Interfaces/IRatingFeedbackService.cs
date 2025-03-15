@@ -17,5 +17,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<bool> AdminToggleRatingFeedbackVisibilityAsync(int id, AdminRatingFeedbackActionDTO actionDto);
         Task<bool> AdminDeleteRatingFeedbackAsync(int id);
         Task<double> GetAverageRatingForProductAsync(int productId);
+        Task<IEnumerable<RatingFeedbackDTO>> GetActiveRatingFeedbacksAsync();
+        Task<IEnumerable<RatingFeedbackDTO>> GetInactiveRatingFeedbacksAsync();
     }
 }

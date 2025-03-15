@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests.Quiz;
+using SWP391_CareSkin_BE.DTOS.Responses.Quiz;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -18,17 +19,24 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Quiz
         [HttpGet]
-        public async Task<IActionResult> GetAllQuizzes()
+        public async Task<ActionResult<IEnumerable<QuizDTO>>> GetAllQuizzes()
         {
-            try
-            {
-                var quizzes = await _quizService.GetAllQuizzesAsync();
-                return Ok(quizzes);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var quizzes = await _quizService.GetAllQuizzesAsync();
+            return Ok(quizzes);
+        }
+
+        [HttpGet("active")]
+        public async Task<ActionResult<List<QuizDTO>>> GetActiveQuizzes()
+        {
+            var quizzes = await _quizService.GetActiveQuizzesAsync();
+            return Ok(quizzes);
+        }
+
+        [HttpGet("inactive")]
+        public async Task<ActionResult<List<QuizDTO>>> GetInactiveQuizzes()
+        {
+            var quizzes = await _quizService.GetInactiveQuizzesAsync();
+            return Ok(quizzes);
         }
 
         // GET: api/Quiz/{quizId}

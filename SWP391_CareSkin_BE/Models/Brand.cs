@@ -12,6 +12,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public string PictureUrl { get; set; }
 
+        public bool IsActive { get; set; }
+
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

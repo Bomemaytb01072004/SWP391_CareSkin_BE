@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Services.Interfaces;
 
 namespace SWP391_CareSkin_BE.Controllers
@@ -20,9 +21,23 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // GET: api/Brand
         [HttpGet]
-        public async Task<IActionResult> GetAllBrands()
+        public async Task<ActionResult<List<BrandDTO>>> GetAllBrands()
         {
             var brands = await _brandService.GetAllBrandsAsync();
+            return Ok(brands);
+        }
+
+        [HttpGet("active")]
+        public async Task<ActionResult<List<BrandDTO>>> GetActiveBrands()
+        {
+            var brands = await _brandService.GetActiveBrandsAsync();
+            return Ok(brands);
+        }
+
+        [HttpGet("inactive")]
+        public async Task<ActionResult<List<BrandDTO>>> GetInactiveBrands()
+        {
+            var brands = await _brandService.GetInactiveBrandsAsync();
             return Ok(brands);
         }
 

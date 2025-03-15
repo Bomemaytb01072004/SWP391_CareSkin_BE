@@ -41,10 +41,22 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RatingFeedbackMapper.ToDTOList(ratingFeedbacks);
         }
 
+        public async Task<IEnumerable<RatingFeedbackDTO>> GetActiveRatingFeedbacksAsync()
+        {
+            var ratingFeedbacks = await _ratingFeedbackRepository.GetActiveRatingFeedbacksAsync();
+            return RatingFeedbackMapper.ToDTOList(ratingFeedbacks);
+        }
+
+        public async Task<IEnumerable<RatingFeedbackDTO>> GetInactiveRatingFeedbacksAsync()
+        {
+            var ratingFeedbacks = await _ratingFeedbackRepository.GetInactiveRatingFeedbacksAsync();
+            return RatingFeedbackMapper.ToDTOList(ratingFeedbacks);
+        }
+
         public async Task<IEnumerable<RatingFeedbackDTO>> GetRatingFeedbacksByProductIdAsync(int productId)
         {
             var ratingFeedbacks = await _ratingFeedbackRepository.GetRatingFeedbacksByProductIdAsync(productId);
-            return RatingFeedbackMapper.ToDTOList(ratingFeedbacks.Where(rf => rf.IsVisible));
+            return RatingFeedbackMapper.ToDTOList(ratingFeedbacks.Where(rf => rf.IsActive));
         }
 
         public async Task<IEnumerable<RatingFeedbackDTO>> GetRatingFeedbacksByCustomerIdAsync(int customerId)
@@ -61,6 +73,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<RatingFeedbackDTO> CreateRatingFeedbackAsync(int customerId, CreateRatingFeedbackDTO createDto)
         {
+            // Kiểm tra xem đánh giá của khách hàng cho sản phẩm này đã tồn tại và đang active chưa
+            var existingRatingFeedback = await _ratingFeedbackRepository.GetRatingFeedbackByCustomerAndProductAsync(customerId, createDto.ProductId);
+            
+            if (existingRatingFeedback != null && existingRatingFeedback.IsActive)
+            {
+                throw new ArgumentException($"Bạn đã đánh giá sản phẩm này rồi.");
+            }
+
             // Use the mapper to create the entity
             var ratingFeedback = RatingFeedbackMapper.ToEntity(customerId, createDto);
 
@@ -177,33 +197,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             var productId = ratingFeedback.ProductId;
 
-            // Get all associated images before deletion
-            var images = await _ratingFeedbackImageRepository.GetImagesByRatingFeedbackIdAsync(id);
-            
-            // Delete images from Firebase Storage
-            foreach (var image in images)
-            {
-                if (!string.IsNullOrEmpty(image.FeedbackImageUrl))
-                {
-                    var fileName = ExtractFilenameFromFirebaseUrl(image.FeedbackImageUrl);
-                    if (!string.IsNullOrEmpty(fileName))
-                    {
-                        await _firebaseService.DeleteImageAsync(fileName);
-                    }
-                }
-            }
-
-            // Delete all associated images from database
-            await _ratingFeedbackImageRepository.DeleteImagesByRatingFeedbackIdAsync(id);
-
-            // Delete the rating feedback
-            var result = await _ratingFeedbackRepository.DeleteRatingFeedbackAsync(id);
+            // Implement soft delete by setting IsActive to false
+            ratingFeedback.IsActive = false;
+            await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
 
             // Update product average rating
-            if (result)
-                await UpdateProductAverageRatingAsync(productId);
+            await UpdateProductAverageRatingAsync(productId);
 
-            return result;
+            return true;
         }
 
         public async Task<bool> AdminToggleRatingFeedbackVisibilityAsync(int id, AdminRatingFeedbackActionDTO actionDto)
@@ -212,7 +213,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (ratingFeedback == null)
                 return false;
 
-            ratingFeedback.IsVisible = actionDto.IsVisible;
+            ratingFeedback.IsActive = actionDto.IsActive;
             ratingFeedback.UpdatedDate = DateTime.UtcNow;
 
             await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
@@ -231,33 +232,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             var productId = ratingFeedback.ProductId;
 
-            // Get all associated images before deletion
-            var images = await _ratingFeedbackImageRepository.GetImagesByRatingFeedbackIdAsync(id);
-            
-            // Delete images from Firebase Storage
-            foreach (var image in images)
-            {
-                if (!string.IsNullOrEmpty(image.FeedbackImageUrl))
-                {
-                    var fileName = ExtractFilenameFromFirebaseUrl(image.FeedbackImageUrl);
-                    if (!string.IsNullOrEmpty(fileName))
-                    {
-                        await _firebaseService.DeleteImageAsync(fileName);
-                    }
-                }
-            }
-
-            // Delete all associated images from database
-            await _ratingFeedbackImageRepository.DeleteImagesByRatingFeedbackIdAsync(id);
+            ratingFeedback.IsActive = false;
 
             // Delete the rating feedback
-            var result = await _ratingFeedbackRepository.DeleteRatingFeedbackAsync(id);
+            var result = await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
 
             // Update product average rating
-            if (result)
+            if (result != null)
                 await UpdateProductAverageRatingAsync(productId);
 
-            return result;
+            return true;
         }
 
         public async Task<double> GetAverageRatingForProductAsync(int productId)

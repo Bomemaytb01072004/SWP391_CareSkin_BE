@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -19,6 +19,20 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return await _context.Brands.ToListAsync();
         }
 
+        public async Task<List<Brand>> GetActiveBrandsAsync()
+        {
+            return await _context.Brands
+                .Where(b => b.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<List<Brand>> GetInactiveBrandsAsync()
+        {
+            return await _context.Brands
+                .Where(b => !b.IsActive)
+                .ToListAsync();
+        }
+
         public async Task<Brand> GetBrandByIdAsync(int brandId)
         {
             return await _context.Brands.FirstOrDefaultAsync(b => b.BrandId == brandId);
@@ -36,14 +50,10 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteBrandAsync(int brandId)
+        public async Task<Brand> GetBrandByNameAsync(string name)
         {
-            var brand = await GetBrandByIdAsync(brandId);
-            if (brand != null)
-            {
-                _context.Brands.Remove(brand);
-                await _context.SaveChangesAsync();
-            }
+            return await _context.Brands
+                .FirstOrDefaultAsync(b => b.Name.ToLower() == name.ToLower());
         }
     }
 }

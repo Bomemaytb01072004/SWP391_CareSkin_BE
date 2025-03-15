@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests.Routine;
+using SWP391_CareSkin_BE.DTOS.Requests.Routine;
 using SWP391_CareSkin_BE.DTOS.Responses.Routine;
 using SWP391_CareSkin_BE.Models;
 
@@ -18,6 +18,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Description = routine.Description,
                 SkinTypeId = routine.SkinTypeId,
                 SkinTypeName = routine.SkinType?.TypeName, // Nếu có SkinType thì lấy tên loại da
+                IsActive = routine.IsActive, // Include IsActive in the response DTO
 
                 // Ánh xạ các bước của Routine (bây giờ đã có thông tin sản phẩm trong RoutineStep)
                 RoutineStepDTOs = routine.RoutineSteps?
@@ -41,7 +42,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 RoutineName = dto.RoutineName,
                 RoutinePeriod = dto.RoutinePeriod,
                 Description = dto.Description,
-                SkinTypeId = dto.SkinTypeId
+                SkinTypeId = dto.SkinTypeId,
+                IsActive = true // Set IsActive to true when creating a new routine
             };
         }
 

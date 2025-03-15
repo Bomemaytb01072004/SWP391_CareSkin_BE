@@ -18,9 +18,23 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SkinTypeDTO>>> GetAll()
+        public async Task<ActionResult<List<SkinTypeDTO>>> GetAllSkinTypes()
         {
             var skinTypes = await _skinTypeService.GetAllAsync();
+            return Ok(skinTypes);
+        }
+
+        [HttpGet("active")]
+        public async Task<ActionResult<List<SkinTypeDTO>>> GetActiveSkinTypes()
+        {
+            var skinTypes = await _skinTypeService.GetActiveSkinTypesAsync();
+            return Ok(skinTypes);
+        }
+
+        [HttpGet("inactive")]
+        public async Task<ActionResult<List<SkinTypeDTO>>> GetInactiveSkinTypes()
+        {
+            var skinTypes = await _skinTypeService.GetInactiveSkinTypesAsync();
             return Ok(skinTypes);
         }
 

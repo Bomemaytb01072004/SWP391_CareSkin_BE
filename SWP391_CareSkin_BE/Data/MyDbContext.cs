@@ -106,11 +106,6 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(p => p.BrandId);
 
             modelBuilder.Entity<Customer>()
-                .HasMany(c => c.BlogNews)
-                .WithOne(b => b.Customer)
-                .HasForeignKey(b => b.CustomerId);
-
-            modelBuilder.Entity<Customer>()
                 .HasMany(c => c.UserQuizAttempts)
                 .WithOne(h => h.Customer)
                 .HasForeignKey(h => h.CustomerId);

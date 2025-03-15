@@ -14,17 +14,18 @@ namespace SWP391_CareSkin_BE.Mappers
             if (blog == null) return null;
 
             return new BlogNewsDTO
-            {              
+            {
                 BlogId = blog.BlogId,
-                CustomerId = blog.CustomerId,
-                Title = blog.Title ,
-                Content = blog.Content ,
-                PictureUrl = blog.PictureUrl ,
+                Title = blog.Title,
+                Content = blog.Content,
+                PictureUrl = blog.PictureUrl,
+                AdminId = blog.AdminId,
+                StaffId = blog.StaffId
             };
         }
 
         // Từ BlogNewsCreateRequestDTO -> Entity
-        public static BlogNew ToEntity(BlogNewsCreateRequest request, string pictureUrl = null)
+        public static BlogNew ToEntity(BlogNewsCreateRequest request, string pictureUrl = null, int? adminId = null, int? staffId = null)
         {
             if (request == null) return null;
 
@@ -33,7 +34,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 Title = request.Title,
                 Content = request.Content,
                 PictureUrl = pictureUrl,
-                CustomerId = request.CustomerId
+                AdminId = adminId,
+                StaffId = staffId
             };
         }
 

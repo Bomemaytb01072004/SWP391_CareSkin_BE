@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.Helpers;
@@ -47,26 +47,18 @@ namespace SWP391_CareSkin_BE.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteStaffAsync(Staff staff)
-        {
-            _context.Staffs.Remove(staff);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<Staff> LoginStaff(LoginDTO request)
+        public async Task<Staff?> LoginStaff(LoginDTO request)
         {
             var staff = await _context.Staffs.FirstOrDefaultAsync(a => a.UserName == request.UserName);
 
             if (staff == null)
             {
                 return null;
-                throw new Exception("Invalid staff name");
             }
 
             if (!Validate.VerifyPassword(staff.Password, request.Password))
             {
                 return null;
-                throw new Exception("Invalid staff Password");
             }
 
             string role = "Staff";

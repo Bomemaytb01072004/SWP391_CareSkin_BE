@@ -73,6 +73,30 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(ratingFeedback);
         }
 
+        // GET: api/RatingFeedback
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<RatingFeedbackDTO>>> GetAllRatingFeedbacks()
+        {
+            var ratingFeedbacks = await _ratingFeedbackService.GetAllRatingFeedbacksAsync();
+            return Ok(ratingFeedbacks);
+        }
+
+        // GET: api/RatingFeedback/active
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<RatingFeedbackDTO>>> GetActiveRatingFeedbacks()
+        {
+            var ratingFeedbacks = await _ratingFeedbackService.GetActiveRatingFeedbacksAsync();
+            return Ok(ratingFeedbacks);
+        }
+
+        // GET: api/RatingFeedback/inactive
+        [HttpGet("inactive")]
+        public async Task<ActionResult<IEnumerable<RatingFeedbackDTO>>> GetInactiveRatingFeedbacks()
+        {
+            var ratingFeedbacks = await _ratingFeedbackService.GetInactiveRatingFeedbacksAsync();
+            return Ok(ratingFeedbacks);
+        }
+
         // POST: api/RatingFeedback
         [HttpPost("RatingFeedback/{id}")]
         public async Task<IActionResult> Create(int id, [FromForm] CreateRatingFeedbackDTO createDto)

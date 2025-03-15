@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
@@ -15,6 +15,8 @@ namespace SWP391_CareSkin_BE.Models
         public int MaxScore { get; set; }
 
         public string Description { get; set; }
+
+        public bool IsActive { get; set; }
 
         public virtual ICollection<Result> Results { get; set; } = new List<Result>();
 

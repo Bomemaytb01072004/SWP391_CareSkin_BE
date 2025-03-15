@@ -35,7 +35,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         public async Task<CustomerDTO> RegisterCustomerAsync(RegisterCustomerDTO request)
         {
             var existingCustomer = await _customerRepository.GetCustomerByEmailOrUsernameAsync(request.Email, request.UserName);
-            if (existingCustomer != null)
+            if (existingCustomer != null && existingCustomer.IsActive)
             {
                 throw new ArgumentException("Email hoặc username đã tồn tại.");
             }
@@ -74,7 +74,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new ArgumentException("Mật khẩu không đúng.");
             }
 
-            await _customerRepository.DeleteCustomerAsync(customer);
+            // Implement soft delete by setting IsActive to false instead of removing from database
+            customer.IsActive = false;
+            await _customerRepository.UpdateCustomerAsync(customer);
             return true;
         }
 

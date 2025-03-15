@@ -25,6 +25,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return RoutineMapper.ToDTOList(routines);
         }
 
+        public async Task<List<RoutineDTO>> GetActiveRoutinesAsync()
+        {
+            var routines = await _routineRepository.GetActiveAsync();
+            return RoutineMapper.ToDTOList(routines);
+        }
+
+        public async Task<List<RoutineDTO>> GetInactiveRoutinesAsync()
+        {
+            var routines = await _routineRepository.GetInactiveAsync();
+            return RoutineMapper.ToDTOList(routines);
+        }
+
         public async Task<RoutineDTO> GetRoutineByIdAsync(int id)
         {
             var routine = await _routineRepository.GetByIdAsync(id);
@@ -52,6 +64,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<RoutineDTO> CreateRoutineAsync(RoutineCreateRequestDTO request)
         {
+            // Kiểm tra xem Routine với tên và giai đoạn này đã tồn tại và đang active chưa
+            var existingRoutine = await _routineRepository.GetByNameAndPeriodAsync(request.RoutineName, request.RoutinePeriod, request.SkinTypeId);
+            
+            if (existingRoutine != null && existingRoutine.IsActive)
+            {
+                throw new ArgumentException($"Routine với tên '{request.RoutineName}' và giai đoạn '{request.RoutinePeriod}' đã tồn tại.");
+            }
+
             // Validate skin type exists
             var skinType = await _skinTypeRepository.GetByIdAsync(request.SkinTypeId);
             if (skinType == null)
@@ -116,8 +136,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 throw new NotFoundException($"Routine with ID {id} not found");
             }
 
-            // Delete routine
-            await _routineRepository.DeleteAsync(routine);
+            // Implement soft delete by setting IsActive to false
+            routine.IsActive = false;
+            await _routineRepository.UpdateAsync(routine);
         }
     }
 }

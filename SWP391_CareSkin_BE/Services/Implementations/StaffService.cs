@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -22,7 +22,8 @@ namespace SWP391_CareSkin_BE.Services
 
         public async Task<StaffDTO> RegisterStaffAsync(RegisterStaffDTO request)
         {
-            if (await _staffRepository.GetStaffByUsernameOrEmailAsync(request.UserName, request.Email) != null)
+            var existingStaff = await _staffRepository.GetStaffByUsernameOrEmailAsync(request.UserName, request.Email);
+            if (existingStaff != null && existingStaff.IsActive)
             {
                 throw new ArgumentException("UserName hoặc Email đã tồn tại!");
             }
@@ -65,8 +66,8 @@ namespace SWP391_CareSkin_BE.Services
 
             if (!Validate.VerifyPassword(staff.Password, password))
                 throw new ArgumentException("Mật khẩu không đúng.");
-
-            await _staffRepository.DeleteStaffAsync(staff);
+            staff.IsActive = false;
+            await _staffRepository.UpdateStaffAsync(staff);
         }
 
         public async Task<StaffDTO> Login(LoginDTO loginDto)

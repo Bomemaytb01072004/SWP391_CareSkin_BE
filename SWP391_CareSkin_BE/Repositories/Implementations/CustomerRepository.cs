@@ -41,12 +41,6 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCustomerAsync(Customer customer)
-        {
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<Customer?> GetCustomerByEmailOrUsernameAsync(string email, string username)
         {
             return await _context.Customers

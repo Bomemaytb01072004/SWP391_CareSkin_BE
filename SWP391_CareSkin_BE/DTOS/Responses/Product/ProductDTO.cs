@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public string BrandName { get; set; }
         public string PictureUrl { get; set; }
         public double AverageRating { get; set; }
-
+        public bool IsActive { get; set; }
         public List<ProductForSkinTypeDTO> ProductForSkinTypes { get; set; }
 
         // Danh sách các Variation của sản phẩm

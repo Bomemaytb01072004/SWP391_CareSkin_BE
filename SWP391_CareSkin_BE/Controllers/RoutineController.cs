@@ -35,6 +35,34 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
+        [HttpGet("active")]
+        public async Task<ActionResult<List<RoutineDTO>>> GetActiveRoutines()
+        {
+            try
+            {
+                var routines = await _routineService.GetActiveRoutinesAsync();
+                return Ok(routines);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("inactive")]
+        public async Task<ActionResult<List<RoutineDTO>>> GetInactiveRoutines()
+        {
+            try
+            {
+                var routines = await _routineService.GetInactiveRoutinesAsync();
+                return Ok(routines);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<RoutineDTO>> GetRoutineById(int id)
         {

@@ -16,7 +16,7 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public string ConfirmPassword { get; set; }
 
         [JsonPropertyName("Email")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
 
         [JsonIgnore] public string? Phone { get; set; }

@@ -15,8 +15,14 @@ namespace SWP391_CareSkin_BE.Models
 
         public string? PictureUrl { get; set; }
 
-        public int CustomerId { get; set; }
+        public bool IsActive { get; set; }
 
-        public virtual Customer Customer { get; set; }
+        public int? AdminId { get; set; }
+        [ForeignKey("AdminId")]
+        public virtual Admin Admin { get; set; }
+
+        public int? StaffId { get; set; }
+        [ForeignKey("StaffId")]
+        public virtual Staff Staff { get; set; }
     }
 }

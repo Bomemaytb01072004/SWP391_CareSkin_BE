@@ -38,15 +38,29 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             return skinType;
         }
 
-        public async Task DeleteAsync(SkinType skinType)
-        {
-            _context.SkinTypes.Remove(skinType);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.SkinTypes.AnyAsync(x => x.SkinTypeId == id);
+        }
+
+        public async Task<SkinType> GetByNameAsync(string typeName)
+        {
+            return await _context.SkinTypes
+                .FirstOrDefaultAsync(x => x.TypeName.ToLower() == typeName.ToLower());
+        }
+
+        public async Task<List<SkinType>> GetActiveSkinTypesAsync()
+        {
+            return await _context.SkinTypes
+                .Where(st => st.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<List<SkinType>> GetInactiveSkinTypesAsync()
+        {
+            return await _context.SkinTypes
+                .Where(st => !st.IsActive)
+                .ToListAsync();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Requests;
+using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Models;
 
@@ -15,7 +15,8 @@ namespace SWP391_CareSkin_BE.Mappers
             {
                 BrandId = brand.BrandId,
                 Name = brand.Name,
-                PictureUrl = brand.PictureUrl
+                PictureUrl = brand.PictureUrl,
+                IsActive = brand.IsActive 
             };
         }
 
@@ -27,7 +28,8 @@ namespace SWP391_CareSkin_BE.Mappers
             return new Brand
             {
                 Name = request.Name,
-                PictureUrl = pictureUrl
+                PictureUrl = pictureUrl,
+                IsActive = true 
             };
         }
 

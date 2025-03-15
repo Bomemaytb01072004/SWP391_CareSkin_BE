@@ -7,5 +7,6 @@ namespace SWP391_CareSkin_BE.DTOS.Responses
         public int MinScore { get; set; }
         public int MaxScore { get; set; }
         public string Description { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -6,6 +6,8 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     public interface IRoutineService
     {
         Task<List<RoutineDTO>> GetAllRoutinesAsync();
+        Task<List<RoutineDTO>> GetActiveRoutinesAsync();
+        Task<List<RoutineDTO>> GetInactiveRoutinesAsync();
         Task<RoutineDTO> GetRoutineByIdAsync(int id);
         Task<List<RoutineDTO>> GetRoutinesBySkinTypeIdAsync(int skinTypeId);
         Task<RoutineDTO> CreateRoutineAsync(RoutineCreateRequestDTO request);

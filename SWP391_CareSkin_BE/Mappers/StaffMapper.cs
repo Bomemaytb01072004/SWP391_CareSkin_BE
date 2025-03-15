@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOS.Responses;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.DTOS.Requests;
@@ -19,6 +19,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 PictureUrl = dto.ProfilePicture ?? "",
                 FullName = dto.FullName ?? "No name",
                 Phone = dto.Phone ?? "",
+                IsActive = true // Set IsActive to true when creating a new staff
             };
         }
 
@@ -40,7 +41,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 DoB = staff.DoB,
                 PictureUrl = staff.PictureUrl,
                 token = staff.Token,
-                Role = staff.Role
+                Role = staff.Role,
+                IsActive = staff.IsActive // Include IsActive in the response DTO
             };
 
         }

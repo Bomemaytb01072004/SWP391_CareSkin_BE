@@ -52,6 +52,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return ProductMapper.ToDTOList(products);
         }
 
+        public async Task<List<ProductDTO>> GetActiveProductsAsync()
+        {
+            var products = await _productRepository.GetActiveProductsAsync();
+            return ProductMapper.ToDTOList(products);
+        }
+
+        public async Task<List<ProductDTO>> GetInactiveProductsAsync()
+        {
+            var products = await _productRepository.GetInactiveProductsAsync();
+            return ProductMapper.ToDTOList(products);
+        }
+
         public async Task<ProductDTO> GetProductByIdAsync(int productId)
         {
             var product = await _productRepository.GetProductByIdAsync(productId);
@@ -60,12 +72,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request, string pictureUrl)
         {
-            // Check if a product with the same name already exists
-            bool productExists = await _productRepository.ExistsByNameAsync(request.ProductName);
-            if (productExists)
+            // Kiểm tra xem sản phẩm với tên này đã tồn tại và đang active chưa
+            var existingProduct = await _productRepository.GetProductByNameAsync(request.ProductName);
+            
+            if (existingProduct != null && existingProduct.IsActive)
             {
                 // Throw ArgumentException with a specific message that will be caught by the controller
-                throw new ArgumentException($"Product with name '{request.ProductName}' already exists");
+                throw new ArgumentException($"Sản phẩm với tên '{request.ProductName}' đã tồn tại");
             }
 
             var productEntity = ProductMapper.ToEntity(request, pictureUrl);
@@ -328,20 +341,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (product == null)
                 return false;
 
-            // Delete main product image if exists
-            if (!string.IsNullOrEmpty(product.PictureUrl))
-            {
-                var fileName = ExtractFilenameFromFirebaseUrl(product.PictureUrl);
-                if (!string.IsNullOrEmpty(fileName))
-                {
-                    await _firebaseService.DeleteImageAsync(fileName);
-                }
-            }
-
-            // Delete all associated product pictures
-            await _productPictureService.DeleteProductPicturesByProductIdAsync(productId);
-
-            await _productRepository.DeleteProductAsync(productId);
+            // Implement soft delete by setting IsActive to false
+            product.IsActive = false;
+            await _productRepository.UpdateProductAsync(product);
             return true;
         }
 

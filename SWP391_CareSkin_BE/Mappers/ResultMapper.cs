@@ -30,7 +30,8 @@ namespace SWP391_CareSkin_BE.Mappers
                     TypeName = result.SkinType.TypeName,
                     MinScore = result.SkinType.MinScore,
                     MaxScore = result.SkinType.MaxScore,
-                    Description = result.SkinType.Description
+                    Description = result.SkinType.Description,
+                    IsActive = result.SkinType.IsActive
                 };
 
             return resultDTO;

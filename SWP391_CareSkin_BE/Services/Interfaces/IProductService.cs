@@ -6,6 +6,8 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
     public interface IProductService
     {
         Task<List<ProductDTO>> GetAllProductsAsync();
+        Task<List<ProductDTO>> GetActiveProductsAsync();
+        Task<List<ProductDTO>> GetInactiveProductsAsync();
         Task<ProductDTO> GetProductByIdAsync(int productId);
         Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request, string pictureUrl);
         Task<ProductDTO> UpdateProductAsync(int productId, ProductUpdateRequestDTO request, string pictureUrl);

@@ -17,6 +17,7 @@ namespace SWP391_CareSkin_BE.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPriceSale { get; set; }
         public DateOnly OrderDate { get; set; }
 
