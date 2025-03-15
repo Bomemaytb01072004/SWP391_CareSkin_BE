@@ -127,6 +127,11 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddScoped<IQuizRepository, QuizRepository>();
             builder.Services.AddScoped<IQuizService, QuizService>();
+            builder.Services.AddScoped<IFAQRepository, FAQRepository>();
+            builder.Services.AddScoped<IFAQService, FAQService>();
+
+            builder.Services.AddScoped<IVnpayRepository, VnpayRepository>();
+            builder.Services.AddScoped<IVnpayService, VnpayService>();
 
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();

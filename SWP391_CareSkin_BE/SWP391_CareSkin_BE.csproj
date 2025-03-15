@@ -8,12 +8,16 @@
 
   <ItemGroup>
     <Compile Remove="Configurations\**" />
+    <Compile Remove="DTOs\Responses\Question\**" />
     <Compile Remove="Middlewares\**" />
     <Content Remove="Configurations\**" />
+    <Content Remove="DTOs\Responses\Question\**" />
     <Content Remove="Middlewares\**" />
     <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="DTOs\Responses\Question\**" />
     <EmbeddedResource Remove="Middlewares\**" />
     <None Remove="Configurations\**" />
+    <None Remove="DTOs\Responses\Question\**" />
     <None Remove="Middlewares\**" />
   </ItemGroup>
 
@@ -44,6 +48,7 @@
     <Folder Include="DTOs\Requests\Brand\" />
     <Folder Include="DTOs\Requests\Cart\" />
     <Folder Include="DTOs\Requests\Customer\" />
+    <Folder Include="DTOS\Requests\FAQ\" />
     <Folder Include="DTOs\Requests\ProductPicture\" />
     <Folder Include="DTOs\Requests\RatingFeedback\" />
     <Folder Include="DTOs\Requests\Staff\" />
