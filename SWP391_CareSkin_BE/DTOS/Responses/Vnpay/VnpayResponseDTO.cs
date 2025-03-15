@@ -6,6 +6,7 @@ namespace SWP391_CareSkin_BE.DTOs.Responses.Vnpay
         public string TransactionId { get; set; }
         public int OrderId { get; set; }
         public string PaymentMethod { get; set; }
+        public double Amount { get; set; }
         public string PaymentId { get; set; }
         public bool Success { get; set; }
         public string Token { get; set; }

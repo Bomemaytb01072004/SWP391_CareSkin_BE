@@ -5,7 +5,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
 {
     public interface IVnpayService
     {
-        string CreatePaymentUrl(VnpayRequestDTO model, HttpContext context);
+        Task<string> CreatePaymentUrl(VnpayRequestDTO model, HttpContext context);
         VnpayResponseDTO PaymentExecute(IQueryCollection collection);
     }
 }
