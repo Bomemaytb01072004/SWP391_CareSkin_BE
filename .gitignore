@@ -61,3 +61,4 @@ __pycache__/
 .ntvs_analysis.dat
 firebasekey.json
 googleauth.json
+facebookkey.json
