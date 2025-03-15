@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Implementations;
@@ -40,6 +40,13 @@ namespace SWP391_CareSkin_BE
                 builder.Configuration.AddJsonFile(googleAuthPath, optional: false, reloadOnChange: true);
             }
 
+            // Đọc file facebookkey.json
+            var facebookAuthPath = Path.Combine(Directory.GetCurrentDirectory(), "facebookkey.json");
+            if (File.Exists(facebookAuthPath))
+            {
+                builder.Configuration.AddJsonFile(facebookAuthPath, optional: false, reloadOnChange: true);
+            }
+
             // Lấy connection string
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
@@ -57,6 +64,9 @@ namespace SWP391_CareSkin_BE
                     )
                 )
             );
+
+            // Add HttpClient Factory for Facebook/Google API calls
+            builder.Services.AddHttpClient();
 
             // CORS
             builder.Services.AddCors(options =>
@@ -83,46 +93,6 @@ namespace SWP391_CareSkin_BE
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             builder.Services.AddSingleton<JwtHelper>();
-
-            // 3) Lấy Google Client ID & Secret từ googleauth.json
-            var googleClientId = builder.Configuration["GoogleAuth:ClientId"];
-            var googleClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
-
-            // Có thể kiểm tra nếu chưa khai báo -> thông báo hoặc bỏ qua
-            if (string.IsNullOrEmpty(googleClientId) || string.IsNullOrEmpty(googleClientSecret))
-            {
-                Console.WriteLine("Warning: Google ClientId/ClientSecret is missing. Check googleauth.json if you need Google OAuth.");
-            }
-
-            // 4) Cấu hình Authentication (JWT & Google)
-            builder.Services.AddAuthentication(options =>
-            {
-                // Mặc định dùng JWT cho xác thực API
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme; // Google sẽ được dùng khi user nhấn đăng nhập
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Google cần cookie để xử lý đăng nhập
-            })
-            .AddCookie() // Cookie Authentication để hỗ trợ Google login
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtIssuer,
-                    ValidAudience = jwtAudience,
-                    IssuerSigningKey = key
-                };
-            })
-            .AddGoogle(options =>
-            {
-                options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
-                options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
-            });
 
             // Đăng ký các DI Services, Repositories
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
@@ -223,6 +193,70 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // 3) Lấy Google Client ID & Secret từ googleauth.json
+            var googleClientId = builder.Configuration["GoogleAuth:ClientId"];
+            var googleClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
+
+            // Có thể kiểm tra nếu chưa khai báo -> thông báo hoặc bỏ qua
+            if (string.IsNullOrEmpty(googleClientId) || string.IsNullOrEmpty(googleClientSecret))
+            {
+                Console.WriteLine("Warning: Google ClientId/ClientSecret is missing. Check googleauth.json if you need Google OAuth.");
+            }
+
+            // Lấy Facebook AppId & AppSecret
+            var facebookAppId = builder.Configuration["FacebookAuth:AppId"];
+            var facebookAppSecret = builder.Configuration["FacebookAuth:AppSecret"];
+            if (string.IsNullOrEmpty(facebookAppId) || string.IsNullOrEmpty(facebookAppSecret))
+            {
+                Console.WriteLine("Warning: Facebook AppId/AppSecret is missing. Check facebookkey.json if needed.");
+            }
+
+            // 4) Cấu hình Authentication (JWT & Google)
+            builder.Services.AddAuthentication(options =>
+            {
+                // Mặc định dùng JWT cho xác thực API
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme; // Google sẽ được dùng khi user nhấn đăng nhập
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Google cần cookie để xử lý đăng nhập
+            })
+            .AddCookie() // Cookie Authentication để hỗ trợ Google login
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = key
+                };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
+                options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+                options.CallbackPath = "/signin-google";
+                options.SaveTokens = true;
+            })
+            .AddFacebook(options =>
+            {
+                options.AppId = facebookAppId;
+                options.AppSecret = facebookAppSecret;
+                options.Scope.Add("email");
+                options.Fields.Add("email");
+                options.Fields.Add("name");
+                options.Fields.Add("picture");
+                options.CallbackPath = "/signin-facebook";
+                options.SaveTokens = true;
+            });
 
             var app = builder.Build();
 

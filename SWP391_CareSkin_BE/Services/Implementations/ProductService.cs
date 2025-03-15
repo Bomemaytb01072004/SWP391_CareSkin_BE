@@ -130,7 +130,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             // Cập nhật SkinTypes mà không xóa dữ liệu cũ
-            if (request.ProductForSkinTypes != null)
+            if (request.ProductForSkinTypes != null && request.ProductForSkinTypes.Any())
             {
                 foreach (var skinType in request.ProductForSkinTypes)
                 {
