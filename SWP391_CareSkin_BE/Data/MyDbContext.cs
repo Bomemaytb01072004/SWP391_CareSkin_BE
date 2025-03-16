@@ -94,6 +94,10 @@ namespace SWP391_CareSkin_BE.Data
             //relationship
 
 
+            modelBuilder.Entity<Admin>()
+                .HasMany(a => a.BlogNews)
+                .WithOne(b => b.Admin)
+                .HasForeignKey(b => b.AdminId);
 
             modelBuilder.Entity<Answer>()
                 .HasMany(a => a.Historys)
@@ -104,6 +108,16 @@ namespace SWP391_CareSkin_BE.Data
                 .HasMany(b => b.Products)
                 .WithOne(p => p.Brand)
                 .HasForeignKey(p => p.BrandId);
+
+            modelBuilder.Entity<BlogNew>()
+               .HasOne(b => b.Admin)
+               .WithMany(a => a.BlogNews) 
+               .HasForeignKey(b => b.AdminId);
+
+            modelBuilder.Entity<BlogNew>()
+                .HasOne(b => b.Staff)
+                .WithMany(s => s.BlogNews)
+                .HasForeignKey(b => b.StaffId);
 
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.UserQuizAttempts)

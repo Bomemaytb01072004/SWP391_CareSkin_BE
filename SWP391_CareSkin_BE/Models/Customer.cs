@@ -41,8 +41,6 @@ namespace SWP391_CareSkin_BE.Models
         [NotMapped]
         public string Role { get; set; }
 
-        public virtual ICollection<BlogNew>? BlogNews { get; set; } = new List<BlogNew>();
-
         public virtual ICollection<Result>? Results { get; set; } = new List<Result>();
 
         public virtual ICollection<Cart>? Carts { get; set; } = new List<Cart>();

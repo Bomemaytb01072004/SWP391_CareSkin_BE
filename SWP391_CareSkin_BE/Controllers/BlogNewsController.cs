@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Security.Claims;
 using FirebaseAdmin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,22 @@ namespace SWP391_CareSkin_BE.Controllers
         {
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userRoleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+
+                int? adminId = null;
+                int? staffId = null;
+
+                if (userRoleClaim == "Admin" && int.TryParse(userIdClaim, out int parsedAdminId))
+                {
+                    adminId = parsedAdminId;
+                }
+                else if (userRoleClaim == "Staff" && int.TryParse(userIdClaim, out int parsedStaffId))
+                {
+                    staffId = parsedStaffId;
+                }
+
+
                 // Handle image upload
                 string pictureUrl = null;
                 if (request.PictureFile != null)
@@ -66,7 +83,7 @@ namespace SWP391_CareSkin_BE.Controllers
                     pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
                 }
 
-                var createdBlog = await _blogService.AddNewsAsync(request, pictureUrl);
+                var createdBlog = await _blogService.AddNewsAsync(request, pictureUrl, adminId, staffId);
                 return CreatedAtAction(nameof(GetBlogById),
                     new { id = createdBlog.BlogId }, createdBlog);
             }

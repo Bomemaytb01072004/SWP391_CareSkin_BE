@@ -53,26 +53,7 @@ namespace SWP391_CareSkin_BE.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            //var admin = await _adminService.Login(request);
-            //var staff = await _staffService.Login(request);
-            //var customer = await _customerService.Login(request);
-
-
-            //string role = (string)admin?.Role ?? (string)staff?.Role ?? (string)customer?.Role;
-
-            //switch (role)
-            //{
-            //    case "Admin":
-            //        return Ok(admin);
-            //    case "Staff":
-            //        return Ok(staff);
-            //    case "Customer":
-            //        return Ok(customer);
-            //    default:
-            //        return BadRequest("Account and Role is not match");
-            //}         
+            }    
 
             LoginDTO loginDto = new LoginDTO
             {

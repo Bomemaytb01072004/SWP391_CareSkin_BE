@@ -16,6 +16,7 @@ using Hangfire.SqlServer;
 using SWP391_CareSkin_BE.Jobs;
 using Microsoft.Extensions.Logging;
 using Hangfire.Storage;
+using System.Text.Json.Serialization;
 
 // Thêm namespace cho Google Authentication
 using Microsoft.AspNetCore.Authentication.Google;
@@ -194,6 +195,7 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             });
 
             builder.Services.AddEndpointsApiExplorer();

@@ -23,17 +23,17 @@ namespace SWP391_CareSkin_BE.Services
                 // Kiểm tra Admin
                 var admin = _context.Admins.FirstOrDefault(a => a.UserName == userName && a.Password == password);
                 if (admin != null)
-                    return _jwtHelper.GenerateToken(admin.UserName, "Admin");
+                    return _jwtHelper.GenerateToken(admin.UserName, "Admin", admin.AdminId);
 
                 // Kiểm tra Staff
                 var staff = _context.Staffs.FirstOrDefault(s => s.UserName == userName && s.Password == password);
                 if (staff != null)
-                    return _jwtHelper.GenerateToken(staff.UserName, "Staff");
+                    return _jwtHelper.GenerateToken(staff.UserName, "Staff", staff.StaffId);
 
                 // Kiểm tra User
                 var user = _context.Customers.FirstOrDefault(u => u.UserName == userName && u.Password == password);
                 if (user != null)
-                    return _jwtHelper.GenerateToken(user.UserName, "Customer");
+                    return _jwtHelper.GenerateToken(user.UserName, "Customer", user.CustomerId);
 
                 return null; // Tài khoản không tồn tại hoặc mật khẩu sai
             }
