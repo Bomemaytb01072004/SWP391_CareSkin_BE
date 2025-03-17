@@ -56,5 +56,10 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         /// Gets a Momo payment by Momo's orderId
         /// </summary>
         Task<MomoPayment?> GetMomoPaymentByMomoOrderIdAsync(string momoOrderId);
+
+        /// <summary>
+        /// Gets callbacks for an order
+        /// </summary>
+        Task<IEnumerable<MomoCallback>> GetCallbacksForOrderAsync(int orderId);
     }
 }

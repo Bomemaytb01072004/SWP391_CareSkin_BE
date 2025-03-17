@@ -56,39 +56,56 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         /// <summary>
-        /// Handles the callback from Momo (notifyUrl)
+        /// Handles the IPN (Instant Payment Notification) from Momo
         /// </summary>
-        [HttpPost("notify")]
-        public async Task<IActionResult> MomoNotify([FromBody] MomoCallbackDto callbackDto)
+        [HttpPost("momo_ipn")]
+        public async Task<IActionResult> MomoIpn([FromBody] MomoCallbackDto callbackDto)
         {
             try
             {
+                _logger.LogInformation("Received Momo IPN: {OrderId}, ResultCode: {ResultCode}", callbackDto.OrderId, callbackDto.ResultCode);
+                
                 if (callbackDto == null)
                 {
-                    return BadRequest(new { message = "Callback data is required" });
+                    _logger.LogWarning("Momo IPN received with null data");
+                    return NoContent(); // Return 204 as required by Momo
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    _logger.LogWarning("Momo IPN received with invalid model state");
+                    return NoContent(); // Return 204 as required by Momo
                 }
 
                 bool isValid = _momoService.ValidateMomoCallback(callbackDto);
                 if (!isValid)
                 {
-                    return BadRequest(new { message = "Invalid signature" });
+                    _logger.LogWarning("Momo IPN received with invalid signature");
+                    return NoContent(); // Return 204 as required by Momo
                 }
 
-                await _momoService.HandleMomoCallbackAsync(callbackDto);
+                // Process the IPN asynchronously to ensure we respond quickly
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _momoService.HandleMomoCallbackAsync(callbackDto);
+                        _logger.LogInformation("Successfully processed Momo IPN for order {OrderId}", callbackDto.OrderId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error processing Momo IPN for order {OrderId}", callbackDto.OrderId);
+                    }
+                });
 
-                // Momo expects a 200 OK response
-                return Ok(new { message = "Callback handled successfully" });
+                // Momo expects a 204 No Content response within 15 seconds
+                return NoContent();
             }
             catch (Exception ex)
             {
-                // Log the exception but still return 200 OK to Momo
-                Console.WriteLine($"Error handling Momo callback: {ex.Message}");
-                return Ok(new { message = "Callback received" });
+                // Log the exception but still return 204 No Content to Momo
+                _logger.LogError(ex, "Error handling Momo IPN: {Message}", ex.Message);
+                return NoContent();
             }
         }
 

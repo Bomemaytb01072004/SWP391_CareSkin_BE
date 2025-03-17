@@ -22,6 +22,8 @@ namespace SWP391_CareSkin_BE.Models
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         
         public DateTime? PaymentTime { get; set; }
+        
+        public string? TransactionId { get; set; }
 
         [ForeignKey("OrderId")]
         public virtual Order Order { get; set; } = null!;

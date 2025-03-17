@@ -19,5 +19,14 @@ namespace SWP391_CareSkin_BE.DTOS.Responses.Momo
         
         [JsonPropertyName("paymentTime")]
         public DateTime? PaymentTime { get; set; }
+        
+        [JsonPropertyName("transactionId")]
+        public string? TransactionId { get; set; }
+        
+        [JsonPropertyName("resultCode")]
+        public int ResultCode { get; set; }
+        
+        [JsonPropertyName("message")]
+        public string Message { get; set; } = string.Empty;
     }
 }

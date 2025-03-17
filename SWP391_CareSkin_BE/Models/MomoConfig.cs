@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.Models
         public string AccessKey { get; set; } = string.Empty;
         public string SecretKey { get; set; } = string.Empty;
         public string ReturnUrl { get; set; } = string.Empty;
-        public string NotifyUrl { get; set; } = string.Empty;
+        public string IpnUrl { get; set; } = string.Empty;
         public string RequestType { get; set; } = string.Empty;
     }
 }

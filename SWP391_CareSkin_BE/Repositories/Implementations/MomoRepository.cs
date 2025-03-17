@@ -52,7 +52,7 @@ namespace SWP391_CareSkin_BE.Repositories
                 string rawData = $"accessKey={_momoConfig.AccessKey}"
                                + $"&amount={amountInVnd}"
                                + $"&extraData="
-                               + $"&ipnUrl={_momoConfig.NotifyUrl}"
+                               + $"&ipnUrl={_momoConfig.IpnUrl}"
                                + $"&orderId={orderId}"
                                + $"&orderInfo={payment.OrderInfo}"
                                + $"&partnerCode={_momoConfig.PartnerCode}"
@@ -73,7 +73,7 @@ namespace SWP391_CareSkin_BE.Repositories
                     orderId,
                     orderInfo = payment.OrderInfo,
                     redirectUrl = _momoConfig.ReturnUrl,
-                    ipnUrl = _momoConfig.NotifyUrl,
+                    ipnUrl = _momoConfig.IpnUrl,
                     lang = "vi",
                     extraData = "",
                     requestType = _momoConfig.RequestType,
@@ -240,6 +240,14 @@ namespace SWP391_CareSkin_BE.Repositories
                 .Where(p => p.OrderId == orderId && !p.IsExpired)
                 .OrderByDescending(p => p.CreatedDate)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<MomoCallback>> GetCallbacksForOrderAsync(int orderId)
+        {
+            return await _dbContext.MomoCallbacks
+                .Where(c => c.OrderId == orderId.ToString())
+                .OrderByDescending(c => c.MomoCallbackId)
+                .ToListAsync();
         }
 
         private string SignSHA256(string data, string secretKey)
