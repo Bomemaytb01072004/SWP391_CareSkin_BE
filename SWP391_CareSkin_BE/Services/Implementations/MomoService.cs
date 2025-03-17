@@ -106,73 +106,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 callback.ReceivedDate = DateTime.UtcNow;
                 await _momoRepository.SaveMomoCallbackAsync(callback);
 
-                // Extract orderId from Momo's orderId (remove any prefix and timestamp)
-                var orderIdStr = callbackDto.OrderId;
-                
-                // Handle different orderId formats
-                if (orderIdStr.StartsWith("ORDER_"))
-                {
-                    orderIdStr = orderIdStr.Replace("ORDER_", "");
-                }
-                
-                // Handle Partner_Transaction_ID format (from IPN)
-                if (orderIdStr.StartsWith("Partner_Transaction_ID_"))
-                {
-                    orderIdStr = orderIdStr.Replace("Partner_Transaction_ID_", "");
-                }
-
-                // If there's a timestamp or other suffix (format: 123_1712187247), get the part before the underscore
-                if (orderIdStr.Contains("_"))
-                {
-                    orderIdStr = orderIdStr.Split('_')[0];
-                }
-
-                if (!int.TryParse(orderIdStr, out int orderId))
+                // Extract orderId from Momo's orderId format
+                if (!TryExtractOrderId(callbackDto.OrderId, out int orderId))
                 {
                     _logger.LogWarning("Invalid order ID format in Momo callback: {OrderId}", callbackDto.OrderId);
-                    throw new InvalidOperationException($"Invalid order ID format: {callbackDto.OrderId}");
+                    return;
                 }
 
-                // Update payment status if payment is successful (resultCode = 0)
+                // Update payment status based on result code
                 if (callbackDto.ResultCode == 0)
                 {
-                    _logger.LogInformation("Successful payment for order {OrderId}, TransId={TransId}", orderId, callbackDto.TransId);
-                    
-                    // Find payment by order ID
-                    var payment = await _momoRepository.GetMomoPaymentByOrderIdAsync(orderId);
-                    if (payment != null)
-                    {
-                        // Verify amount matches to prevent fraud
-                        if (payment.Amount != callbackDto.Amount)
-                        {
-                            _logger.LogWarning("Amount mismatch for order {OrderId}: Expected {Expected}, Got {Actual}",
-                                orderId, payment.Amount, callbackDto.Amount);
-                            return;
-                        }
-
-                        // Update payment status to paid
-                        payment.IsPaid = true;
-                        payment.PaymentTime = DateTime.UtcNow;
-                        payment.TransactionId = callbackDto.TransId.ToString();
-                        await _momoRepository.UpdatePaymentAsync(payment);
-
-                        // Update order status to Paid (assuming 3 is the Paid status ID)
-                        var order = await _orderRepository.GetOrderByIdAsync(orderId);
-                        if (order != null)
-                        {
-                            order.OrderStatusId = 3; // 3 is Paid status
-                            await _orderRepository.UpdateOrderAsync(order);
-                            _logger.LogInformation("Order {OrderId} status updated to Paid", orderId);
-                        }
-                        else
-                        {
-                            _logger.LogWarning("Order {OrderId} not found when updating payment status", orderId);
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogWarning("No payment record found for order {OrderId}", orderId);
-                    }
+                    await HandleSuccessfulPayment(orderId, callbackDto);
                 }
                 else
                 {
@@ -183,7 +127,73 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error handling Momo callback for order {OrderId}", callbackDto.OrderId);
-                throw; // Rethrow to let the controller handle it
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Extracts the order ID from various Momo callback formats
+        /// </summary>
+        private bool TryExtractOrderId(string orderIdStr, out int orderId)
+        {
+            orderId = 0;
+            
+            if (string.IsNullOrEmpty(orderIdStr))
+                return false;
+                
+            // Remove common prefixes
+            if (orderIdStr.StartsWith("ORDER_"))
+                orderIdStr = orderIdStr.Replace("ORDER_", "");
+            else if (orderIdStr.StartsWith("Partner_Transaction_ID_"))
+                orderIdStr = orderIdStr.Replace("Partner_Transaction_ID_", "");
+
+            // If there's a timestamp or other suffix (format: 123_1712187247), get the part before the underscore
+            if (orderIdStr.Contains("_"))
+                orderIdStr = orderIdStr.Split('_')[0];
+
+            return int.TryParse(orderIdStr, out orderId);
+        }
+
+        /// <summary>
+        /// Handles a successful payment (ResultCode = 0)
+        /// </summary>
+        private async Task HandleSuccessfulPayment(int orderId, MomoCallbackDto callbackDto)
+        {
+            _logger.LogInformation("Successful payment for order {OrderId}, TransId={TransId}", orderId, callbackDto.TransId);
+            
+            // Find payment by order ID
+            var payment = await _momoRepository.GetMomoPaymentByOrderIdAsync(orderId);
+            if (payment == null)
+            {
+                _logger.LogWarning("No payment record found for order {OrderId}", orderId);
+                return;
+            }
+
+            // Verify amount matches to prevent fraud
+            if (payment.Amount != callbackDto.Amount)
+            {
+                _logger.LogWarning("Amount mismatch for order {OrderId}: Expected {Expected}, Got {Actual}",
+                    orderId, payment.Amount, callbackDto.Amount);
+                return;
+            }
+
+            // Update payment status to paid
+            payment.IsPaid = true;
+            payment.PaymentTime = DateTime.UtcNow;
+            payment.TransactionId = callbackDto.TransId.ToString();
+            await _momoRepository.UpdatePaymentAsync(payment);
+
+            // Update order status to Paid (assuming 3 is the Paid status ID)
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+            if (order != null)
+            {
+                order.OrderStatusId = 3; // 3 is Paid status
+                await _orderRepository.UpdateOrderAsync(order);
+                _logger.LogInformation("Order {OrderId} status updated to Paid", orderId);
+            }
+            else
+            {
+                _logger.LogWarning("Order {OrderId} not found when updating payment status", orderId);
             }
         }
 

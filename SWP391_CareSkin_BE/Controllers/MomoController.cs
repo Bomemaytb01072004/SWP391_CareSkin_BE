@@ -3,6 +3,7 @@ using SWP391_CareSkin_BE.DTOS.Requests.Momo;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SWP391_CareSkin_BE.Controllers
 {
@@ -31,7 +32,6 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    // Let the service handle the error response format
                     var errorResponse = _momoService.CreateErrorResponse("Bad format request.", 0);
                     return BadRequest(errorResponse);
                 }
@@ -40,11 +40,9 @@ namespace SWP391_CareSkin_BE.Controllers
 
                 if (response.ErrorCode != 0)
                 {
-                    // The service already formatted the error response
                     return BadRequest(response);
                 }
 
-                // Return successful response
                 return Ok(response);
             }
             catch (Exception ex)
@@ -65,15 +63,9 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 _logger.LogInformation("Received Momo IPN: {OrderId}, ResultCode: {ResultCode}", callbackDto.OrderId, callbackDto.ResultCode);
                 
-                if (callbackDto == null)
+                if (callbackDto == null || !ModelState.IsValid)
                 {
-                    _logger.LogWarning("Momo IPN received with null data");
-                    return NoContent(); // Return 204 as required by Momo
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogWarning("Momo IPN received with invalid model state");
+                    _logger.LogWarning("Momo IPN received with null data or invalid model state");
                     return NoContent(); // Return 204 as required by Momo
                 }
 
@@ -81,62 +73,67 @@ namespace SWP391_CareSkin_BE.Controllers
                 if (!isValid)
                 {
                     _logger.LogWarning("Momo IPN received with invalid signature");
-                    return NoContent(); // Return 204 as required by Momo
+                    return NoContent();
                 }
 
                 // Process the IPN asynchronously to ensure we respond quickly
-                _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        await _momoService.HandleMomoCallbackAsync(callbackDto);
-                        _logger.LogInformation("Successfully processed Momo IPN for order {OrderId}", callbackDto.OrderId);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Error processing Momo IPN for order {OrderId}", callbackDto.OrderId);
-                    }
-                });
+                _ = ProcessMomoCallbackAsync(callbackDto, "IPN");
 
                 // Momo expects a 204 No Content response within 15 seconds
                 return NoContent();
             }
             catch (Exception ex)
             {
-                // Log the exception but still return 204 No Content to Momo
                 _logger.LogError(ex, "Error handling Momo IPN: {Message}", ex.Message);
                 return NoContent();
             }
         }
 
         /// <summary>
-        /// Handles the return URL callback from Momo (returnUrl)
+        /// Handles the redirect from Momo with query parameters for both success and failure cases
         /// </summary>
-        [HttpGet("return")]
-        public async Task<IActionResult> MomoReturn([FromQuery] string orderId)
+        [HttpGet("redirect")]
+        public IActionResult MomoRedirect()
         {
             try
             {
-                int orderIdInt;
-                if (!int.TryParse(orderId, out orderIdInt))
+                // Get query parameters directly from the request
+                var query = HttpContext.Request.Query;
+                
+                string orderId = query["orderId"].ToString();
+                string resultCode = query["resultCode"].ToString();
+                
+                _logger.LogInformation("Received Momo redirect: OrderId={OrderId}, ResultCode={ResultCode}", orderId, resultCode);
+                
+                // Create a callback DTO from query parameters
+                var callbackDto = new MomoCallbackDto
                 {
-                    return BadRequest(new { success = false, message = "Invalid order ID" });
-                }
+                    PartnerCode = query["partnerCode"].ToString() ?? string.Empty,
+                    OrderId = orderId ?? string.Empty,
+                    RequestId = query["requestId"].ToString() ?? string.Empty,
+                    Amount = !string.IsNullOrEmpty(query["amount"].ToString()) ? long.Parse(query["amount"].ToString()) : 0,
+                    OrderInfo = query["orderInfo"].ToString() ?? string.Empty,
+                    OrderType = query["orderType"].ToString() ?? string.Empty,
+                    TransId = !string.IsNullOrEmpty(query["transId"].ToString()) ? long.Parse(query["transId"].ToString()) : 0,
+                    ResultCode = !string.IsNullOrEmpty(resultCode) ? int.Parse(resultCode) : 1006,
+                    Message = query["message"].ToString() ?? string.Empty,
+                    PayType = query["payType"].ToString() ?? string.Empty,
+                    ResponseTime = !string.IsNullOrEmpty(query["responseTime"].ToString()) ? long.Parse(query["responseTime"].ToString()) : 0,
+                    ExtraData = query["extraData"].ToString() ?? string.Empty,
+                    Signature = query["signature"].ToString() ?? string.Empty
+                };
 
-                // Check payment status
-                var paymentStatus = await _momoService.CheckPaymentStatusAsync(orderIdInt);
+                // Process the callback asynchronously
+                _ = ProcessMomoCallbackAsync(callbackDto, "Redirect");
 
-                // Return payment status to client
-                return Ok(new
-                {
-                    success = true,
-                    isPaid = paymentStatus.IsPaid,
-                    paymentTime = paymentStatus.PaymentTime
-                });
+                // Redirect to the frontend with appropriate parameters
+                string redirectUrl = $"http://careskinbeauty.shop/?orderId={orderId}&resultCode={resultCode}";
+                return Redirect(redirectUrl);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = ex.Message });
+                _logger.LogError(ex, "Error handling Momo redirect: {Message}", ex.Message);
+                return Redirect("http://careskinbeauty.shop/?error=true");
             }
         }
 
@@ -163,6 +160,35 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
+        }
+
+        /// <summary>
+        /// Helper method to process Momo callbacks asynchronously with proper scoping
+        /// </summary>
+        private Task ProcessMomoCallbackAsync(MomoCallbackDto callbackDto, string source)
+        {
+            var serviceProvider = HttpContext.RequestServices;
+            
+            return Task.Run(async () =>
+            {
+                // Create a new scope to get a fresh instance of the DbContext
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    try
+                    {
+                        var scopedMomoService = scope.ServiceProvider.GetRequiredService<IMomoService>();
+                        var scopedLogger = scope.ServiceProvider.GetRequiredService<ILogger<MomoController>>();
+                        
+                        await scopedMomoService.HandleMomoCallbackAsync(callbackDto);
+                        scopedLogger.LogInformation("Successfully processed Momo {Source} for order {OrderId}", source, callbackDto.OrderId);
+                    }
+                    catch (Exception ex)
+                    {
+                        var scopedLogger = scope.ServiceProvider.GetRequiredService<ILogger<MomoController>>();
+                        scopedLogger.LogError(ex, "Error processing Momo {Source} for order {OrderId}", source, callbackDto.OrderId);
+                    }
+                }
+            });
         }
     }
 }
