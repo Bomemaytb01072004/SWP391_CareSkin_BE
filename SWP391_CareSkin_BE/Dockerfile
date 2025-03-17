@@ -11,8 +11,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Copy firebasekey.json into the container
+# Copy firebasekey.json, facebookkey.json, and googleauth.json into the container
 COPY firebasekey.json /app/firebasekey.json
+COPY facebookkey.json /app/facebookkey.json
+COPY googleauth.json /app/googleauth.json
 
 EXPOSE 80
 
