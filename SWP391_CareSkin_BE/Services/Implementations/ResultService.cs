@@ -66,7 +66,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             
             // Mark the attempt as completed
             userQuizAttempt.IsCompleted = true;
-            userQuizAttempt.CompletedAt = DateOnly.FromDateTime(DateTime.Now);
+            userQuizAttempt.CompletedAt = DateTime.Now;
             await _userQuizAttemptRepository.UpdateAsync(userQuizAttempt);
             
             // Return the DTO with related entities
@@ -86,7 +86,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             result.TotalScore += additionalScore;
             
             // Update the last quiz time
-            result.LastQuizTime = DateOnly.FromDateTime(DateTime.Now);
+            result.LastQuizTime = DateTime.Now;
             
             // Recalculate skin type if needed based on new score
             result.SkinTypeId = await DetermineSkinTypeId(result.TotalScore);

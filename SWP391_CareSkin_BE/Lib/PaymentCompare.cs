@@ -1,10 +1,10 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace SWP391_CareSkin_BE.Lib
 {
     public class PaymentCompare : IComparer<string>
     {
-        public int Compare(string x, string y)
+        public int Compare(string? x, string? y)
         {
             if (x == y) return 0;
             if (x == null) return -1;

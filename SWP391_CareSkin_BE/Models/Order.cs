@@ -36,5 +36,7 @@ namespace SWP391_CareSkin_BE.Models
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
         public virtual ICollection<VnpayTransactions>? VnpayTransactions { get; set; } = new List<VnpayTransactions>();
+        
+        public virtual ICollection<MomoPayment>? MomoPayments { get; set; } = new List<MomoPayment>();
     }
 }

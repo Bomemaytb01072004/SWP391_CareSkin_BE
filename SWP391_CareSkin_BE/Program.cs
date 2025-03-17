@@ -17,6 +17,8 @@ using SWP391_CareSkin_BE.Jobs;
 using Microsoft.Extensions.Logging;
 using Hangfire.Storage;
 using System.Text.Json.Serialization;
+using AutoMapper;
+using SWP391_CareSkin_BE.Mappers;
 
 // Thêm namespace cho Google Authentication
 using Microsoft.AspNetCore.Authentication.Google;
@@ -68,6 +70,9 @@ namespace SWP391_CareSkin_BE
 
             // Add HttpClient Factory for Facebook/Google API calls
             builder.Services.AddHttpClient();
+
+            // Configure AutoMapper
+            builder.Services.AddAutoMapper(typeof(MomoMapper));
 
             // CORS
             builder.Services.AddCors(options =>
@@ -133,6 +138,11 @@ namespace SWP391_CareSkin_BE
 
             builder.Services.AddScoped<IVnpayRepository, VnpayRepository>();
             builder.Services.AddScoped<IVnpayService, VnpayService>();
+
+            // Momo Payment Integration
+            builder.Services.Configure<MomoConfig>(builder.Configuration.GetSection("MomoAPI"));
+            builder.Services.AddScoped<IMomoRepository, MomoRepository>();
+            builder.Services.AddScoped<IMomoService, MomoService>();
 
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -327,6 +337,43 @@ namespace SWP391_CareSkin_BE
                         }
                     }
                 }
+            }
+
+            // Cấu hình background service để hủy các giao dịch hết hạn
+            if (app.Environment.IsProduction() || app.Environment.IsDevelopment())
+            {
+                // Chạy lần đầu sau 1 phút, sau đó chạy mỗi 5 phút
+                var timer = new System.Threading.Timer(
+                    async _ => 
+                    {
+                        try 
+                        {
+                            // Tạo scope mới để giải quyết các dịch vụ scoped
+                            using (var scope = app.Services.CreateScope())
+                            {
+                                var scopedServices = scope.ServiceProvider;
+                                var momoService = scopedServices.GetRequiredService<IMomoService>();
+                                var logger = scopedServices.GetRequiredService<ILogger<Program>>();
+                                
+                                logger.LogInformation("Running expired payments cancellation job");
+                                await momoService.CancelExpiredPayments();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Sử dụng logger factory để tạo logger mà không cần scope
+                            var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+                            var logger = loggerFactory.CreateLogger<Program>();
+                            logger.LogError(ex, "Error in expired payments cancellation job");
+                        }
+                    }, 
+                    null, 
+                    TimeSpan.FromMinutes(1), 
+                    TimeSpan.FromMinutes(5)
+                );
+
+                // Đảm bảo timer không bị GC
+                _ = timer;
             }
 
             app.MapControllers();

@@ -11,8 +11,8 @@ namespace SWP391_CareSkin_BE.DTOS.Responses.Result
         public int SkinTypeId { get; set; }
         public int TotalScore { get; set; }
         public int TotalQuestions { get; set; }
-        public DateOnly LastQuizTime { get; set; }
-        public DateOnly CreatedAt { get; set; }
+        public DateTime LastQuizTime { get; set; }
+        public DateTime CreatedAt { get; set; }
         public SkinTypeDTO SkinType { get; set; }
     }
 }

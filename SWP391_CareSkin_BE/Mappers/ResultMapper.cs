@@ -51,8 +51,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 SkinTypeId = skinTypeId,
                 TotalScore = totalScore,
                 TotalQuestions = totalQuestions,
-                LastQuizTime = DateOnly.FromDateTime(DateTime.Now),
-                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+                LastQuizTime = DateTime.Now,
+                CreatedAt = DateTime.Now
             };
         }
     }
