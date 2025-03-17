@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SWP391_CareSkin_BE.DTOS.Requests.History;
 using SWP391_CareSkin_BE.DTOS.Responses.History;
 using SWP391_CareSkin_BE.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace SWP391_CareSkin_BE.Controllers
 {
@@ -17,13 +18,14 @@ namespace SWP391_CareSkin_BE.Controllers
             _historyService = historyService;
         }
 
+
         [HttpPost("attempt/{userQuizAttemptId}")]
-        public async Task<ActionResult<HistoryDTO>> CreateHistory(int userQuizAttemptId, [FromBody] CreateHistoryDTO createHistoryDTO)
+        public async Task<ActionResult<List<HistoryDTO>>> CreateHistories(int userQuizAttemptId, [FromBody] List<CreateHistoryDTO> createHistoryDTOs)
         {
             try
             {
-                var history = await _historyService.CreateHistoryAsync(userQuizAttemptId, createHistoryDTO);
-                return Ok(history);
+                var histories = await _historyService.CreateHistoriesAsync(userQuizAttemptId, createHistoryDTOs);
+                return Ok(histories);
             }
             catch (Exception ex)
             {
