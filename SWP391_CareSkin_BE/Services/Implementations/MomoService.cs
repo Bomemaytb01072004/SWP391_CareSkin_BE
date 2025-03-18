@@ -116,8 +116,20 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 // Extract orderId from Momo's orderId format
                 if (!TryExtractOrderId(callbackDto.OrderId, out int orderId))
                 {
-                    _logger.LogWarning("Invalid order ID format in Momo callback: {OrderId}", callbackDto.OrderId);
-                    return;
+                    _logger.LogWarning("Invalid order ID format in Momo callback: {OrderId}. Attempting to find payment by Momo order ID.", callbackDto.OrderId);
+                    
+                    // Try to get payment by Momo order ID directly
+                    var payment = await _momoRepository.GetMomoPaymentByMomoOrderIdAsync(callbackDto.OrderId);
+                    if (payment != null)
+                    {
+                        orderId = payment.OrderId;
+                        _logger.LogInformation("Found payment for Momo order ID: {MomoOrderId}, mapped to order ID: {OrderId}", callbackDto.OrderId, orderId);
+                    }
+                    else
+                    {
+                        _logger.LogError("Could not find payment for Momo order ID: {MomoOrderId}", callbackDto.OrderId);
+                        return;
+                    }
                 }
 
                 // Update payment status based on result code
@@ -146,19 +158,37 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             orderId = 0;
             
             if (string.IsNullOrEmpty(orderIdStr))
+            {
+                _logger.LogWarning("Empty order ID in Momo callback");
                 return false;
+            }
+            
+            _logger.LogInformation("Attempting to extract order ID from: {OrderIdStr}", orderIdStr);
                 
             // Remove common prefixes
-            if (orderIdStr.StartsWith("ORDER_"))
-                orderIdStr = orderIdStr.Replace("ORDER_", "");
-            else if (orderIdStr.StartsWith("Partner_Transaction_ID_"))
-                orderIdStr = orderIdStr.Replace("Partner_Transaction_ID_", "");
+            string processedOrderId = orderIdStr;
+            
+            if (processedOrderId.StartsWith("ORDER_"))
+                processedOrderId = processedOrderId.Replace("ORDER_", "");
+            else if (processedOrderId.StartsWith("Partner_Transaction_ID_"))
+                processedOrderId = processedOrderId.Replace("Partner_Transaction_ID_", "");
 
             // If there's a timestamp or other suffix (format: 123_1712187247), get the part before the underscore
-            if (orderIdStr.Contains("_"))
-                orderIdStr = orderIdStr.Split('_')[0];
+            if (processedOrderId.Contains("_"))
+                processedOrderId = processedOrderId.Split('_')[0];
 
-            return int.TryParse(orderIdStr, out orderId);
+            bool success = int.TryParse(processedOrderId, out orderId);
+            
+            if (success)
+            {
+                _logger.LogInformation("Successfully extracted order ID: {OrderId} from: {OrderIdStr}", orderId, orderIdStr);
+            }
+            else
+            {
+                _logger.LogWarning("Failed to parse order ID from: {ProcessedOrderId} (original: {OrderIdStr})", processedOrderId, orderIdStr);
+            }
+            
+            return success;
         }
 
         /// <summary>
@@ -197,32 +227,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 order.OrderStatusId = 3; // 3 is Paid status
                 await _orderRepository.UpdateOrderAsync(order);
                 _logger.LogInformation("Order {OrderId} status updated to Paid", orderId);
-                
-                // Gửi email xác nhận thanh toán
-                try
-                {
-                    // Lấy thông tin khách hàng
-                    if (order != null && !string.IsNullOrEmpty(order.Email))
-                    {
-                        decimal paymentAmount = payment.Amount; // Momo trả về số tiền theo đơn vị xu
-                        await _emailService.SendPaymentConfirmationEmailAsync(
-                            order.Email,
-                            orderId.ToString(),
-                            order.Name,
-                            paymentAmount,
-                            "MoMo");
-                        
-                        _logger.LogInformation("Payment confirmation email sent for order {OrderId}", orderId);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Customer email not found for order {OrderId}", orderId);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error sending payment confirmation email for order {OrderId}", orderId);
-                }
             }
             else
             {

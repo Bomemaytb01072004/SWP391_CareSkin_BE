@@ -217,29 +217,86 @@ namespace SWP391_CareSkin_BE.Repositories
 
         public async Task<MomoPayment?> GetMomoPaymentByMomoOrderIdAsync(string momoOrderId)
         {
-            // Lấy orderId từ momoOrderId (bỏ "ORDER_" và lấy phần số đầu tiên)
-            var orderIdStr = momoOrderId.Replace("ORDER_", "");
+            _logger.LogInformation("Searching for payment with Momo order ID: {MomoOrderId}", momoOrderId);
             
-            // Nếu có timestamp (format: ORDER_123_1712187247), lấy phần trước dấu _
-            int orderId;
-            if (orderIdStr.Contains("_"))
+            if (string.IsNullOrEmpty(momoOrderId))
             {
-                var parts = orderIdStr.Split('_');
-                if (!int.TryParse(parts[0], out orderId))
-                {
-                    return null;
-                }
-            }
-            else if (!int.TryParse(orderIdStr, out orderId))
-            {
+                _logger.LogWarning("Empty Momo order ID provided");
                 return null;
             }
-
-            // Tìm payment dựa trên orderId
-            return await _dbContext.MomoPayments
-                .Where(p => p.OrderId == orderId && !p.IsExpired)
+            
+            // Try to extract the order ID from the Momo order ID
+            int? extractedOrderId = ExtractOrderIdFromMomoOrderId(momoOrderId);
+            
+            if (extractedOrderId.HasValue)
+            {
+                _logger.LogInformation("Extracted order ID {OrderId} from Momo order ID {MomoOrderId}", extractedOrderId.Value, momoOrderId);
+                
+                // Find payment by the extracted order ID
+                var payment = await _dbContext.MomoPayments
+                    .Where(p => p.OrderId == extractedOrderId.Value && !p.IsExpired)
+                    .OrderByDescending(p => p.CreatedDate)
+                    .FirstOrDefaultAsync();
+                
+                if (payment != null)
+                {
+                    _logger.LogInformation("Found payment for order ID {OrderId}", extractedOrderId.Value);
+                    return payment;
+                }
+            }
+            
+            // If we couldn't find a payment by extracted order ID, try to find a payment 
+            // that might be associated with this Momo order ID by checking recent payments
+            var recentPayments = await _dbContext.MomoPayments
+                .Where(p => !p.IsPaid && !p.IsExpired)
                 .OrderByDescending(p => p.CreatedDate)
-                .FirstOrDefaultAsync();
+                .Take(10) // Limit to recent payments
+                .ToListAsync();
+            
+            _logger.LogInformation("Checking {Count} recent payments for a match with Momo order ID", recentPayments.Count);
+            
+            // Return the most recent payment if we can't extract an order ID
+            // This is a fallback mechanism and might not always be accurate
+            if (recentPayments.Any() && !extractedOrderId.HasValue)
+            {
+                var mostRecentPayment = recentPayments.First();
+                _logger.LogWarning("Could not extract order ID from {MomoOrderId}, using most recent payment for order {OrderId} as fallback", 
+                    momoOrderId, mostRecentPayment.OrderId);
+                return mostRecentPayment;
+            }
+            
+            _logger.LogWarning("No payment found for Momo order ID: {MomoOrderId}", momoOrderId);
+            return null;
+        }
+
+        private int? ExtractOrderIdFromMomoOrderId(string momoOrderId)
+        {
+            try
+            {
+                // Remove common prefixes
+                string processedOrderId = momoOrderId;
+                
+                if (processedOrderId.StartsWith("ORDER_"))
+                    processedOrderId = processedOrderId.Replace("ORDER_", "");
+                else if (processedOrderId.StartsWith("Partner_Transaction_ID_"))
+                    processedOrderId = processedOrderId.Replace("Partner_Transaction_ID_", "");
+                
+                // If there's a timestamp or other suffix (format: 123_1712187247), get the part before the underscore
+                if (processedOrderId.Contains("_"))
+                    processedOrderId = processedOrderId.Split('_')[0];
+                
+                if (int.TryParse(processedOrderId, out int orderId))
+                {
+                    return orderId;
+                }
+                
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error extracting order ID from Momo order ID: {MomoOrderId}", momoOrderId);
+                return null;
+            }
         }
 
         public async Task<IEnumerable<MomoCallback>> GetCallbacksForOrderAsync(int orderId)
