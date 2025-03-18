@@ -213,13 +213,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (ratingFeedback == null)
                 return false;
 
+            // Store the product ID for rating recalculation
+            var productId = ratingFeedback.ProductId;
+
+            // Update the rating feedback status
             ratingFeedback.IsActive = actionDto.IsActive;
             ratingFeedback.UpdatedDate = DateTime.UtcNow;
 
             await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
 
             // Update product average rating
-            await UpdateProductAverageRatingAsync(ratingFeedback.ProductId);
+            await UpdateProductAverageRatingAsync(productId);
 
             return true;
         }
@@ -230,16 +234,22 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (ratingFeedback == null)
                 return false;
 
+            // Store the product ID for rating recalculation
             var productId = ratingFeedback.ProductId;
 
+            // Soft delete by setting IsActive to false
             ratingFeedback.IsActive = false;
+            ratingFeedback.UpdatedDate = DateTime.UtcNow;
 
-            // Delete the rating feedback
+            // Update the rating feedback
             var result = await _ratingFeedbackRepository.UpdateRatingFeedbackAsync(ratingFeedback);
 
             // Update product average rating
             if (result != null)
+            {
                 await UpdateProductAverageRatingAsync(productId);
+                Console.WriteLine($"Admin deleted rating {id} for product {productId}, recalculated average rating");
+            }
 
             return true;
         }
@@ -251,13 +261,34 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         private async Task UpdateProductAverageRatingAsync(int productId)
         {
-            var averageRating = await _ratingFeedbackRepository.GetAverageRatingForProductAsync(productId);
-            var product = await _productRepository.GetProductByIdAsync(productId);
-
-            if (product != null)
+            try
             {
-                product.AverageRating = averageRating;
-                await _productRepository.UpdateProductAsync(product);
+                // Get the average rating from active ratings only
+                var averageRating = await _ratingFeedbackRepository.GetAverageRatingForProductAsync(productId);
+                
+                // Get the product
+                var product = await _productRepository.GetProductByIdAsync(productId);
+
+                if (product != null)
+                {
+                    // Update the product's average rating
+                    product.AverageRating = averageRating;
+                    
+                    // Save the changes
+                    await _productRepository.UpdateProductAsync(product);
+                    
+                    // Log the update
+                    Console.WriteLine($"Updated product {productId} average rating to {averageRating}");
+                }
+                else
+                {
+                    Console.WriteLine($"Product {productId} not found when updating average rating");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log any errors
+                Console.WriteLine($"Error updating product {productId} average rating: {ex.Message}");
             }
         }
 

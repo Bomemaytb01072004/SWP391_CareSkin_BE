@@ -113,15 +113,19 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
 
         public async Task<double> GetAverageRatingForProductAsync(int productId)
         {
-            var ratings = await _context.RatingFeedbacks
+            // Only consider active ratings
+            var activeRatings = await _context.RatingFeedbacks
                 .Where(rf => rf.ProductId == productId && rf.IsActive)
                 .Select(rf => rf.Rating)
                 .ToListAsync();
 
-            if (ratings == null || !ratings.Any())
+            // If there are no active ratings, return 0
+            if (activeRatings == null || !activeRatings.Any())
                 return 0;
 
-            return ratings.Average();
+            // Calculate the average with proper rounding to 1 decimal place
+            double averageRating = activeRatings.Average();
+            return Math.Round(averageRating, 1);
         }
     }
 }
