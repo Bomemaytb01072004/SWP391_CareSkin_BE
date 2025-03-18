@@ -78,5 +78,17 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                     .ThenInclude(op => op.Product)
                 .ToListAsync();
         }
+
+        public async Task<Customer> GetCustomerByOrderIdAsync(int orderId)
+        {
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                
+            if (order == null)
+                return null;
+                
+            return await _context.Customers
+                .FirstOrDefaultAsync(c => c.CustomerId == order.CustomerId);
+        }
     }
 }

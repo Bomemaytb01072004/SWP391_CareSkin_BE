@@ -25,6 +25,8 @@ namespace SWP391_CareSkin_BE.Models
 
         public string Phone { get; set; }
 
+        public string Email { get; set; }
+
         public string Address { get; set; }
 
         public virtual Customer Customer { get; set; }

@@ -26,6 +26,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 OrderDate = order.OrderDate,
                 Name = order.Name,
                 Phone = order.Phone,
+                Email = order.Email,
                 Address = order.Address,
                 OrderProducts = order.OrderProducts?.Select(op => new OrderProductDTO
                 {
@@ -64,6 +65,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 OrderDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 Name = request.Name,
                 Phone = request.Phone,
+                Email = request.Email,
                 Address = request.Address,
                 // OrderProducts will be created separately in OrderService using cart items
                 OrderProducts = new List<OrderProduct>()

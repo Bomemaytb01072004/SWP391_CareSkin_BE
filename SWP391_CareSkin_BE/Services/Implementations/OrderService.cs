@@ -9,6 +9,7 @@ using SWP391_CareSkin_BE.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Repositories.Implementations;
+using Microsoft.Extensions.Logging;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -18,13 +19,26 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly MyDbContext _context;
         private readonly IPromotionRepository _promotionRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<OrderService> _logger;
+        private readonly ICustomerService _customerService;
 
-        public OrderService(IOrderRepository orderRepository, MyDbContext context, IPromotionRepository promotionRepository, IProductRepository productRepository)
+        public OrderService(
+            IOrderRepository orderRepository, 
+            MyDbContext context, 
+            IPromotionRepository promotionRepository, 
+            IProductRepository productRepository,
+            IEmailService emailService,
+            ILogger<OrderService> logger,
+            ICustomerService customerService)
         {
             _orderRepository = orderRepository;
             _context = context;
             _promotionRepository = promotionRepository;
             _productRepository = productRepository;
+            _emailService = emailService;
+            _logger = logger;
+            _customerService = customerService;
         }
 
         private async Task<decimal> CalculateCartTotalPrice(List<Cart> cartItems, int? promotionId)
@@ -156,6 +170,28 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             await _context.SaveChangesAsync();
 
             var createdOrder = await _orderRepository.GetOrderByIdAsync(orderEntity.OrderId);
+            
+            // Lấy thông tin khách hàng để gửi email
+            if (createdOrder != null && !string.IsNullOrEmpty(createdOrder.Email))
+            {
+                try
+                {
+                    // Gửi email xác nhận đơn hàng
+                    await _emailService.SendOrderConfirmationEmailAsync(
+                        createdOrder.Email, 
+                        createdOrder.OrderId.ToString(), 
+                        createdOrder.Name, 
+                        createdOrder.TotalPriceSale);
+                    
+                    _logger.LogInformation("Order confirmation email sent for order {OrderId}", createdOrder.OrderId);
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi nhưng không làm gián đoạn quy trình đặt hàng
+                    _logger.LogError(ex, "Error sending order confirmation email for order {OrderId}", createdOrder.OrderId);
+                }
+            }
+            
             return OrderMapper.ToDTO(createdOrder);
         }
 

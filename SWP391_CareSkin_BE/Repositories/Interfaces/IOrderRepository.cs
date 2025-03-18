@@ -13,5 +13,6 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
         Task DeleteOrderAsync(int orderId);
         Task<List<Order>> GetOrdersByCustomerAndStatusAsync(int customerId, int statusId);
         Task<List<Order>> GetOrderHistoryAsync();
+        Task<Customer> GetCustomerByOrderIdAsync(int orderId);
     }
 }

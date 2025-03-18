@@ -15,13 +15,20 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<MomoService> _logger;
+        private readonly IEmailService _emailService;
 
-        public MomoService(IMomoRepository momoRepository, IOrderRepository orderRepository, IMapper mapper, ILogger<MomoService> logger)
+        public MomoService(
+            IMomoRepository momoRepository, 
+            IOrderRepository orderRepository, 
+            IMapper mapper, 
+            ILogger<MomoService> logger,
+            IEmailService emailService)
         {
             _momoRepository = momoRepository;
             _orderRepository = orderRepository;
             _mapper = mapper;
             _logger = logger;
+            _emailService = emailService;
         }
 
         public async Task<MomoPaymentResponseDto> CreateMomoPaymentAsync(MomoPaymentRequestDto paymentRequestDto)
@@ -190,6 +197,32 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 order.OrderStatusId = 3; // 3 is Paid status
                 await _orderRepository.UpdateOrderAsync(order);
                 _logger.LogInformation("Order {OrderId} status updated to Paid", orderId);
+                
+                // Gửi email xác nhận thanh toán
+                try
+                {
+                    // Lấy thông tin khách hàng
+                    if (order != null && !string.IsNullOrEmpty(order.Email))
+                    {
+                        decimal paymentAmount = payment.Amount; // Momo trả về số tiền theo đơn vị xu
+                        await _emailService.SendPaymentConfirmationEmailAsync(
+                            order.Email,
+                            orderId.ToString(),
+                            order.Name,
+                            paymentAmount,
+                            "MoMo");
+                        
+                        _logger.LogInformation("Payment confirmation email sent for order {OrderId}", orderId);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Customer email not found for order {OrderId}", orderId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error sending payment confirmation email for order {OrderId}", orderId);
+                }
             }
             else
             {

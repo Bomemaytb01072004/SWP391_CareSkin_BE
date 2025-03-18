@@ -13,6 +13,7 @@ namespace SWP391_CareSkin_BE.DTOs.Responses
         public DateOnly OrderDate { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
+        public string Email { get; set; }
         public string Address { get; set; }
         public List<OrderProductDTO> OrderProducts { get; set; }
     }

@@ -183,6 +183,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
             builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
 
+            // Email Service
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             // Hangfire
             builder.Services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
