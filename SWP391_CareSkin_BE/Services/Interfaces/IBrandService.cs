@@ -10,7 +10,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<List<BrandDTO>> GetInactiveBrandsAsync();
         Task<BrandDTO> GetBrandByIdAsync(int brandId);
         Task<BrandDTO> CreateBrandAsync(BrandCreateRequestDTO request, string pictureUrl);
-        Task<BrandDTO> UpdateBrandAsync(int brandId, BrandUpdateRequestDTO request);
+        Task<BrandDTO> UpdateBrandAsync(int brandId, BrandUpdateRequestDTO request, string pictureUrl = null);
         Task<bool> DeleteBrandAsync(int brandId);
     }
 }

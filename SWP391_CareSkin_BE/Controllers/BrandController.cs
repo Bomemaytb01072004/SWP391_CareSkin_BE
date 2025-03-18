@@ -78,12 +78,28 @@ namespace SWP391_CareSkin_BE.Controllers
 
         // PUT: api/Brand/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBrand(int id, [FromBody] BrandUpdateRequestDTO request)
+        public async Task<IActionResult> UpdateBrand(int id, [FromForm] BrandUpdateRequestDTO request)
         {
-            var updatedBrand = await _brandService.UpdateBrandAsync(id, request);
-            if (updatedBrand == null)
-                return NotFound();
-            return Ok(updatedBrand);
+            try
+            {
+                // Handle image upload if a new image is provided
+                string pictureUrl = null;
+                if (request.PictureFile != null)
+                {
+                    var fileName = $"{Guid.NewGuid()}_{request.PictureFile.FileName}";
+                    using var stream = request.PictureFile.OpenReadStream();
+                    pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
+                }
+
+                var updatedBrand = await _brandService.UpdateBrandAsync(id, request, pictureUrl);
+                if (updatedBrand == null)
+                    return NotFound();
+                return Ok(updatedBrand);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the brand: {ex.Message}");
+            }
         }
 
         // DELETE: api/Brand/{id}

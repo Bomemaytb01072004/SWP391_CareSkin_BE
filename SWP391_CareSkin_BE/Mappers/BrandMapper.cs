@@ -37,7 +37,11 @@ namespace SWP391_CareSkin_BE.Mappers
         public static void UpdateEntity(Brand brand, BrandUpdateRequestDTO request)
         {
             if (brand == null || request == null) return;
-            brand.Name = request.Name;
+            
+            if (!string.IsNullOrEmpty(request.Name))
+            {
+                brand.Name = request.Name;
+            }
         }
     }
 }

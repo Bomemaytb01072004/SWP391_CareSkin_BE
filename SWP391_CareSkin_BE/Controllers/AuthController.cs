@@ -14,6 +14,7 @@ using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOs.Responses;
 using SWP391_CareSkin_BE.DTOS;
+using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Helpers;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Services;
@@ -170,10 +171,10 @@ namespace SWP391_CareSkin_BE.Controllers
                 string role = "Customer";
                 var jwtToken = _jwtHelper.GenerateToken(existingUser.UserName, role);
 
-                return Ok(new
+                return Ok(new SocialLoginResponseDTO
                 {
                     token = jwtToken,
-                    user = new
+                    user = new SocialUserDTO
                     {
                         CustomerId = existingUser.CustomerId,
                         Email = existingUser.Email,
@@ -291,10 +292,10 @@ namespace SWP391_CareSkin_BE.Controllers
             string role = "Customer";
             var jwtToken = _jwtHelper.GenerateToken(existingUser.UserName, role);
 
-            return Ok(new
+            return Ok(new SocialLoginResponseDTO
             {
                 token = jwtToken,
-                user = new
+                user = new SocialUserDTO
                 {
                     CustomerId = existingUser.CustomerId,
                     Email = existingUser.Email,
@@ -384,10 +385,10 @@ namespace SWP391_CareSkin_BE.Controllers
                 string role = "Customer";
                 var jwtToken = _jwtHelper.GenerateToken(existingUser.UserName, role);
 
-                return Ok(new
+                return Ok(new SocialLoginResponseDTO
                 {
                     token = jwtToken,
-                    user = new
+                    user = new SocialUserDTO
                     {
                         CustomerId = existingUser.CustomerId,
                         Email = existingUser.Email,

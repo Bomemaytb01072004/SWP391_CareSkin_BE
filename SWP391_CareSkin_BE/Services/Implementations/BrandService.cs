@@ -12,10 +12,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     public class BrandService : IBrandService
     {
         private readonly IBrandRepository _brandRepository;
+        private readonly IFirebaseService _firebaseService;
 
-        public BrandService(IBrandRepository brandRepository)
+        public BrandService(IBrandRepository brandRepository, IFirebaseService firebaseService)
         {
             _brandRepository = brandRepository;
+            _firebaseService = firebaseService;
         }
 
         public async Task<List<BrandDTO>> GetAllBrandsAsync()
@@ -48,12 +50,20 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return BrandMapper.ToDTO(createdBrand);
         }
 
-        public async Task<BrandDTO> UpdateBrandAsync(int brandId, BrandUpdateRequestDTO request)
+        public async Task<BrandDTO> UpdateBrandAsync(int brandId, BrandUpdateRequestDTO request, string pictureUrl = null)
         {
             var existingBrand = await _brandRepository.GetBrandByIdAsync(brandId);
             if (existingBrand == null) return null;
 
+            // Update the brand properties
             BrandMapper.UpdateEntity(existingBrand, request);
+            
+            // Update the picture URL if a new image was uploaded
+            if (pictureUrl != null)
+            {
+                existingBrand.PictureUrl = pictureUrl;
+            }
+
             await _brandRepository.UpdateBrandAsync(existingBrand);
 
             // Lấy lại brand sau khi update
