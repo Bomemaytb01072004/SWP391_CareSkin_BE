@@ -85,7 +85,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                     .ThenInclude(rs => rs.RoutineProducts)
                         .ThenInclude(rp => rp.Product)
                             .ThenInclude(p => p.Brand) // Kết nối với Brand của Product
-                .ToListAsync();
+                .Where(r => r.IsActive == true).ToListAsync();
         }
 
         // Lấy Routine theo SkinType và Period
