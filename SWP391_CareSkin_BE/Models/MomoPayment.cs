@@ -24,6 +24,14 @@ namespace SWP391_CareSkin_BE.Models
         public DateTime? PaymentTime { get; set; }
         
         public string? TransactionId { get; set; }
+        
+        public string? PaymentMethod { get; set; }
+        
+        public string? Status { get; set; }
+        
+        public string? ResponseMessage { get; set; }
+        
+        public string? ResponseCode { get; set; }
 
         [ForeignKey("OrderId")]
         public virtual Order Order { get; set; } = null!;

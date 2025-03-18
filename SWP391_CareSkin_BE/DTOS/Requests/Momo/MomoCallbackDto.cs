@@ -27,9 +27,10 @@ namespace SWP391_CareSkin_BE.DTOS.Requests.Momo
         public string OrderType { get; set; } = string.Empty;
         
         [JsonPropertyName("transId")]
-        public long TransId { get; set; }
+        public string TransId { get; set; } = string.Empty;
         
         [JsonPropertyName("resultCode")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public int ResultCode { get; set; }
         
         [JsonPropertyName("message")]
@@ -39,6 +40,7 @@ namespace SWP391_CareSkin_BE.DTOS.Requests.Momo
         public string PayType { get; set; } = string.Empty;
         
         [JsonPropertyName("responseTime")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public long ResponseTime { get; set; }
         
         [JsonPropertyName("extraData")]

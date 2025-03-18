@@ -215,9 +215,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
 
             // Update payment status to paid
-            payment.IsPaid = true;
-            payment.PaymentTime = DateTime.UtcNow;
-            payment.TransactionId = callbackDto.TransId.ToString();
+            payment.PaymentMethod = "MoMo";
+            payment.Status = callbackDto.ResultCode == 0 ? "Successful" : "Failed";
+            payment.ResponseMessage = callbackDto.Message;
+            payment.ResponseCode = callbackDto.ResultCode.ToString();
+            payment.TransactionId = callbackDto.TransId;
+            payment.PaymentTime = DateTime.Now;
+            payment.IsPaid = callbackDto.ResultCode == 0;
             await _momoRepository.UpdatePaymentAsync(payment);
 
             // Update order status to Paid (assuming 3 is the Paid status ID)
