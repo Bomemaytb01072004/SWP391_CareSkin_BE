@@ -175,11 +175,11 @@ namespace SWP391_CareSkin_BE.Controllers
                     token = jwtToken,
                     user = new
                     {
-                        id = existingUser.CustomerId,
-                        email = existingUser.Email,
-                        userName = existingUser.UserName,
-                        fullName = existingUser.FullName,
-                        pictureUrl = existingUser.PictureUrl,
+                        CustomerId = existingUser.CustomerId,
+                        Email = existingUser.Email,
+                        UserName = existingUser.UserName,
+                        FullName = existingUser.FullName,
+                        PictureUrl = existingUser.PictureUrl,
                         role = role
                     }
                 });
@@ -296,11 +296,11 @@ namespace SWP391_CareSkin_BE.Controllers
                 token = jwtToken,
                 user = new
                 {
-                    id = existingUser.CustomerId,
-                    email = existingUser.Email,
-                    userName = existingUser.UserName,
-                    fullName = existingUser.FullName,
-                    pictureUrl = existingUser.PictureUrl,
+                    CustomerId = existingUser.CustomerId,
+                    Email = existingUser.Email,
+                    UserName = existingUser.UserName,
+                    FullName = existingUser.FullName,
+                    PictureUrl = existingUser.PictureUrl,
                     role = role
                 }
             });
@@ -389,11 +389,11 @@ namespace SWP391_CareSkin_BE.Controllers
                     token = jwtToken,
                     user = new
                     {
-                        id = existingUser.CustomerId,
-                        email = existingUser.Email,
-                        userName = existingUser.UserName,
-                        fullName = existingUser.FullName,
-                        pictureUrl = existingUser.PictureUrl,
+                        CustomerId = existingUser.CustomerId,
+                        Email = existingUser.Email,
+                        UserName = existingUser.UserName,
+                        FullName = existingUser.FullName,
+                        PictureUrl = existingUser.PictureUrl,
                         role = role
                     }
                 });
