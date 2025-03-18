@@ -12,6 +12,8 @@
 
         public string? PictureUrl { get; set; }
 
+        public bool IsActive { get; set; }
+
         public int? AdminId { get; set; } // Cho phép null
         public int? StaffId { get; set; } // Cho phép null
     }

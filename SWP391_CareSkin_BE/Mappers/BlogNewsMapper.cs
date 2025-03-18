@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests.BlogNews;
+using SWP391_CareSkin_BE.DTOs.Requests.BlogNews;
 using SWP391_CareSkin_BE.DTOs.Responses.BlogNews;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.DTOS.Responses;
@@ -29,7 +29,7 @@ namespace SWP391_CareSkin_BE.Mappers
                 Title = blog.Title,
                 Content = blog.Content,
                 PictureUrl = blog.PictureUrl,
-                
+                IsActive = blog.IsActive
             };
 
             if (blog.AdminId.HasValue)
@@ -57,7 +57,8 @@ namespace SWP391_CareSkin_BE.Mappers
                 Content = request.Content,
                 PictureUrl = pictureUrl,
                 AdminId = adminId,     
-                StaffId = staffId
+                StaffId = staffId,
+                IsActive = true // Always set IsActive to true when creating a new blog
             };
         }
 

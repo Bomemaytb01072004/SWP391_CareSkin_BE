@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
@@ -46,7 +46,8 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             var blog = await GetNewsByIdAsync(blogId);
             if (blog != null)
             {
-                _context.BlogNews.Remove(blog);
+                blog.IsActive = false; 
+                _context.BlogNews.Update(blog);
                 await _context.SaveChangesAsync();
             }
         }
