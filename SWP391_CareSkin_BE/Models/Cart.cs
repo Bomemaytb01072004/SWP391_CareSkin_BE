@@ -17,7 +17,7 @@ namespace SWP391_CareSkin_BE.Models
         public int Quantity { get; set; }
 
         public virtual Product Product { get; set; }
-
+        
         public virtual Customer Customer { get; set; }
 
         public virtual ProductVariation ProductVariation { get; set; }

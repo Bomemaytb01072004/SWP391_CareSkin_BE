@@ -59,7 +59,6 @@
     <Folder Include="DTOs\Responses\SkinType\" />
     <Folder Include="DTOs\Responses\Staff\" />
     <Folder Include="DTOs\Responses\Order\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

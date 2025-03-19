@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
 
@@ -11,9 +12,11 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250319192628_UpdateDbv50")]
+    partial class UpdateDbv50
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,6 +165,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CustomerId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -174,6 +180,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasKey("CartId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("CustomerId1");
 
                     b.HasIndex("ProductId");
 
@@ -1313,10 +1321,14 @@ namespace SWP391_CareSkin_BE.Migrations
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Cart", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Customer", "Customer")
-                        .WithMany("Carts")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("SWP391_CareSkin_BE.Models.Customer", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("CustomerId1");
 
                     b.HasOne("SWP391_CareSkin_BE.Models.Product", "Product")
                         .WithMany("Carts")

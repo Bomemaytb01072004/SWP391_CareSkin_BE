@@ -141,20 +141,20 @@ namespace SWP391_CareSkin_BE.Data
                 .HasForeignKey(result => result.CustomerId);
 
             modelBuilder.Entity<Cart>()
-        .HasOne(c => c.Customer)
-        .WithMany()
-        .HasForeignKey(c => c.CustomerId)
-        .OnDelete(DeleteBehavior.NoAction); 
+                .HasOne(c => c.Customer)
+                .WithMany(c => c.Carts)
+                .HasForeignKey(c => c.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction); 
 
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.Product)
-                .WithMany()
+                .WithMany(c => c.Carts)
                 .HasForeignKey(c => c.ProductId)
                 .OnDelete(DeleteBehavior.NoAction); 
 
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.ProductVariation)
-                .WithMany()
+                .WithMany(c => c.Carts)
                 .HasForeignKey(c => c.ProductVariationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
