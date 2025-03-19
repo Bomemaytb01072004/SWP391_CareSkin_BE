@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SWP391_CareSkin_BE.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB : Migration
+    public partial class SkinCare : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DoB = table.Column<DateOnly>(type: "date", nullable: false),
+                    DoB = table.Column<DateOnly>(type: "date", nullable: true),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -37,7 +37,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     BrandId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +59,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     Dob = table.Column<DateOnly>(type: "date", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -80,6 +82,32 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MomoCallback",
+                columns: table => new
+                {
+                    MomoCallbackId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PartnerCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<long>(type: "bigint", nullable: false),
+                    OrderInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransId = table.Column<long>(type: "bigint", nullable: false),
+                    ResultCode = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PayType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResponseTime = table.Column<long>(type: "bigint", nullable: false),
+                    ExtraData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Signature = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReceivedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MomoCallback", x => x.MomoCallbackId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderStatus",
                 columns: table => new
                 {
@@ -98,9 +126,12 @@ namespace SWP391_CareSkin_BE.Migrations
                 {
                     PromotionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Start_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End_Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    PromotionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountPercent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Start_Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    End_Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    PromotionType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,7 +145,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     QuizId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,7 +160,10 @@ namespace SWP391_CareSkin_BE.Migrations
                     SkinTypeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TypeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MinScore = table.Column<int>(type: "int", nullable: false),
+                    MaxScore = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -147,7 +182,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DoB = table.Column<DateOnly>(type: "date", nullable: true),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -164,7 +200,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     BrandId = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AverageRating = table.Column<double>(type: "float", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,34 +216,25 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BlogNews",
+                name: "ResetPassword",
                 columns: table => new
                 {
-                    BlogId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AdminId = table.Column<int>(type: "int", nullable: true), 
-                    StaffId = table.Column<int>(type: "int", nullable: true)  
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    ResetPin = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BlogNews", x => x.BlogId);
-
+                    table.PrimaryKey("PK_ResetPassword", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BlogNews_Admin_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "Admin",  
-                        principalColumn: "AdminId", 
-                        onDelete: ReferentialAction.SetNull);
-
-                    table.ForeignKey(
-                        name: "FK_BlogNews_Staff_StaffId",
-                        column: x => x.StaffId,
-                        principalTable: "Staff", 
-                        principalColumn: "StaffId",
-                        onDelete: ReferentialAction.SetNull); 
+                        name: "FK_ResetPassword_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,8 +245,9 @@ namespace SWP391_CareSkin_BE.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     OrderStatusId = table.Column<int>(type: "int", nullable: false),
-                    PromotionId = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<int>(type: "int", nullable: false),
+                    PromotionId = table.Column<int>(type: "int", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPriceSale = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrderDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -242,8 +272,7 @@ namespace SWP391_CareSkin_BE.Migrations
                         name: "FK_Order_Promotion_PromotionId",
                         column: x => x.PromotionId,
                         principalTable: "Promotion",
-                        principalColumn: "PromotionId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "PromotionId");
                 });
 
             migrationBuilder.CreateTable(
@@ -277,7 +306,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     QuestionsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     QuizId = table.Column<int>(type: "int", nullable: false),
-                    QuestionContext = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    QuestionText = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -291,33 +320,53 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Result",
+                name: "UserQuizAttempt",
                 columns: table => new
                 {
-                    ResultId = table.Column<int>(type: "int", nullable: false)
+                    UserQuizAttemptId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     QuizId = table.Column<int>(type: "int", nullable: false),
-                    SkinTypeId = table.Column<int>(type: "int", nullable: false),
-                    LastQuizTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AttemptDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AttemptNumber = table.Column<int>(type: "int", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Result", x => x.ResultId);
+                    table.PrimaryKey("PK_UserQuizAttempt", x => x.UserQuizAttemptId);
                     table.ForeignKey(
-                        name: "FK_Result_Customers_CustomerId",
+                        name: "FK_UserQuizAttempt_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Result_Quiz_QuizId",
+                        name: "FK_UserQuizAttempt_Quiz_QuizId",
                         column: x => x.QuizId,
                         principalTable: "Quiz",
                         principalColumn: "QuizId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Routine",
+                columns: table => new
+                {
+                    RoutineId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoutineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoutinePeriod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    SkinTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Routine", x => x.RoutineId);
                     table.ForeignKey(
-                        name: "FK_Result_SkinType_SkinTypeId",
+                        name: "FK_Routine_SkinType_SkinTypeId",
                         column: x => x.SkinTypeId,
                         principalTable: "SkinType",
                         principalColumn: "SkinTypeId",
@@ -325,24 +374,31 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SkinCareRoutine",
+                name: "BlogNew",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    BlogId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SkinTypeId = table.Column<int>(type: "int", nullable: false)
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    AdminId = table.Column<int>(type: "int", nullable: true),
+                    StaffId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SkinCareRoutine", x => x.Id);
+                    table.PrimaryKey("PK_BlogNew", x => x.BlogId);
                     table.ForeignKey(
-                        name: "FK_SkinCareRoutine_SkinType_SkinTypeId",
-                        column: x => x.SkinTypeId,
-                        principalTable: "SkinType",
-                        principalColumn: "SkinTypeId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_BlogNew_Admin_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "Admin",
+                        principalColumn: "AdminId");
+                    table.ForeignKey(
+                        name: "FK_BlogNew_Staff_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "Staff",
+                        principalColumn: "StaffId");
                 });
 
             migrationBuilder.CreateTable(
@@ -373,33 +429,6 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cart",
-                columns: table => new
-                {
-                    CartId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cart", x => x.CartId);
-                    table.ForeignKey(
-                        name: "FK_Cart_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Cart_Product_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Product",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductDetailIngredient",
                 columns: table => new
                 {
@@ -416,6 +445,32 @@ namespace SWP391_CareSkin_BE.Migrations
                         column: x => x.ProductId,
                         principalTable: "Product",
                         principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductForSkinType",
+                columns: table => new
+                {
+                    ProductForSkinTypeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SkinTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductForSkinType", x => x.ProductForSkinTypeId);
+                    table.ForeignKey(
+                        name: "FK_ProductForSkinType_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductForSkinType_SkinType_SkinTypeId",
+                        column: x => x.SkinTypeId,
+                        principalTable: "SkinType",
+                        principalColumn: "SkinTypeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -441,7 +496,7 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductPictures",
+                name: "ProductPicture",
                 columns: table => new
                 {
                     ProductPictureId = table.Column<int>(type: "int", nullable: false)
@@ -451,9 +506,9 @@ namespace SWP391_CareSkin_BE.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductPictures", x => x.ProductPictureId);
+                    table.PrimaryKey("PK_ProductPicture", x => x.ProductPictureId);
                     table.ForeignKey(
-                        name: "FK_ProductPictures_Product_ProductId",
+                        name: "FK_ProductPicture_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Product",
                         principalColumn: "ProductId",
@@ -489,7 +544,8 @@ namespace SWP391_CareSkin_BE.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Ml = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<int>(type: "int", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SalePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -506,12 +562,15 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "PromotionProduct",
                 columns: table => new
                 {
+                    PromotionProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    PromotionId = table.Column<int>(type: "int", nullable: false)
+                    PromotionId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PromotionProduct", x => new { x.ProductId, x.PromotionId });
+                    table.PrimaryKey("PK_PromotionProduct", x => x.PromotionProductId);
                     table.ForeignKey(
                         name: "FK_PromotionProduct_Product_ProductId",
                         column: x => x.ProductId,
@@ -530,16 +589,19 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "RatingFeedback",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RatingFeedbackId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    FeedBack = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FeedBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RatingFeedback", x => x.Id);
+                    table.PrimaryKey("PK_RatingFeedback", x => x.RatingFeedbackId);
                     table.ForeignKey(
                         name: "FK_RatingFeedback_Customers_CustomerId",
                         column: x => x.CustomerId,
@@ -555,29 +617,51 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderProduct",
+                name: "MomoPayment",
                 columns: table => new
                 {
-                    OrderProductId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MomoPaymentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Amount = table.Column<long>(type: "bigint", nullable: false),
+                    OrderInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
+                    IsExpired = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TransactionId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProduct", x => x.OrderProductId);
+                    table.PrimaryKey("PK_MomoPayment", x => x.MomoPaymentId);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Order_OrderId",
+                        name: "FK_MomoPayment_Order_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Order",
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VnpayTransactions",
+                columns: table => new
+                {
+                    TransactionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    OrderDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VnpayTransactions", x => x.TransactionId);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Product_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Product",
-                        principalColumn: "ProductId",
+                        name: "FK_VnpayTransactions_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
+                        principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -588,8 +672,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     AnswerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     QuestionId = table.Column<int>(type: "int", nullable: false),
-                    AnswersContext = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PointForSkinType = table.Column<int>(type: "int", nullable: false)
+                    AnswersText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -603,26 +687,153 @@ namespace SWP391_CareSkin_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SkinCareRoutineProduct",
+                name: "Result",
                 columns: table => new
                 {
-                    SkinCareRoutineId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ResultId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    UserQuizAttemptId = table.Column<int>(type: "int", nullable: false),
+                    SkinTypeId = table.Column<int>(type: "int", nullable: false),
+                    TotalScore = table.Column<int>(type: "int", nullable: false),
+                    TotalQuestions = table.Column<int>(type: "int", nullable: false),
+                    LastQuizTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SkinCareRoutineProduct", x => new { x.SkinCareRoutineId, x.ProductId });
+                    table.PrimaryKey("PK_Result", x => x.ResultId);
                     table.ForeignKey(
-                        name: "FK_SkinCareRoutineProduct_Product_ProductId",
+                        name: "FK_Result_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Result_SkinType_SkinTypeId",
+                        column: x => x.SkinTypeId,
+                        principalTable: "SkinType",
+                        principalColumn: "SkinTypeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Result_UserQuizAttempt_UserQuizAttemptId",
+                        column: x => x.UserQuizAttemptId,
+                        principalTable: "UserQuizAttempt",
+                        principalColumn: "UserQuizAttemptId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoutineStep",
+                columns: table => new
+                {
+                    RoutineStepId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoutineId = table.Column<int>(type: "int", nullable: false),
+                    StepOrder = table.Column<int>(type: "int", nullable: false),
+                    StepName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoutineStep", x => x.RoutineStepId);
+                    table.ForeignKey(
+                        name: "FK_RoutineStep_Routine_RoutineId",
+                        column: x => x.RoutineId,
+                        principalTable: "Routine",
+                        principalColumn: "RoutineId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cart",
+                columns: table => new
+                {
+                    CartId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductVariationId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    CustomerId1 = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cart", x => x.CartId);
+                    table.ForeignKey(
+                        name: "FK_Cart_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId");
+                    table.ForeignKey(
+                        name: "FK_Cart_Customers_CustomerId1",
+                        column: x => x.CustomerId1,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId");
+                    table.ForeignKey(
+                        name: "FK_Cart_ProductVariation_ProductVariationId",
+                        column: x => x.ProductVariationId,
+                        principalTable: "ProductVariation",
+                        principalColumn: "ProductVariationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cart_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderProduct",
+                columns: table => new
+                {
+                    OrderProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductVariationId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SalePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderProduct", x => x.OrderProductId);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_ProductVariation_ProductVariationId",
+                        column: x => x.ProductVariationId,
+                        principalTable: "ProductVariation",
+                        principalColumn: "ProductVariationId");
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Product",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RatingFeedbackImage",
+                columns: table => new
+                {
+                    RatingFeedbackImageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RatingFeedbackId = table.Column<int>(type: "int", nullable: false),
+                    FeedbackImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RatingFeedbackImage", x => x.RatingFeedbackImageId);
                     table.ForeignKey(
-                        name: "FK_SkinCareRoutineProduct_SkinCareRoutine_SkinCareRoutineId",
-                        column: x => x.SkinCareRoutineId,
-                        principalTable: "SkinCareRoutine",
-                        principalColumn: "Id",
+                        name: "FK_RatingFeedbackImage_RatingFeedback_RatingFeedbackId",
+                        column: x => x.RatingFeedbackId,
+                        principalTable: "RatingFeedback",
+                        principalColumn: "RatingFeedbackId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -632,7 +843,7 @@ namespace SWP391_CareSkin_BE.Migrations
                 {
                     HistoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    AttemmptId = table.Column<int>(type: "int", nullable: false),
                     QuestionId = table.Column<int>(type: "int", nullable: false),
                     AnswerId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -646,16 +857,40 @@ namespace SWP391_CareSkin_BE.Migrations
                         principalColumn: "AnswerId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_History_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_History_Question_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Question",
                         principalColumn: "QuestionsId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_History_UserQuizAttempt_AttemmptId",
+                        column: x => x.AttemmptId,
+                        principalTable: "UserQuizAttempt",
+                        principalColumn: "UserQuizAttemptId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoutineProduct",
+                columns: table => new
+                {
+                    RoutineProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    RoutineStepId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoutineProduct", x => x.RoutineProductId);
+                    table.ForeignKey(
+                        name: "FK_RoutineProduct_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId");
+                    table.ForeignKey(
+                        name: "FK_RoutineProduct_RoutineStep_RoutineStepId",
+                        column: x => x.RoutineStepId,
+                        principalTable: "RoutineStep",
+                        principalColumn: "RoutineStepId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -665,13 +900,13 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                   name: "IX_BlogNews_AdminId",
-                   table: "BlogNews",
-                   column: "AdminId");
+                name: "IX_BlogNew_AdminId",
+                table: "BlogNew",
+                column: "AdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BlogNews_StaffId",
-                table: "BlogNews",
+                name: "IX_BlogNew_StaffId",
+                table: "BlogNew",
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
@@ -680,9 +915,19 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cart_CustomerId1",
+                table: "Cart",
+                column: "CustomerId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cart_ProductId",
                 table: "Cart",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cart_ProductVariationId",
+                table: "Cart",
+                column: "ProductVariationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_History_AnswerId",
@@ -690,14 +935,19 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "AnswerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_History_CustomerId",
+                name: "IX_History_AttemmptId",
                 table: "History",
-                column: "CustomerId");
+                column: "AttemmptId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_History_QuestionId",
                 table: "History",
                 column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MomoPayment_OrderId",
+                table: "MomoPayment",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_CustomerId",
@@ -725,6 +975,11 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderProduct_ProductVariationId",
+                table: "OrderProduct",
+                column: "ProductVariationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Product_BrandId",
                 table: "Product",
                 column: "BrandId");
@@ -735,13 +990,23 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductForSkinType_ProductId",
+                table: "ProductForSkinType",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductForSkinType_SkinTypeId",
+                table: "ProductForSkinType",
+                column: "SkinTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductMainIngredient_ProductId",
                 table: "ProductMainIngredient",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPictures_ProductId",
-                table: "ProductPictures",
+                name: "IX_ProductPicture_ProductId",
+                table: "ProductPicture",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -758,6 +1023,11 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "IX_PromotionCustomer_PromotionId",
                 table: "PromotionCustomer",
                 column: "PromotionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromotionProduct_ProductId",
+                table: "PromotionProduct",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PromotionProduct_PromotionId",
@@ -780,14 +1050,20 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RatingFeedbackImage_RatingFeedbackId",
+                table: "RatingFeedbackImage",
+                column: "RatingFeedbackId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResetPassword_CustomerId",
+                table: "ResetPassword",
+                column: "CustomerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Result_CustomerId",
                 table: "Result",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Result_QuizId",
-                table: "Result",
-                column: "QuizId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Result_SkinTypeId",
@@ -795,14 +1071,30 @@ namespace SWP391_CareSkin_BE.Migrations
                 column: "SkinTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SkinCareRoutine_SkinTypeId",
-                table: "SkinCareRoutine",
+                name: "IX_Result_UserQuizAttemptId",
+                table: "Result",
+                column: "UserQuizAttemptId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Routine_SkinTypeId",
+                table: "Routine",
                 column: "SkinTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SkinCareRoutineProduct_ProductId",
-                table: "SkinCareRoutineProduct",
+                name: "IX_RoutineProduct_ProductId",
+                table: "RoutineProduct",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoutineProduct_RoutineStepId",
+                table: "RoutineProduct",
+                column: "RoutineStepId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoutineStep_RoutineId",
+                table: "RoutineStep",
+                column: "RoutineId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Support_CustomerId",
@@ -813,16 +1105,28 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "IX_Support_StaffId",
                 table: "Support",
                 column: "StaffId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuizAttempt_CustomerId",
+                table: "UserQuizAttempt",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuizAttempt_QuizId",
+                table: "UserQuizAttempt",
+                column: "QuizId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VnpayTransactions_OrderId",
+                table: "VnpayTransactions",
+                column: "OrderId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Admin");
-
-            migrationBuilder.DropTable(
-                name: "BlogNews");
+                name: "BlogNew");
 
             migrationBuilder.DropTable(
                 name: "Cart");
@@ -834,22 +1138,28 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "History");
 
             migrationBuilder.DropTable(
+                name: "MomoCallback");
+
+            migrationBuilder.DropTable(
+                name: "MomoPayment");
+
+            migrationBuilder.DropTable(
                 name: "OrderProduct");
 
             migrationBuilder.DropTable(
                 name: "ProductDetailIngredient");
 
             migrationBuilder.DropTable(
+                name: "ProductForSkinType");
+
+            migrationBuilder.DropTable(
                 name: "ProductMainIngredient");
 
             migrationBuilder.DropTable(
-                name: "ProductPictures");
+                name: "ProductPicture");
 
             migrationBuilder.DropTable(
                 name: "ProductUsage");
-
-            migrationBuilder.DropTable(
-                name: "ProductVariation");
 
             migrationBuilder.DropTable(
                 name: "PromotionCustomer");
@@ -858,34 +1168,55 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "PromotionProduct");
 
             migrationBuilder.DropTable(
-                name: "RatingFeedback");
+                name: "RatingFeedbackImage");
+
+            migrationBuilder.DropTable(
+                name: "ResetPassword");
 
             migrationBuilder.DropTable(
                 name: "Result");
 
             migrationBuilder.DropTable(
-                name: "SkinCareRoutineProduct");
+                name: "RoutineProduct");
 
             migrationBuilder.DropTable(
                 name: "Support");
 
             migrationBuilder.DropTable(
+                name: "VnpayTransactions");
+
+            migrationBuilder.DropTable(
+                name: "Admin");
+
+            migrationBuilder.DropTable(
                 name: "Answer");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "ProductVariation");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "RatingFeedback");
 
             migrationBuilder.DropTable(
-                name: "SkinCareRoutine");
+                name: "UserQuizAttempt");
+
+            migrationBuilder.DropTable(
+                name: "RoutineStep");
 
             migrationBuilder.DropTable(
                 name: "Staff");
 
             migrationBuilder.DropTable(
+                name: "Order");
+
+            migrationBuilder.DropTable(
                 name: "Question");
+
+            migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "Routine");
 
             migrationBuilder.DropTable(
                 name: "Customers");
@@ -897,13 +1228,13 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "Promotion");
 
             migrationBuilder.DropTable(
+                name: "Quiz");
+
+            migrationBuilder.DropTable(
                 name: "Brand");
 
             migrationBuilder.DropTable(
                 name: "SkinType");
-
-            migrationBuilder.DropTable(
-                name: "Quiz");
         }
     }
 }

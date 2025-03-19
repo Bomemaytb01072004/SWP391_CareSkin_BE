@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
-using SWP391_CareSkin_BE.DTOs.Requests.Customer;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace SWP391_CareSkin_BE.Repositories.Implementations
 {
@@ -15,37 +15,36 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         {
             _context = context;
         }
-        public void CreateResetRequest(ResetPassword request)
+
+        public async Task CreateResetRequestAsync(ResetPassword request)
         {
-            var existingRequest = _context.ResetPasswords
-                .FirstOrDefault(r => r.CustomerId == request.CustomerId);
+            var existingRequest = await _context.ResetPasswords
+                .FirstOrDefaultAsync(r => r.CustomerId == request.CustomerId);
 
             if (existingRequest != null)
             {
-
                 existingRequest.Token = request.Token;
                 existingRequest.ExpiryTime = request.ExpiryTime;
             }
             else
             {
-                _context.ResetPasswords.Add(request);
+                await _context.ResetPasswords.AddAsync(request);
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-
-        public ResetPassword? GetValidResetRequest(string email, string resetPin)
+        public async Task<ResetPassword?> GetValidResetRequestAsync(string email, string resetPin)
         {
-            return _context.ResetPasswords
+            return await _context.ResetPasswords
                 .Include(r => r.Customer)
-                .FirstOrDefault(r => r.Customer.Email == email && r.ResetPin == resetPin && r.ExpiryTime > DateTime.UtcNow);
+                .FirstOrDefaultAsync(r => r.Customer.Email == email && r.ResetPin == resetPin && r.ExpiryTime > DateTime.UtcNow);
         }
 
-        public void RemoveResetRequest(ResetPassword request)
+        public async Task RemoveResetRequestAsync(ResetPassword request)
         {
             _context.ResetPasswords.Remove(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

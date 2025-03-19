@@ -2,12 +2,11 @@
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
-using System.Net.Mail;
-using System.Net;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using System;
-using SWP391_CareSkin_BE.Data;
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -16,23 +15,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly ICustomerRepository _customerRepository;
         private readonly IResetPasswordRepository _passwordResetRepository;
         private readonly IConfiguration _configuration;
-        private readonly MyDbContext _context;
 
-        public AuthService(ICustomerRepository customerRepository, IResetPasswordRepository passwordResetRepository, IConfiguration configuration, MyDbContext context)
+        public AuthService(ICustomerRepository customerRepository, IResetPasswordRepository passwordResetRepository, IConfiguration configuration)
         {
             _customerRepository = customerRepository;
             _passwordResetRepository = passwordResetRepository;
             _configuration = configuration;
-            _context = context;
         }
 
-        public void RequestPasswordReset(ForgotPasswordRequestDTO request)
+        public async Task RequestPasswordReset(ForgotPasswordRequestDTO request)
         {
-            var customer = _customerRepository.GetCustomerByEmailAsync(request.Email).Result;
-            if (customer == null)
-            {
-                throw new Exception("Email không tồn tại.");
-            }
+            var customer = await _customerRepository.GetCustomerByEmailAsync(request.Email);
+            if (customer == null) throw new Exception("Email does not exist.");
 
             var pin = new Random().Next(100000, 999999).ToString();
             var expiryTime = DateTime.UtcNow.AddMinutes(15);
@@ -44,38 +38,31 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 ExpiryTime = expiryTime
             };
 
-            _passwordResetRepository.CreateResetRequest(resetRequest);
-
-            SendEmail(customer.Email, "Mã PIN đặt lại mật khẩu", $"Mã PIN của bạn là: {pin}");
+            await _passwordResetRepository.CreateResetRequestAsync(resetRequest);
+            await SendEmailAsync(customer.Email, "Password Reset PIN", $"Your PIN is: {pin}");
         }
 
-        public bool VerifyResetPin(VerifyResetPinDTO request)
+        public async Task<bool> VerifyResetPin(VerifyResetPinDTO request)
         {
-            var resetRequest = _passwordResetRepository.GetValidResetRequest(request.Email, request.ResetPin);
+            var resetRequest = await _passwordResetRepository.GetValidResetRequestAsync(request.Email, request.ResetPin);
             return resetRequest != null;
         }
 
-        public void ResetPassword(ResetPasswordDTO request)
+        public async Task ResetPassword(ResetPasswordDTO request)
         {
-            var resetRequest = _passwordResetRepository.GetValidResetRequest(request.Email, request.ResetPin);
-            if (resetRequest == null)
-            {
-                throw new Exception("Mã PIN không hợp lệ hoặc đã hết hạn.");
-            }
+            var resetRequest = await _passwordResetRepository.GetValidResetRequestAsync(request.Email, request.ResetPin);
+            if (resetRequest == null) throw new Exception("Invalid or expired PIN.");
 
-            var customer = _customerRepository.GetCustomerByEmailAsync(request.Email).Result;
-            if (customer == null)
-            {
-                throw new Exception("Email không tồn tại.");
-            }
+            var customer = await _customerRepository.GetCustomerByEmailAsync(request.Email);
+            if (customer == null) throw new Exception("Email does not exist.");
 
             customer.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-            _customerRepository.UpdateCustomerAsync(customer);
+            await _customerRepository.UpdateCustomerAsync(customer);
 
-            _passwordResetRepository.RemoveResetRequest(resetRequest);
+            await _passwordResetRepository.RemoveResetRequestAsync(resetRequest);
         }
 
-        public void SendEmail(string toEmail, string subject, string body)
+        private async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             string smtpServer = _configuration["EmailSettings:SmtpServer"];
             int smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"]);
@@ -98,9 +85,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 };
                 mailMessage.To.Add(toEmail);
 
-                client.Send(mailMessage);
+                await Task.Run(() => client.Send(mailMessage));
             }
         }
-
     }
 }

@@ -5,8 +5,8 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
     public interface IResetPasswordRepository
     {
-        void CreateResetRequest(ResetPassword request);
-        ResetPassword? GetValidResetRequest(string email, string resetPin);
-        void RemoveResetRequest(ResetPassword request);
+        Task CreateResetRequestAsync(ResetPassword request);
+        Task<ResetPassword?> GetValidResetRequestAsync(string email, string resetPin);
+        Task RemoveResetRequestAsync(ResetPassword request);
     }
 }

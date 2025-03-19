@@ -99,25 +99,33 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequestDTO request)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDTO request)
         {
-            _authService.RequestPasswordReset(request);
-            return Ok("Mã PIN đã được gửi đến email của bạn.");
+            await _authService.RequestPasswordReset(request);
+            return Ok(new { message = "A reset PIN has been sent to your email." });
         }
 
         [HttpPost("verify-reset-pin")]
-        public IActionResult VerifyResetPin([FromBody] VerifyResetPinDTO request)
+        public async Task<IActionResult> VerifyResetPin([FromBody] VerifyResetPinDTO request)
         {
-            bool isValid = _authService.VerifyResetPin(request);
-            return isValid ? Ok("Mã PIN hợp lệ.") : BadRequest("Mã PIN không hợp lệ hoặc đã hết hạn.");
+            bool isValid = await _authService.VerifyResetPin(request);
+            return isValid ? Ok(new { message = "The reset PIN is valid." }) : BadRequest(new { message = "The reset PIN is invalid or has expired." });
         }
 
         [HttpPost("reset-password")]
-        public IActionResult ResetPassword([FromBody] ResetPasswordDTO request)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
         {
-            _authService.ResetPassword(request);
-            return Ok("Mật khẩu đã được đặt lại thành công.");
+            try
+            {
+                await _authService.ResetPassword(request);
+                return Ok(new { message = "Your password has been successfully reset." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
     }
 }
