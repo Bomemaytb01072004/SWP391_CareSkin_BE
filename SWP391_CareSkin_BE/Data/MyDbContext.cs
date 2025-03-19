@@ -45,6 +45,8 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<UserQuizAttempt> UserQuizAttempts { get; set; }
         public DbSet<MomoPayment> MomoPayments { get; set; }
         public DbSet<MomoCallback> MomoCallbacks { get; set; }
+        public DbSet<ZaloPayOrder> ZaloPayOrders { get; set; }
+        public DbSet<ZaloPayRedirect> ZaloPayCallbacks { get; set; }
 
         // end Dbset
 
@@ -89,6 +91,8 @@ namespace SWP391_CareSkin_BE.Data
             modelBuilder.Entity<UserQuizAttempt>().HasKey(u => u.UserQuizAttemptId);
             modelBuilder.Entity<MomoPayment>().HasKey(m => m.MomoPaymentId);
             modelBuilder.Entity<MomoCallback>().HasKey(m => m.MomoCallbackId);
+            modelBuilder.Entity<ZaloPayOrder>().HasKey(z => z.ZaloPayOrderId);
+            modelBuilder.Entity<ZaloPayRedirect>().HasKey(z => z.ZaloPayRedirectId);
 
 
 

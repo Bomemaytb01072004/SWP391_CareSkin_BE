@@ -146,6 +146,9 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IMomoRepository, MomoRepository>();
             builder.Services.AddScoped<IMomoService, MomoService>();
 
+            builder.Services.Configure<ZaloPayConfig>(builder.Configuration.GetSection("ZaloPay"));
+            builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
+
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
 
