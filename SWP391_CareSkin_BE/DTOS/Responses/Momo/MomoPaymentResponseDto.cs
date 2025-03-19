@@ -17,7 +17,7 @@ namespace SWP391_CareSkin_BE.DTOS.Responses.Momo
         public string? RequestId { get; set; }
 
         [JsonPropertyName("amount")]
-        public long Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [JsonPropertyName("responseTime")]
         public long ResponseTime { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();

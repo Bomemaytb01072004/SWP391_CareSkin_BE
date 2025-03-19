@@ -46,7 +46,7 @@ namespace SWP391_CareSkin_BE.Repositories
                 string orderId = $"ORDER_{payment.OrderId}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
 
                 // Amount is already in VND, no need to multiply
-                long amountInVnd = payment.Amount;
+                decimal amountInVnd = payment.Amount;
 
                 // Create raw data for signature
                 string rawData = $"accessKey={_momoConfig.AccessKey}"

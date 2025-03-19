@@ -86,7 +86,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
         }
 
-        public MomoPaymentResponseDto CreateErrorResponse(string message, long amount)
+        public MomoPaymentResponseDto CreateErrorResponse(string message, decimal amount)
         {
             return new MomoPaymentResponseDto
             {

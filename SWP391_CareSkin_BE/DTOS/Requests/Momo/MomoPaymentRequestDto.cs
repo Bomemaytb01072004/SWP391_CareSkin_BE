@@ -15,6 +15,6 @@ namespace SWP391_CareSkin_BE.DTOS.Requests.Momo
         [Required]
         [JsonPropertyName("Amount")]
         [Range(1000, 50000000, ErrorMessage = "Số tiền phải từ 1,000 VND đến 50,000,000 VND")]
-        public long Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

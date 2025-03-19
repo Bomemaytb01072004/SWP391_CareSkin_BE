@@ -33,6 +33,6 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         /// <summary>
         /// Creates a standardized error response
         /// </summary>
-        MomoPaymentResponseDto CreateErrorResponse(string message, long amount);
+        MomoPaymentResponseDto CreateErrorResponse(string message, decimal amount);
     }
 }

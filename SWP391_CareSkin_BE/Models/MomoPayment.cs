@@ -10,8 +10,8 @@ namespace SWP391_CareSkin_BE.Models
         public string MomoPaymentId { get; set; } = string.Empty;
         
         public int OrderId { get; set; }
-        
-        public long Amount { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
         
         public string OrderInfo { get; set; } = string.Empty;
         
