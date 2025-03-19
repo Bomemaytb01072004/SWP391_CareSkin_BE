@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWP391_CareSkin_BE.Data;
 
@@ -11,9 +12,11 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250319044220_UpdateDbv44")]
+    partial class UpdateDbv44
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +127,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("BlogNew");
+                    b.ToTable("BlogNews");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Brand", b =>
@@ -1173,11 +1176,11 @@ namespace SWP391_CareSkin_BE.Migrations
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Admin", "Admin")
-                        .WithMany("BlogNew")
+                        .WithMany("BlogNews")
                         .HasForeignKey("AdminId");
 
                     b.HasOne("SWP391_CareSkin_BE.Models.Staff", "Staff")
-                        .WithMany("BlogNew")
+                        .WithMany("BlogNews")
                         .HasForeignKey("StaffId");
 
                     b.Navigation("Admin");
@@ -1584,7 +1587,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Admin", b =>
                 {
-                    b.Navigation("BlogNew");
+                    b.Navigation("BlogNews");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
@@ -1709,7 +1712,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Staff", b =>
                 {
-                    b.Navigation("BlogNew");
+                    b.Navigation("BlogNews");
 
                     b.Navigation("Supports");
                 });

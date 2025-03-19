@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.Mappers
     public class BlogNewsMapper
     {
         // Từ Entity -> DTO
-        public static BlogNewsDTO ToDTO(BlogNews blog)
+        public static BlogNewsDTO ToDTO(BlogNew blog)
         {
             if (blog == null) return null;
 
@@ -37,11 +37,11 @@ namespace SWP391_CareSkin_BE.Mappers
         }
 
         // Từ BlogNewsCreateRequestDTO -> Entity
-        public static BlogNews ToEntity(BlogNewsCreateRequest request, DateTime date, string pictureUrl = null, int? adminId = null, int? staffId = null)
+        public static BlogNew ToEntity(BlogNewsCreateRequest request, DateTime date, string pictureUrl = null, int? adminId = null, int? staffId = null)
         {
             if (request == null) return null;
 
-            return new BlogNews
+            return new BlogNew
             {
                 Title = request.Title,
                 Content = request.Content,
@@ -53,7 +53,7 @@ namespace SWP391_CareSkin_BE.Mappers
             };
         }
 
-        public static void UpdateEntity(BlogNews blog, BlogNewsUpdateRequest request, string pictureUrl = null)
+        public static void UpdateEntity(BlogNew blog, BlogNewsUpdateRequest request, string pictureUrl = null)
         {
             if (blog == null || request == null) return;
 

@@ -4,10 +4,10 @@ namespace SWP391_CareSkin_BE.Repositories.Interfaces
 {
     public interface IBlogNewsRepository
     {
-        Task<List<BlogNews>> GetAllNewsAsync();
-        Task<BlogNews> GetNewsByIdAsync(int blogId);
-        Task AddNewsAsync(BlogNews blog);
-        Task UpdateNewsAsync(BlogNews blog);
+        Task<List<BlogNew>> GetAllNewsAsync();
+        Task<BlogNew> GetNewsByIdAsync(int blogId);
+        Task AddNewsAsync(BlogNew blog);
+        Task UpdateNewsAsync(BlogNew blog);
         Task DeleteNewsAsync(int blogId);
 
     }

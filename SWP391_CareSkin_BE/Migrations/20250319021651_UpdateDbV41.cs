@@ -13,7 +13,7 @@ namespace SWP391_CareSkin_BE.Migrations
         {
             migrationBuilder.AddColumn<DateTime>(
                 name: "UploadDate",
-                table: "BlogNews",
+                table: "BlogNew",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
@@ -24,7 +24,7 @@ namespace SWP391_CareSkin_BE.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "UploadDate",
-                table: "BlogNews");
+                table: "BlogNew");
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SWP391_CareSkin_BE.Models
 {
     [Table("BlogNews")]
-    public class BlogNews
+    public class BlogNew
     {
         [Key]
         public int BlogId { get; set; }
