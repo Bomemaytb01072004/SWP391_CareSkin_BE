@@ -452,7 +452,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                     <div class='payment-details'>
                         <h3>Chi tiết thanh toán</h3>
                         <p>Mã đơn hàng: <strong>#{orderId}</strong></p>
-                        <p>Số tiền thanh toán: <strong>${paymentAmount:N0}</strong></p>
+                        <p>Số tiền thanh toán: <strong>${paymentAmount:N2}</strong></p>
                         <p>Phương thức thanh toán: <strong>{paymentMethod}</strong></p>
                         <p>Thời gian thanh toán: <strong>{DateTime.Now:dd/MM/yyyy HH:mm:ss}</strong></p>
                     </div>

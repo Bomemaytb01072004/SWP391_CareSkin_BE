@@ -14,8 +14,8 @@ namespace SWP391_CareSkin_BE.Models
         public string OrderId { get; set; } = string.Empty;
         
         public string RequestId { get; set; } = string.Empty;
-        
-        public long Amount { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
         
         public string OrderInfo { get; set; } = string.Empty;
         

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.DTOs.Requests.Email
 {
@@ -15,7 +16,7 @@ namespace SWP391_CareSkin_BE.DTOs.Requests.Email
         public string CustomerName { get; set; }
 
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Payment amount must be greater than 0")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal PaymentAmount { get; set; }
 
         [Required]
