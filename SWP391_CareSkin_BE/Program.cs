@@ -183,6 +183,10 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
             builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
 
+            builder.Services.AddScoped<IResetPasswordRepository, ResetPasswordRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+
             // Hangfire
             builder.Services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using static SWP391_CareSkin_BE.Models.ResetPassword;
 
 namespace SWP391_CareSkin_BE.Models
 {
@@ -54,5 +55,8 @@ namespace SWP391_CareSkin_BE.Models
         public virtual ICollection<PromotionCustomer>? PromotionCustomers { get; set; } = new List<PromotionCustomer>();
 
         public virtual ICollection<UserQuizAttempt>? UserQuizAttempts { get; set; } = new List<UserQuizAttempt>();
+
+        public virtual ResetPassword? PasswordResetRequest { get; set; }
+
     }
 }

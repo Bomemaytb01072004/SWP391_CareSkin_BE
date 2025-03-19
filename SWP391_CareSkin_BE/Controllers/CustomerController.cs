@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests.Customer;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -19,11 +20,13 @@ namespace SWP391_CareSkin_BE.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly IFirebaseService _firebaseService;
+        private readonly IAuthService _authService;
 
-        public CustomerController(ICustomerService customerService, IFirebaseService firebaseService)
+        public CustomerController(ICustomerService customerService, IFirebaseService firebaseService, IAuthService authService)
         {
             _customerService = customerService;
             _firebaseService = firebaseService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -93,6 +96,27 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequestDTO request)
+        {
+            _authService.RequestPasswordReset(request);
+            return Ok("Mã PIN đã được gửi đến email của bạn.");
+        }
+
+        [HttpPost("verify-reset-pin")]
+        public IActionResult VerifyResetPin([FromBody] VerifyResetPinDTO request)
+        {
+            bool isValid = _authService.VerifyResetPin(request);
+            return isValid ? Ok("Mã PIN hợp lệ.") : BadRequest("Mã PIN không hợp lệ hoặc đã hết hạn.");
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            _authService.ResetPassword(request);
+            return Ok("Mật khẩu đã được đặt lại thành công.");
         }
 
     }

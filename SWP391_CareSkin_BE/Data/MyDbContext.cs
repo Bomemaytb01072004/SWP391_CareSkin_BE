@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Models;
+using static SWP391_CareSkin_BE.Models.ResetPassword;
 
 namespace SWP391_CareSkin_BE.Data
 
@@ -45,6 +46,8 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<UserQuizAttempt> UserQuizAttempts { get; set; }
         public DbSet<MomoPayment> MomoPayments { get; set; }
         public DbSet<MomoCallback> MomoCallbacks { get; set; }
+        public DbSet<ResetPassword> ResetPasswords { get; set; }
+
 
         // end Dbset
 
