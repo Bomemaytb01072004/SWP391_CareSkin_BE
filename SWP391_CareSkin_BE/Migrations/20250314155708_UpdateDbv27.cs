@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "PictureUrl",
-                table: "BlogNew",
+                table: "BlogNews",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -35,7 +35,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "PictureUrl",
-                table: "BlogNew",
+                table: "BlogNews",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "",

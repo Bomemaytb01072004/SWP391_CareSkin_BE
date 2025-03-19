@@ -59,7 +59,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("AdminId");
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admin", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
@@ -84,10 +84,10 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answer");
+                    b.ToTable("Answer", (string)null);
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNews", b =>
                 {
                     b.Property<int>("BlogId")
                         .ValueGeneratedOnAdd()
@@ -115,13 +115,16 @@ namespace SWP391_CareSkin_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("BlogId");
 
                     b.HasIndex("AdminId");
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("BlogNew");
+                    b.ToTable("BlogNews", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Brand", b =>
@@ -145,7 +148,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("BrandId");
 
-                    b.ToTable("Brand");
+                    b.ToTable("Brand", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Cart", b =>
@@ -176,7 +179,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductVariationId");
 
-                    b.ToTable("Cart");
+                    b.ToTable("Cart", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Customer", b =>
@@ -225,7 +228,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.FAQ", b =>
@@ -246,7 +249,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("FAQId");
 
-                    b.ToTable("FAQ");
+                    b.ToTable("FAQ", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.History", b =>
@@ -274,7 +277,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("History");
+                    b.ToTable("History", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.MomoCallback", b =>
@@ -338,7 +341,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("MomoCallbackId");
 
-                    b.ToTable("MomoCallback");
+                    b.ToTable("MomoCallback", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.MomoPayment", b =>
@@ -387,7 +390,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("MomoPayment");
+                    b.ToTable("MomoPayment", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Order", b =>
@@ -440,7 +443,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.OrderProduct", b =>
@@ -477,7 +480,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductVariationId");
 
-                    b.ToTable("OrderProduct");
+                    b.ToTable("OrderProduct", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.OrderStatus", b =>
@@ -494,7 +497,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("OrderStatusId");
 
-                    b.ToTable("OrderStatus");
+                    b.ToTable("OrderStatus", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Product", b =>
@@ -534,7 +537,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductDetailIngredient", b =>
@@ -556,7 +559,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDetailIngredient");
+                    b.ToTable("ProductDetailIngredient", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductForSkinType", b =>
@@ -579,7 +582,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("SkinTypeId");
 
-                    b.ToTable("ProductForSkinType");
+                    b.ToTable("ProductForSkinType", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductMainIngredient", b =>
@@ -604,7 +607,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductMainIngredient");
+                    b.ToTable("ProductMainIngredient", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductPicture", b =>
@@ -625,7 +628,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductPicture");
+                    b.ToTable("ProductPicture", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductUsage", b =>
@@ -650,7 +653,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUsage");
+                    b.ToTable("ProductUsage", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.ProductVariation", b =>
@@ -677,7 +680,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariation");
+                    b.ToTable("ProductVariation", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Promotion", b =>
@@ -709,7 +712,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("PromotionId");
 
-                    b.ToTable("Promotion");
+                    b.ToTable("Promotion", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.PromotionCustomer", b =>
@@ -724,7 +727,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("PromotionCustomer");
+                    b.ToTable("PromotionCustomer", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.PromotionProduct", b =>
@@ -750,7 +753,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("PromotionProduct");
+                    b.ToTable("PromotionProduct", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Question", b =>
@@ -772,7 +775,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Question", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Quiz", b =>
@@ -795,7 +798,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("QuizId");
 
-                    b.ToTable("Quiz");
+                    b.ToTable("Quiz", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedback", b =>
@@ -834,7 +837,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("RatingFeedback");
+                    b.ToTable("RatingFeedback", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RatingFeedbackImage", b =>
@@ -856,7 +859,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("RatingFeedbackId");
 
-                    b.ToTable("RatingFeedbackImage");
+                    b.ToTable("RatingFeedbackImage", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Result", b =>
@@ -897,7 +900,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.HasIndex("UserQuizAttemptId")
                         .IsUnique();
 
-                    b.ToTable("Result");
+                    b.ToTable("Result", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Routine", b =>
@@ -930,7 +933,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("SkinTypeId");
 
-                    b.ToTable("Routine");
+                    b.ToTable("Routine", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RoutineProduct", b =>
@@ -953,7 +956,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("RoutineStepId");
 
-                    b.ToTable("RoutineProduct");
+                    b.ToTable("RoutineProduct", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.RoutineStep", b =>
@@ -983,7 +986,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("RoutineId");
 
-                    b.ToTable("RoutineStep");
+                    b.ToTable("RoutineStep", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.SkinType", b =>
@@ -1013,7 +1016,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("SkinTypeId");
 
-                    b.ToTable("SkinType");
+                    b.ToTable("SkinType", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Staff", b =>
@@ -1052,7 +1055,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasKey("StaffId");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Staff", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Support", b =>
@@ -1079,7 +1082,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("Support");
+                    b.ToTable("Support", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.UserQuizAttempt", b =>
@@ -1117,7 +1120,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("UserQuizAttempt");
+                    b.ToTable("UserQuizAttempt", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.VnpayTransactions", b =>
@@ -1153,7 +1156,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("VnpayTransactions");
+                    b.ToTable("VnpayTransactions", (string)null);
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Answer", b =>
@@ -1167,7 +1170,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNews", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Admin", "Admin")
                         .WithMany("BlogNews")

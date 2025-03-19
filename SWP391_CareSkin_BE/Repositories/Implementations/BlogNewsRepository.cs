@@ -14,28 +14,23 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<List<BlogNew>> GetAllNewsAsync()
+        public async Task<List<BlogNews>> GetAllNewsAsync()
         {
             return await _context.BlogNews.ToListAsync();
         }
 
-        public async Task<BlogNew> GetNewsByIdAsync(int blogId)
+        public async Task<BlogNews> GetNewsByIdAsync(int blogId)
         {
             return await _context.BlogNews.FirstOrDefaultAsync(id  => id.BlogId == blogId);
         }
 
-        //public async Task<BlogNew> GetNewsByNameAsync(string title)
-        //{
-        //    return await _context.BlogNews.FirstOrDefaultAsync(blg => blg.Title == title);
-        //}
-
-        public async Task AddNewsAsync(BlogNew blog)
+        public async Task AddNewsAsync(BlogNews blog)
         {
             _context.BlogNews.AddAsync(blog);
             await _context.SaveChangesAsync();
         }
         
-        public async Task UpdateNewsAsync(BlogNew blog)
+        public async Task UpdateNewsAsync(BlogNews blog)
         {
             _context.BlogNews.Update(blog);
             await _context.SaveChangesAsync();

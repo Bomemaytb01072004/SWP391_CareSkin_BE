@@ -90,7 +90,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.ToTable("Answer");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNews", b =>
                 {
                     b.Property<int>("BlogId")
                         .ValueGeneratedOnAdd()
@@ -129,7 +129,7 @@ namespace SWP391_CareSkin_BE.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("BlogNew");
+                    b.ToTable("BlogNews");
                 });
 
             modelBuilder.Entity("SWP391_CareSkin_BE.Models.Brand", b =>
@@ -1058,7 +1058,7 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNew", b =>
+            modelBuilder.Entity("SWP391_CareSkin_BE.Models.BlogNews", b =>
                 {
                     b.HasOne("SWP391_CareSkin_BE.Models.Admin", "Admin")
                         .WithMany()

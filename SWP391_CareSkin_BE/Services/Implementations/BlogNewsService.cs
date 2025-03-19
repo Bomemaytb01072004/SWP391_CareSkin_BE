@@ -29,18 +29,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return BlogNewsMapper.ToDTO(blog);
         }
 
-        //public async Task<BlogNewsDTO> GetNewsByNameAsync(string title)
-        //{
-        //    var blog = await _newsRepository.GetNewsByNameAsync(title);
-        //    return BlogNewsMapper.ToDTO(blog);
-        //}
 
-        public async Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, string pictureUrl, int? adminId, int? staffId)
+        public async Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, DateTime date, string pictureUrl, int? adminId, int? staffId)
         {
-            var blogEntity = BlogNewsMapper.ToEntity(request, pictureUrl, adminId, staffId);
+            var blogEntity = BlogNewsMapper.ToEntity(request, date, pictureUrl, adminId, staffId);
             await _newsRepository.AddNewsAsync(blogEntity);
 
-            //var createdBlog = await _newsRepository.GetNewsByIdAsync(blogEntity.BlogId);
             return BlogNewsMapper.ToDTO(blogEntity);
         }
 

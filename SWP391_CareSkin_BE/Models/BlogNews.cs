@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("BlogNew")]
-    public class BlogNew
+    [Table("BlogNews")]
+    public class BlogNews
     {
         [Key]
         public int BlogId { get; set; }
@@ -14,6 +14,8 @@ namespace SWP391_CareSkin_BE.Models
         public string Content { get; set; }
 
         public string? PictureUrl { get; set; }
+
+        public DateTime UploadDate { get; set; }
 
         public bool IsActive { get; set; }
 
