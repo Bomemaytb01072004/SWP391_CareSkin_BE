@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Models;
+using static SWP391_CareSkin_BE.Models.ResetPassword;
 
 namespace SWP391_CareSkin_BE.Data
 
@@ -45,8 +46,10 @@ namespace SWP391_CareSkin_BE.Data
         public DbSet<UserQuizAttempt> UserQuizAttempts { get; set; }
         public DbSet<MomoPayment> MomoPayments { get; set; }
         public DbSet<MomoCallback> MomoCallbacks { get; set; }
+        public DbSet<ResetPassword> ResetPasswords { get; set; }
         public DbSet<ZaloPayOrder> ZaloPayOrders { get; set; }
         public DbSet<ZaloPayRedirect> ZaloPayCallbacks { get; set; }
+
 
         // end Dbset
 
@@ -137,10 +140,23 @@ namespace SWP391_CareSkin_BE.Data
                 .WithOne(result => result.Customer)
                 .HasForeignKey(result => result.CustomerId);
 
-            modelBuilder.Entity<Customer>()
-                .HasMany(c => c.Carts)
-                .WithOne(c => c.Customer)
-                .HasForeignKey(c => c.CustomerId);
+            modelBuilder.Entity<Cart>()
+        .HasOne(c => c.Customer)
+        .WithMany()
+        .HasForeignKey(c => c.CustomerId)
+        .OnDelete(DeleteBehavior.NoAction); 
+
+            modelBuilder.Entity<Cart>()
+                .HasOne(c => c.Product)
+                .WithMany()
+                .HasForeignKey(c => c.ProductId)
+                .OnDelete(DeleteBehavior.NoAction); 
+
+            modelBuilder.Entity<Cart>()
+                .HasOne(c => c.ProductVariation)
+                .WithMany()
+                .HasForeignKey(c => c.ProductVariationId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.Orders)

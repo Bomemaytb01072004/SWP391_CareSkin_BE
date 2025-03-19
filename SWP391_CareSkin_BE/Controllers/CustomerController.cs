@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
+using SWP391_CareSkin_BE.DTOs.Requests.Customer;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
 using SWP391_CareSkin_BE.Mappers;
@@ -19,11 +20,13 @@ namespace SWP391_CareSkin_BE.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly IFirebaseService _firebaseService;
+        private readonly IAuthService _authService;
 
-        public CustomerController(ICustomerService customerService, IFirebaseService firebaseService)
+        public CustomerController(ICustomerService customerService, IFirebaseService firebaseService, IAuthService authService)
         {
             _customerService = customerService;
             _firebaseService = firebaseService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -94,6 +97,35 @@ namespace SWP391_CareSkin_BE.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDTO request)
+        {
+            await _authService.RequestPasswordReset(request);
+            return Ok(new { message = "A reset PIN has been sent to your email." });
+        }
+
+        [HttpPost("verify-reset-pin")]
+        public async Task<IActionResult> VerifyResetPin([FromBody] VerifyResetPinDTO request)
+        {
+            bool isValid = await _authService.VerifyResetPin(request);
+            return isValid ? Ok(new { message = "The reset PIN is valid." }) : BadRequest(new { message = "The reset PIN is invalid or has expired." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            try
+            {
+                await _authService.ResetPassword(request);
+                return Ok(new { message = "Your password has been successfully reset." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
     }
 }

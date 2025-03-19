@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
 using SWP391_CareSkin_BE.DTOS;
 using SWP391_CareSkin_BE.DTOS.Responses;
@@ -13,11 +15,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IFirebaseService _firebaseService;
+        private readonly MyDbContext _context;
 
-        public CustomerService(ICustomerRepository customerRepository, IFirebaseService firebaseService)
+        public CustomerService(ICustomerRepository customerRepository, IFirebaseService firebaseService, MyDbContext context)
         {
             _customerRepository = customerRepository;
             _firebaseService = firebaseService;
+            _context = context;
         }
 
         public async Task<List<CustomerDTO>> GetAllCustomersAsync()
@@ -96,5 +100,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             await _customerRepository.AddCustomerAsync(customer);
             return CustomerMapper.ToCustomerResponseDTO(customer);
         }
+
+       
     }
 }

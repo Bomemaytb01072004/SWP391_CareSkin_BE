@@ -188,6 +188,10 @@ namespace SWP391_CareSkin_BE
             builder.Services.AddScoped<IBlogNewsRepository, BlogNewsRepository>();
             builder.Services.AddScoped<IBlogNewsService, BlogNewsService>();
 
+            builder.Services.AddScoped<IResetPasswordRepository, ResetPasswordRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+
             // Email Service
             builder.Services.AddScoped<IEmailService, EmailService>();
 

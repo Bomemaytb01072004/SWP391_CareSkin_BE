@@ -45,7 +45,6 @@
   <ItemGroup>
     <Folder Include="DTOs\Requests\Brand\" />
     <Folder Include="DTOs\Requests\Cart\" />
-    <Folder Include="DTOs\Requests\Customer\" />
     <Folder Include="DTOS\Requests\FAQ\" />
     <Folder Include="DTOs\Requests\ProductPicture\" />
     <Folder Include="DTOs\Requests\RatingFeedback\" />
@@ -60,6 +59,7 @@
     <Folder Include="DTOs\Responses\SkinType\" />
     <Folder Include="DTOs\Responses\Staff\" />
     <Folder Include="DTOs\Responses\Order\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
