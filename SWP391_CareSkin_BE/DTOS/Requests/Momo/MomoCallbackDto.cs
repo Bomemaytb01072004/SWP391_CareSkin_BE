@@ -18,7 +18,7 @@ namespace SWP391_CareSkin_BE.DTOS.Requests.Momo
         
         [JsonPropertyName("amount")]
         [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
-        public long Amount { get; set; }
+        public decimal Amount { get; set; }
         
         [JsonPropertyName("orderInfo")]
         public string OrderInfo { get; set; } = string.Empty;
