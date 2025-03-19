@@ -4,6 +4,7 @@ using FirebaseAdmin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Cms;
 using SWP391_CareSkin_BE.DTOs.Requests.BlogNews;
 using SWP391_CareSkin_BE.DTOS.Requests;
 using SWP391_CareSkin_BE.Services.Implementations;
@@ -42,16 +43,6 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(blog);
         }
 
-        // GET: api/BlogNews/{name}
-        //[HttpGet("{name}")]
-        //public async Task<IActionResult> GetBlogByTitle(string title)
-        //{
-        //    var blog = await _blogService.GetNewsByNameAsync(title);
-        //    if (blog == null) return NotFound();
-
-        //    return Ok(blog);
-        //}
-
         // POST: api/BlogNews
         [HttpPost]
         public async Task<IActionResult> CreateBlog([FromForm] BlogNewsCreateRequest request)
@@ -72,7 +63,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 {
                     staffId = parsedStaffId;
                 }
-
+                DateTime date = DateTime.Now;
 
                 // Handle image upload
                 string pictureUrl = null;
@@ -83,9 +74,11 @@ namespace SWP391_CareSkin_BE.Controllers
                     pictureUrl = await _firebaseService.UploadImageAsync(stream, fileName);
                 }
 
-                var createdBlog = await _blogService.AddNewsAsync(request, pictureUrl, adminId, staffId);
+                var createdBlog = await _blogService.AddNewsAsync(request, date, pictureUrl, adminId, staffId);
                 return CreatedAtAction(nameof(GetBlogById),
-                    new { id = createdBlog.BlogId }, createdBlog);
+                    new { 
+                        id = createdBlog.BlogId 
+                    }, createdBlog);
             }
             catch (DbUpdateException ex)
             {

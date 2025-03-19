@@ -32,10 +32,10 @@ namespace SWP391_CareSkin_BE.Models
         public string Role { get; set; }
 
         public virtual ICollection<Support> Supports { get; set; } = new List<Support>();
-        public virtual ICollection<BlogNew>? BlogNews { get; set; } = new List<BlogNew>();
+        public virtual ICollection<BlogNews>? BlogNews { get; set; } = new List<BlogNews>();
         public Staff()
         {
-            BlogNews = new HashSet<BlogNew>();//
+            BlogNews = new HashSet<BlogNews>();//
         }
 
     }

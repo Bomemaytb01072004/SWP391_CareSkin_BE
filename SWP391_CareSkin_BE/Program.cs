@@ -23,6 +23,8 @@ using SWP391_CareSkin_BE.Mappers;
 // Thêm namespace cho Google Authentication
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.ComponentModel;
+using SWP391_CareSkin_BE.Converter;
 
 namespace SWP391_CareSkin_BE
 {
@@ -209,6 +211,8 @@ namespace SWP391_CareSkin_BE
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                options.JsonSerializerOptions.Converters.Add(new DateTimeConvert("MM/dd/yyyy hh:mm:ss tt"));
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
             builder.Services.AddEndpointsApiExplorer();

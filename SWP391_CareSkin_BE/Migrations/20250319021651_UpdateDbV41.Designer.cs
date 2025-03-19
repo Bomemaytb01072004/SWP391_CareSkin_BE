@@ -12,8 +12,8 @@ using SWP391_CareSkin_BE.Data;
 namespace SWP391_CareSkin_BE.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20250318173520_UpdateDbv38")]
-    partial class UpdateDbv38
+    [Migration("20250319021651_UpdateDbV41")]
+    partial class UpdateDbV41
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,9 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("BlogId");
 
@@ -349,8 +352,8 @@ namespace SWP391_CareSkin_BE.Migrations
                     b.Property<string>("MomoPaymentId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<long>("Amount")
-                        .HasColumnType("bigint");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");

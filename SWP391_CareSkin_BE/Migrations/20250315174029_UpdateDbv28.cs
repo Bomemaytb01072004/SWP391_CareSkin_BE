@@ -10,10 +10,6 @@ namespace SWP391_CareSkin_BE.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_BlogNew_Customers_CustomerId",
-                table: "BlogNew");
-
             migrationBuilder.DropPrimaryKey(
                 name: "PK_VnpayTransactions",
                 table: "VnpayTransactions");
@@ -104,100 +100,29 @@ namespace SWP391_CareSkin_BE.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AlterColumn<int>(
-                name: "CustomerId",
-                table: "BlogNew",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AddColumn<int>(
-                name: "AdminId",
-                table: "BlogNew",
-                type: "int",
-                nullable: true);
-
             migrationBuilder.AddColumn<bool>(
                 name: "IsActive",
-                table: "BlogNew",
+                table: "BlogNews",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<int>(
-                name: "StaffId",
-                table: "BlogNew",
-                type: "int",
-                nullable: true);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_VnpayTransactions",
                 table: "VnpayTransactions",
                 column: "TransactionId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_BlogNew_AdminId",
-                table: "BlogNew",
-                column: "AdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BlogNew_StaffId",
-                table: "BlogNew",
-                column: "StaffId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_BlogNew_Admin_AdminId",
-                table: "BlogNew",
-                column: "AdminId",
-                principalTable: "Admin",
-                principalColumn: "AdminId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_BlogNew_Customers_CustomerId",
-                table: "BlogNew",
-                column: "CustomerId",
-                principalTable: "Customers",
-                principalColumn: "CustomerId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_BlogNew_Staff_StaffId",
-                table: "BlogNew",
-                column: "StaffId",
-                principalTable: "Staff",
-                principalColumn: "StaffId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_BlogNew_Admin_AdminId",
-                table: "BlogNew");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_BlogNew_Customers_CustomerId",
-                table: "BlogNew");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_BlogNew_Staff_StaffId",
-                table: "BlogNew");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_VnpayTransactions",
                 table: "VnpayTransactions");
-
-            migrationBuilder.DropIndex(
-                name: "IX_BlogNew_AdminId",
-                table: "BlogNew");
-
-            migrationBuilder.DropIndex(
-                name: "IX_BlogNew_StaffId",
-                table: "BlogNew");
-
-            migrationBuilder.DropColumn(
-                name: "IsActive",
-                table: "Staff");
 
             migrationBuilder.DropColumn(
                 name: "IsActive",
@@ -223,17 +148,11 @@ namespace SWP391_CareSkin_BE.Migrations
                 name: "IsActive",
                 table: "Brand");
 
-            migrationBuilder.DropColumn(
-                name: "AdminId",
-                table: "BlogNew");
 
             migrationBuilder.DropColumn(
                 name: "IsActive",
-                table: "BlogNew");
+                table: "BlogNews");
 
-            migrationBuilder.DropColumn(
-                name: "StaffId",
-                table: "BlogNew");
 
             migrationBuilder.RenameColumn(
                 name: "PaymentStatus",
@@ -275,28 +194,10 @@ namespace SWP391_CareSkin_BE.Migrations
                 nullable: false,
                 defaultValue: 0);
 
-            migrationBuilder.AlterColumn<int>(
-                name: "CustomerId",
-                table: "BlogNew",
-                type: "int",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
-
             migrationBuilder.AddPrimaryKey(
                 name: "PK_VnpayTransactions",
                 table: "VnpayTransactions",
                 column: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_BlogNew_Customers_CustomerId",
-                table: "BlogNew",
-                column: "CustomerId",
-                principalTable: "Customers",
-                principalColumn: "CustomerId",
-                onDelete: ReferentialAction.Cascade);
         }
     }
 }

@@ -30,10 +30,10 @@ namespace SWP391_CareSkin_BE.Models
         [NotMapped]
         public string Role { get; set; }
 
-        public virtual ICollection<BlogNew>? BlogNews { get; set; } = new List<BlogNew>();
+        public virtual ICollection<BlogNews>? BlogNews { get; set; } = new List<BlogNews>();
         public Admin()
         {
-            BlogNews = new HashSet<BlogNew>();//
+            BlogNews = new HashSet<BlogNews>();//
         }
     }
 }

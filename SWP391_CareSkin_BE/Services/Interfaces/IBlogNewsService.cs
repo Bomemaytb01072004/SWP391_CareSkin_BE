@@ -9,7 +9,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<List<BlogNewsDTO>> GetAllNewsAsync();
         Task<BlogNewsDTO> GetNewsByIdAsync(int blogId);
         //Task<BlogNewsDTO> GetNewsByNameAsync(string title);
-        Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, string pictureUrl, int? adminId, int? staffId);
+        Task<BlogNewsDTO> AddNewsAsync(BlogNewsCreateRequest request, DateTime date, string pictureUrl, int? adminId, int? staffId);
         Task<BlogNewsDTO> UpdateNewsAsync(int blogId, BlogNewsUpdateRequest request, string pictureUrl);
         Task<bool> DeleteNewsAsync(int blogId);
     }
