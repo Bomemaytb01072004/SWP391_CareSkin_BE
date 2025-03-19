@@ -23,8 +23,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly ILogger<VnpayService> _logger;
 
         public VnpayService(
-            IConfiguration configuration, 
-            IVnpayRepository vnpayRepository, 
+            IConfiguration configuration,
+            IVnpayRepository vnpayRepository,
             IOrderService orderService,
             IOrderRepository orderRepository,
             IEmailService emailService,
@@ -50,7 +50,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             //    return "Đơn hàng đã được xử lý";
             //}
 
-           
+
             long paymentAmount = ((int)model.Amount * 100);
             VnpayLibrary pay = new VnpayLibrary();
 
@@ -93,12 +93,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             _vnpayRepository.AddTransactionAsync(payment);//add vao bang transtion
             _orderService.UpdateOrderStatusAsync(response.OrderId, statusId);//update bang order
 
-            // Gửi email xác nhận thanh toán nếu thanh toán thành công
-            if (response.VnPayResponseCode == "00")
-            {
-                SendPaymentConfirmationEmail(response.OrderId.ToString(), (decimal)response.Amount, "VnPay").ConfigureAwait(false);
-            }
-
             return new VnpayResponseDTO
             {
                 Success = response.VnPayResponseCode == "00",
@@ -111,47 +105,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 VnPayResponseCode = response.VnPayResponseCode,
                 Amount = response.Amount,
             };//hoac retrun payment tren cx dc
-        }
-
-        private async Task SendPaymentConfirmationEmail(string orderId, decimal amount, string paymentMethod)
-        {
-            try
-            {
-                // Extract order ID from the format "orderId_timestamp"
-                string orderIdStr = orderId.Split('_')[0];
-                int orderIdInt;
-                if (!int.TryParse(orderIdStr, out orderIdInt))
-                {
-                    _logger.LogWarning("Invalid order ID format: {OrderId}", orderId);
-                    return;
-                }
-                
-                var order = await _orderRepository.GetOrderByIdAsync(orderIdInt);
-                if (order == null)
-                {
-                    _logger.LogWarning("Order {OrderId} not found when sending payment confirmation email", orderIdInt);
-                    return;
-                }
-
-                if (order == null || string.IsNullOrEmpty(order.Email))
-                {
-                    _logger.LogWarning("Customer email not found for order {OrderId}", orderIdInt);
-                    return;
-                }
-
-                await _emailService.SendPaymentConfirmationEmailAsync(
-                    order.Email,
-                    orderIdInt.ToString(),
-                    order.Name,
-                    amount,
-                    paymentMethod);
-                
-                _logger.LogInformation("Payment confirmation email sent for order {OrderId}", orderIdInt);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error sending payment confirmation email for order {OrderId}", orderId);
-            }
         }
     }
 }

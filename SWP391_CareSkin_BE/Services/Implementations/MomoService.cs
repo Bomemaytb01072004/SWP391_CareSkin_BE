@@ -224,18 +224,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             payment.IsPaid = callbackDto.ResultCode == 0;
             await _momoRepository.UpdatePaymentAsync(payment);
 
-            // Update order status to Paid (assuming 3 is the Paid status ID)
-            var order = await _orderRepository.GetOrderByIdAsync(orderId);
-            if (order != null)
-            {
-                order.OrderStatusId = 3; // 3 is Paid status
-                await _orderRepository.UpdateOrderAsync(order);
-                _logger.LogInformation("Order {OrderId} status updated to Paid", orderId);
-            }
-            else
-            {
-                _logger.LogWarning("Order {OrderId} not found when updating payment status", orderId);
-            }
         }
 
         public bool ValidateMomoCallback(MomoCallbackDto callbackDto)

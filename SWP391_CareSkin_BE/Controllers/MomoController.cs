@@ -70,7 +70,7 @@ namespace SWP391_CareSkin_BE.Controllers
                     return BadRequest(new { message = "Invalid callback data" });
                 }
 
-                _logger.LogInformation("Received Momo callback: OrderId={OrderId}, ResultCode={ResultCode}, TransId={TransId}", 
+                _logger.LogInformation("Received Momo callback: OrderId={OrderId}, ResultCode={ResultCode}, TransId={TransId}",
                     callbackDto.OrderId, callbackDto.ResultCode, callbackDto.TransId);
 
                 if (!ModelState.IsValid)
@@ -78,13 +78,13 @@ namespace SWP391_CareSkin_BE.Controllers
                     var errors = string.Join("; ", ModelState.Values
                         .SelectMany(v => v.Errors)
                         .Select(e => e.ErrorMessage));
-                    
+
                     _logger.LogWarning("Momo callback received with invalid model state: {Errors}", errors);
                     return BadRequest(new { message = "Invalid model state", errors });
                 }
 
                 // Process the callback asynchronously
-                _ = ProcessMomoCallbackAsync(callbackDto, "Frontend");
+                await ProcessMomoCallbackAsync(callbackDto, "Frontend");
 
                 return Ok(new { success = true, message = "Callback processed successfully" });
             }

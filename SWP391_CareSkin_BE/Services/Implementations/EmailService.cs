@@ -310,7 +310,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                     <div class='order-details'>
                         <h3>Chi tiết đơn hàng</h3>
                         <p>Mã đơn hàng: <strong>#{orderId}</strong></p>
-                        <p>Tổng thanh toán: <strong>${orderTotal:N0}</strong></p>
+                        <p>Tổng thanh toán: <strong>${orderTotal:N2}</strong></p>
                     </div>
                     
                     <p>Chúng tôi sẽ tiến hành xử lý đơn hàng của bạn trong thời gian sớm nhất.</p>
