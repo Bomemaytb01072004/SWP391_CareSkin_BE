@@ -23,6 +23,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(rf => rf.Customer)
                 .Include(rf => rf.Product)
                 .Include(rf => rf.RatingFeedbackImages)
+                .OrderByDescending(rf => rf.RatingFeedbackId)
                 .ToListAsync();
         }
 
@@ -33,6 +34,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(rf => rf.Product)
                 .Include(rf => rf.RatingFeedbackImages)
                 .Where(rf => rf.IsActive)
+                .OrderByDescending(rf => rf.RatingFeedbackId)
                 .ToListAsync();
         }
 
@@ -43,6 +45,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(rf => rf.Product)
                 .Include(rf => rf.RatingFeedbackImages)
                 .Where(rf => !rf.IsActive)
+                .OrderByDescending(rf => rf.RatingFeedbackId)
                 .ToListAsync();
         }
 
@@ -53,6 +56,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(rf => rf.Product)
                 .Include(rf => rf.RatingFeedbackImages)
                 .Where(rf => rf.ProductId == productId)
+                .OrderByDescending(rf => rf.RatingFeedbackId)
                 .ToListAsync();
         }
 
@@ -62,6 +66,7 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
                 .Include(rf => rf.Product)
                 .Include(rf => rf.RatingFeedbackImages)
                 .Where(rf => rf.CustomerId == customerId)
+                .OrderByDescending(rf => rf.RatingFeedbackId)
                 .ToListAsync();
         }
 
@@ -86,29 +91,6 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             _context.Entry(ratingFeedback).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return ratingFeedback;
-        }
-
-        public async Task<bool> ToggleRatingFeedbackVisibilityAsync(int id, bool isActive)
-        {
-            var ratingFeedback = await _context.RatingFeedbacks.FindAsync(id);
-            if (ratingFeedback == null)
-                return false;
-
-            ratingFeedback.IsActive = isActive;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<RatingFeedback> GetRatingFeedbackByCustomerAndProductAsync(int customerId, int productId)
-        {
-            return await _context.RatingFeedbacks
-                .FirstOrDefaultAsync(rf => rf.CustomerId == customerId && rf.ProductId == productId);
-        }
-
-        public async Task<bool> CustomerOwnsRatingFeedbackAsync(int customerId, int ratingFeedbackId)
-        {
-            return await _context.RatingFeedbacks
-                .AnyAsync(rf => rf.RatingFeedbackId == ratingFeedbackId && rf.CustomerId == customerId);
         }
 
         public async Task<double> GetAverageRatingForProductAsync(int productId)

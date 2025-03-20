@@ -78,56 +78,5 @@ namespace SWP391_CareSkin_BE.Controllers
             }
             return Ok(updateAdmin);
         }
-
-        // Rating Feedback Admin Methods
-        // GET: api/Admin/RatingFeedback
-        [HttpGet("RatingFeedback")]
-        public async Task<IActionResult> GetAllRatingFeedbacks()
-        {
-            var ratingFeedbacks = await _ratingFeedbackService.GetAllRatingFeedbacksAsync();
-            return Ok(ratingFeedbacks);
-        }
-
-        // GET: api/Admin/RatingFeedback/{id}
-        [HttpGet("RatingFeedback/{id}")]
-        public async Task<IActionResult> GetRatingFeedbackById(int id)
-        {           
-            var ratingFeedback = await _ratingFeedbackService.GetRatingFeedbackByIdAsync(id);
-            if (ratingFeedback == null)
-                return NotFound();
-
-            return Ok(ratingFeedback);
-        }
-
-        // PUT: api/Admin/RatingFeedback/{id}/visibility
-        [HttpPut("RatingFeedback/{id}/visibility")]
-        public async Task<IActionResult> ToggleRatingFeedbackVisibility(int id, [FromBody] AdminRatingFeedbackActionDTO actionDto)
-        {            
-            var result = await _ratingFeedbackService.AdminToggleRatingFeedbackVisibilityAsync(id, actionDto);
-            if (!result)
-                return NotFound();
-
-            return NoContent();
-        }
-
-        // DELETE: api/Admin/RatingFeedback/{id}
-        [HttpDelete("RatingFeedback/{id}")]
-        public async Task<IActionResult> DeleteRatingFeedback(int id)
-        {
-            //// Verify admin/staff exists
-            //int adminId = GetAdminIdFromClaims();
-            //var adminList = await _adminService.GetAdminAsync();
-            //var adminExists = adminList.Any(a => a.AdminId == adminId);
-            //if (!adminExists)
-            //{
-            //    return Unauthorized("Admin not found");
-            //}
-            
-            var result = await _ratingFeedbackService.AdminDeleteRatingFeedbackAsync(id);
-            if (!result)
-                return NotFound();
-
-            return NoContent();
-        }
     }
 }

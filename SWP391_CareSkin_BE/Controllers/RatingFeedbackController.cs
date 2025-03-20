@@ -21,18 +21,6 @@ namespace SWP391_CareSkin_BE.Controllers
             _customerService = customerService;
         }
 
-        private int GetCustomerIdFromClaims()
-        {
-            var idClaim = User.Claims.FirstOrDefault(c => c.Type == "CustomerId");
-            if (idClaim == null)
-                return 0;
-
-            if (int.TryParse(idClaim.Value, out int customerId))
-                return customerId;
-
-            return 0;
-        }
-
         // GET: api/RatingFeedback/product/{productId}
         [HttpGet("RatingFeedback/product/{productId}")]
         public async Task<IActionResult> GetByProductId(int productId)
@@ -50,10 +38,9 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         // GET: api/RatingFeedback/my-ratings
-        [HttpGet("RatingFeedback/my-ratings")]
-        public async Task<IActionResult> GetMyRatings()
+        [HttpGet("RatingFeedback/my-ratings/{customerId}")]
+        public async Task<IActionResult> GetMyRatings(int customerId)
         {
-            var customerId = GetCustomerIdFromClaims();
             var customer = await _customerService.GetCustomerByIdAsync(customerId);
             if (customer == null)
                 return NotFound("Customer not found");

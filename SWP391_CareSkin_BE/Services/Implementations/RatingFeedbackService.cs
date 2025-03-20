@@ -73,13 +73,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<RatingFeedbackDTO> CreateRatingFeedbackAsync(int customerId, CreateRatingFeedbackDTO createDto)
         {
-            // Kiểm tra xem đánh giá của khách hàng cho sản phẩm này đã tồn tại và đang active chưa
-            var existingRatingFeedback = await _ratingFeedbackRepository.GetRatingFeedbackByCustomerAndProductAsync(customerId, createDto.ProductId);
-            
-            if (existingRatingFeedback != null && existingRatingFeedback.IsActive)
-            {
-                throw new ArgumentException($"Bạn đã đánh giá sản phẩm này rồi.");
-            }
 
             // Use the mapper to create the entity
             var ratingFeedback = RatingFeedbackMapper.ToEntity(customerId, createDto);
