@@ -33,5 +33,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         /// <param name="paymentMethod">Payment method (e.g., Momo, VnPay)</param>
         /// <returns>Task representing the asynchronous operation</returns>
         Task SendPaymentConfirmationEmailAsync(string toEmail, string orderId, string customerName, decimal paymentAmount, string paymentMethod);
+
+        Task SendPINForResetPassword(string toEmail, string customerName, string pin);
     }
 }

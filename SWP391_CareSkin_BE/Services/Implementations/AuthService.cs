@@ -15,12 +15,14 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         private readonly ICustomerRepository _customerRepository;
         private readonly IResetPasswordRepository _passwordResetRepository;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthService(ICustomerRepository customerRepository, IResetPasswordRepository passwordResetRepository, IConfiguration configuration)
+        public AuthService(ICustomerRepository customerRepository, IResetPasswordRepository passwordResetRepository, IConfiguration configuration, IEmailService emailService)
         {
             _customerRepository = customerRepository;
             _passwordResetRepository = passwordResetRepository;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task RequestPasswordReset(ForgotPasswordRequestDTO request)
@@ -39,7 +41,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             };
 
             await _passwordResetRepository.CreateResetRequestAsync(resetRequest);
-            await SendEmailAsync(customer.Email, "Password Reset PIN", $"Your PIN is: {pin}");
+            await _emailService.SendPINForResetPassword(customer.Email, customer.FullName, resetRequest.ResetPin);
         }
 
         public async Task<bool> VerifyResetPin(VerifyResetPinDTO request)
@@ -62,31 +64,6 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             await _passwordResetRepository.RemoveResetRequestAsync(resetRequest);
         }
 
-        private async Task SendEmailAsync(string toEmail, string subject, string body)
-        {
-            string smtpServer = _configuration["EmailSettings:SmtpServer"];
-            int smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"]);
-            string senderEmail = _configuration["EmailSettings:SenderEmail"];
-            string senderPassword = _configuration["EmailSettings:SenderPassword"];
-            bool enableSsl = bool.Parse(_configuration["EmailSettings:EnableSsl"]);
-
-            using (SmtpClient client = new SmtpClient(smtpServer, smtpPort))
-            {
-                client.Credentials = new NetworkCredential(senderEmail, senderPassword);
-                client.EnableSsl = enableSsl;
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-                MailMessage mailMessage = new MailMessage
-                {
-                    From = new MailAddress(senderEmail),
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-                mailMessage.To.Add(toEmail);
-
-                await Task.Run(() => client.Send(mailMessage));
-            }
-        }
+        
     }
 }

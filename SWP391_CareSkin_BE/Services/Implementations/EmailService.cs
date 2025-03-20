@@ -477,6 +477,141 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             await SendEmailAsync(toEmail, subject, body);
         }
 
+        public async Task SendPINForResetPassword(string toEmail, string customerName, string pin)
+        {
+            string subject = "CareSkin - Xác nhận đặt lại mật khẩu";
+            if (customerName.Contains("No name"))
+            {
+                customerName = "khách hàng";
+            }
+            string body = $@"
+            <html>
+            <head>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+                    body {{ 
+                        font-family: 'Poppins', Arial, sans-serif; 
+                        line-height: 1.6; 
+                        color: #4b5563; 
+                        background-color: #f3f4f6; 
+                        margin: 0; 
+                        padding: 0; 
+                    }}
+        
+                    .container {{ 
+                        max-width: 600px; 
+                        margin: 0 auto; 
+                        padding: 20px; 
+                    }}
+        
+                    .email-wrapper {{ 
+                        background-color: #ffffff; 
+                        border-radius: 16px; 
+                        overflow: hidden; 
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
+                    }}
+        
+                    .header {{ 
+                        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                        color: #fff; 
+                        padding: 30px; 
+                        text-align: center; 
+                        position: relative; 
+                        overflow: hidden; 
+                    }}
+        
+                    .header-pattern {{ 
+                        position: absolute; 
+                        inset: 0; 
+                        background-image: url('https://via.placeholder.com/600x200?text='); 
+                        opacity: 0.1; 
+                        background-size: cover;
+                    }}
+        
+                    .header h1 {{ 
+                        position: relative; 
+                        z-index: 10; 
+                        margin: 0; 
+                        font-size: 28px; 
+                        font-weight: 600;
+                        letter-spacing: 0.5px;
+                    }}
+        
+                    .content {{ 
+                        padding: 40px 30px; 
+                        background-color: #fff; 
+                    }}
+        
+                    .greeting {{
+                        font-size: 18px;
+                        margin-bottom: 20px;
+                    }}
+        
+                    .action-button {{ 
+                        display: inline-block; 
+                        background: linear-gradient(to right, #059669, #047857); 
+                        color: #fff !important; 
+                        padding: 14px 32px; 
+                        text-decoration: none; 
+                        border-radius: 30px; 
+                        font-weight: 600; 
+                        margin-top: 20px; 
+                        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+                        transition: all 0.3s ease;
+                        font-size: 16px;
+                        text-align: center;
+                    }}
+        
+                    .action-button:hover {{ 
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 15px rgba(5, 150, 105, 0.25);
+                    }}
+        
+                    .footer {{ 
+                        text-align: center; 
+                        padding: 25px 20px; 
+                        font-size: 13px; 
+                        color: #9ca3af; 
+                        background-color: #f9fafb;
+                        border-top: 1px solid #f3f4f6;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='email-wrapper'>
+                        <div class='header'>
+                            <div class='header-pattern'></div>
+                            <h1>Đặt lại mật khẩu</h1>
+                        </div>
+            
+                        <div class='content'>
+                            <p class='greeting'>Xin chào <strong>{customerName}</strong>,</p>
+                
+                            <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu của bạn. Vui lòng sử dụng mã PIN dưới đây để hoàn tất quá trình đặt lại mật khẩu:</p>
+                
+                            <div style='text-align: center; margin: 30px 0;'>
+                                <h2 style='font-size: 24px; color: #059669; font-weight: bold;'>Mã PIN: {pin}</h2>
+                                <p style='font-size: 16px; color: #4b5563;'>Mã PIN này sẽ hết hạn sau 15 phút.</p>
+                                <p style='font-size: 16px; color: #4b5563;'>Vì lí do bảo mật vui lòng không chia sẻ mã PIN với người khác.</p>
+                            </div>
 
+                            <div style='text-align: center; margin: 30px 0;'>
+                                <a href='http://careskinbeauty.shop/reset-password' class='action-button'>Đặt lại mật khẩu</a>
+                            </div>
+                        </div>
+            
+                        <div class='footer'>
+                            <p>© {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
+                            <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            await SendEmailAsync(toEmail, subject, body);
+        }
     }
 }
