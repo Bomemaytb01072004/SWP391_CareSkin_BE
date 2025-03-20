@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
-    [Table("BlogNews")]
+    [Table("BlogNew")]
     public class BlogNew
     {
         [Key]
