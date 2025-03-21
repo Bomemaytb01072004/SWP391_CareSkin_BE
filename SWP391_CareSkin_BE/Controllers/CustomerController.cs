@@ -126,6 +126,17 @@ namespace SWP391_CareSkin_BE.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{customerId}")]
+        public async Task<IActionResult> DeleteCustomerByAdmin(int customerId)
+        {
+            var result = await _customerService.DeleteCustomerByAdminAsync(customerId);
+            if (!result)
+                return NotFound(new { message = "Customer not found" });
+
+            return Ok(new { message = "Customer deleted successfully" });
+        }
+
 
     }
 }

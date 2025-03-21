@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Data;
 using SWP391_CareSkin_BE.DTOs.Requests;
@@ -107,6 +108,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return CustomerMapper.ToCustomerResponseDTO(customer);
         }
 
-       
+        public async Task<bool> DeleteCustomerByAdminAsync(int customerId)
+        {
+            var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
+            if (customer == null)
+            {
+                throw new ArgumentException("Customer does not exsits.");
+            }
+
+            customer.IsActive = false;
+            await _customerRepository.UpdateCustomerAsync(customer);
+            return true;
+        }
+
     }
 }

@@ -15,6 +15,7 @@ namespace SWP391_CareSkin_BE.Services.Interfaces
         Task<CustomerDTO> Login(LoginDTO loginDto);
         Task<Customer?> GetCustomerByEmailAsync(string email);
         Task<CustomerDTO> CreateGoogleUserAsync(Customer customer);
+        Task<bool> DeleteCustomerByAdminAsync(int customerId);
 
     }
 }
