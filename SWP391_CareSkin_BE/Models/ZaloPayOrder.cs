@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWP391_CareSkin_BE.Models
 {
@@ -15,5 +15,6 @@ namespace SWP391_CareSkin_BE.Models
         public string EmbedData { get; set; }
         public string BankCode { get; set; }
         public string Mac { get; set; }
+        public int OrderId { get; set; }
     }
 }
