@@ -8,6 +8,7 @@ using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace SWP391_CareSkin_BE.Services.Implementations
 {
@@ -57,6 +58,11 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (customer == null)
             {
                 throw new ArgumentException("Khách hàng không tồn tại.");
+            }
+
+            if (!string.IsNullOrEmpty(request.Phone) && !Regex.IsMatch(request.Phone, @"^\d{10,15}$"))
+            {
+                throw new ArgumentException("Phone number must contain between 10 and 15 digits.");
             }
 
             CustomerMapper.UpdateCustomer(customer, request, pictureUrl);
