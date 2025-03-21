@@ -182,7 +182,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<bool> DeletePromotionAsync(int promotionId)
         {
-            await _promotionRepository.DeletePromotionAsync(promotionId);
+            var promotion = await _promotionRepository.GetPromotionByIdAsync(promotionId);
+            if (promotion == null)
+                return false;
+
+            // Implement soft delete by setting IsActive to false
+            promotion.IsActive = false;
+            await _promotionRepository.UpdatePromotionAsync(promotion);
             return true;
         }
 
