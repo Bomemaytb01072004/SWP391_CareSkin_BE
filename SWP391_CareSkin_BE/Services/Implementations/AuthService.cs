@@ -46,24 +46,25 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<bool> VerifyResetPin(VerifyResetPinDTO request)
         {
-            var resetRequest = await _passwordResetRepository.GetValidResetRequestAsync(request.Email, request.ResetPin);
+            var resetRequest = await _passwordResetRepository.GetValidResetRequestAsync(request.ResetPin);
+            if (resetRequest == null)
+            {
+                throw new Exception("Invalid or expired PIN.");
+            }
+            else
+            {
+                await _passwordResetRepository.RemoveResetRequestAsync(resetRequest);
+            }
             return resetRequest != null;
         }
 
         public async Task ResetPassword(ResetPasswordDTO request)
         {
-            var resetRequest = await _passwordResetRepository.GetValidResetRequestAsync(request.Email, request.ResetPin);
-            if (resetRequest == null) throw new Exception("Invalid or expired PIN.");
-
             var customer = await _customerRepository.GetCustomerByEmailAsync(request.Email);
             if (customer == null) throw new Exception("Email does not exist.");
 
             customer.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             await _customerRepository.UpdateCustomerAsync(customer);
-
-            await _passwordResetRepository.RemoveResetRequestAsync(resetRequest);
         }
-
-        
     }
 }

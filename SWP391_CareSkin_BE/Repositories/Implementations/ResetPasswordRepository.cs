@@ -34,11 +34,11 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ResetPassword?> GetValidResetRequestAsync(string email, string resetPin)
+        public async Task<ResetPassword?> GetValidResetRequestAsync(string resetPin)
         {
             return await _context.ResetPasswords
                 .Include(r => r.Customer)
-                .FirstOrDefaultAsync(r => r.Customer.Email == email && r.ResetPin == resetPin && r.ExpiryTime > DateTime.UtcNow);
+                .FirstOrDefaultAsync(r => r.ResetPin == resetPin && r.ExpiryTime > DateTime.UtcNow);
         }
 
         public async Task RemoveResetRequestAsync(ResetPassword request)

@@ -19,7 +19,7 @@ namespace SWP391_CareSkin_BE.Models
 
             public string Token { get; set; } = Guid.NewGuid().ToString();
 
-        [Required]
+            [Required]
             public DateTime ExpiryTime { get; set; } 
 
             [ForeignKey("CustomerId")]
