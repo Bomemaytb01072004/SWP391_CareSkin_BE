@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SWP391_CareSkin_BE.DTOs.Requests.ZaloPay;
@@ -26,10 +26,14 @@ namespace SWP391_CareSkin_BE.Controllers
             var appId = long.Parse(_config["ZaloPay:AppId"]);
             var appTransId = $"{DateTime.Now:yyMMdd}_{Guid.NewGuid():N}";
 
-            // Tạo embed_data với redirect URL
+            // Tạo URL redirect với orderId đã được thêm vào
+            var baseRedirectUrl = _config["ZaloPay:RedirectUrl"];
+            var redirectUrl = $"{baseRedirectUrl}?orderId={request.OrderId}";
+
+            // Tạo embed_data với redirect URL đã bao gồm orderId
             var embedData = new
             {
-                redirecturl = _config["ZaloPay:RedirectUrl"], // Lấy từ config
+                redirecturl = redirectUrl, // URL redirect đã bao gồm orderId
                 promotioninfo = ""
             };
 
@@ -40,7 +44,7 @@ namespace SWP391_CareSkin_BE.Controllers
                 AppTransId = appTransId,
                 AppTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 Amount = request.Amount,
-                Description = $"Thanh toán cho đơn hàng #{appTransId}",
+                Description = $"Thanh toán cho đơn hàng #{request.OrderId}",
                 Items = "[]",
                 EmbedData = JsonConvert.SerializeObject(embedData),
                 BankCode = ""
@@ -72,21 +76,48 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(result);
         }
 
+        // Giữ lại phương thức redirect để xử lý trường hợp ZaloPay gọi đến endpoint này
         [HttpGet("redirect")]
-        public IActionResult RedirectHandler([FromQuery] ZaloPayRedirect model)
+        public IActionResult RedirectHandler()
         {
-            // 1. Validate checksum
-            var key2 = _config["ZaloPay:Key2"];
-            var data = $"{model.AppId}|{model.AppTransId}|{model.Pmcid}|{model.BankCode}|{model.Amount}|{model.DiscountAmount}|{model.Status}";
-            var computedChecksum = _zaloPayService.ComputeHmac(data, key2);
+            // Lấy tất cả các tham số từ query string
+            var appTransId = Request.Query["apptransid"].ToString();
+            var status = Request.Query["status"].ToString();
+            var orderId = Request.Query["orderId"].ToString(); // Thử lấy orderId từ query string nếu có
+            
+            if (string.IsNullOrEmpty(appTransId))
+            {
+                return BadRequest("Missing apptransid parameter");
+            }
 
-            if (model.Checksum != computedChecksum)
-                return BadRequest("Invalid checksum");
+            // Nếu không có orderId trong query string, thử lấy từ embed_data
+            if (string.IsNullOrEmpty(orderId))
+            {
+                try
+                {
+                    var queryResult = _zaloPayService.QueryOrderAsync(appTransId).Result;
+                    if (queryResult.ContainsKey("embed_data"))
+                    {
+                        var embedData = JsonConvert.DeserializeObject<Dictionary<string, object>>(queryResult["embed_data"].ToString());
+                        if (embedData.ContainsKey("orderId"))
+                        {
+                            orderId = embedData["orderId"].ToString();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi nhưng vẫn tiếp tục redirect
+                    Console.WriteLine($"Error retrieving orderId: {ex.Message}");
+                }
+            }
 
-            // 2. Redirect với tham số trạng thái
+            // Redirect về trang web với orderId và trạng thái thanh toán
             var baseUrl = _config["ZaloPay:RedirectUrl"];
-            var status = model.Status == "1" ? "success" : "failed";
-            return Redirect($"{baseUrl}?status={status}&orderId={model.AppTransId}");
+            var paymentStatus = status == "1" ? "success" : "failed";
+            
+            // Thêm orderId vào URL redirect
+            return Redirect($"{baseUrl}?status={paymentStatus}&orderId={orderId}&apptransid={appTransId}");
         }
     }
 }
