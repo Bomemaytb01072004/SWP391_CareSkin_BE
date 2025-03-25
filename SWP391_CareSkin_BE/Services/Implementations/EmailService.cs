@@ -25,13 +25,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             try
             {
                 var email = new MimeMessage();
-                
+
                 // Set sender information
                 email.From.Add(new MailboxAddress(_configuration["SmtpSettings:SenderName"], _configuration["SmtpSettings:SenderEmail"]));
-                
+
                 // Set recipient information
                 email.To.Add(new MailboxAddress("", toEmail));
-                
+
                 // Set email subject
                 email.Subject = subject;
 
@@ -40,18 +40,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
                 // Connect and send email via SMTP server
                 using var smtp = new SmtpClient();
-                
+
                 // Connect to SMTP server (Using TLS)
                 await smtp.ConnectAsync(
-                    _configuration["SmtpSettings:Server"], 
-                    int.Parse(_configuration["SmtpSettings:Port"]), 
+                    _configuration["SmtpSettings:Server"],
+                    int.Parse(_configuration["SmtpSettings:Port"]),
                     SecureSocketOptions.StartTls);
-                
+
                 // Authenticate with email and password
                 await smtp.AuthenticateAsync(
-                    _configuration["SmtpSettings:SenderEmail"], 
+                    _configuration["SmtpSettings:SenderEmail"],
                     _configuration["SmtpSettings:Password"]);
-                
+
                 // Send email
                 await smtp.SendAsync(email);
 
@@ -65,114 +65,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Sends an order confirmation email to a customer
-        /// </summary>
-        //public async Task SendOrderConfirmationEmailAsync(string toEmail, string orderId, string customerName, decimal orderTotal)
-        //{
-        //    string subject = $"CareSkin - Xác nhận đơn hàng #{orderId}";
-            
-        //    string body = $@"
-        //    <html>
-        //    <head>
-        //        <style>
-        //            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        //            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        //            .header {{ background-color: #f8bbd0; color: #fff; padding: 15px; text-align: center; }}
-        //            .content {{ padding: 20px; border: 1px solid #ddd; }}
-        //            .footer {{ text-align: center; margin-top: 20px; font-size: 12px; color: #777; }}
-        //            .button {{ display: inline-block; background-color: #f8bbd0; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; }}
-        //        </style>
-        //    </head>
-        //    <body>
-        //        <div class='container'>
-        //            <div class='header'>
-        //                <h1>Xác nhận đơn hàng</h1>
-        //            </div>
-        //            <div class='content'>
-        //                <p>Xin chào <strong>{customerName}</strong>,</p>
-        //                <p>Cảm ơn bạn đã đặt hàng tại CareSkin Beauty Shop. Đơn hàng của bạn đã được xác nhận thành công.</p>
-        //                <p><strong>Thông tin đơn hàng:</strong></p>
-        //                <ul>
-        //                    <li>Mã đơn hàng: <strong>#{orderId}</strong></li>
-        //                    <li>Tổng thanh toán: <strong>${orderTotal:N0}</strong></li>
-        //                </ul>
-        //                <p>Chúng tôi sẽ tiến hành xử lý đơn hàng của bạn trong thời gian sớm nhất.</p>
-        //                <p>Bạn có thể theo dõi trạng thái đơn hàng trong tài khoản của mình trên website của chúng tôi.</p>
-        //                <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email hoặc hotline.</p>
-        //                <p>Trân trọng,</p>
-        //                <p><strong>Đội ngũ CareSkin Beauty Shop</strong></p>
-        //            </div>
-        //            <div class='footer'>
-        //                <p>© {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
-        //                <p>Email này được gửi tự động, vui lòng không trả lời.</p>
-        //            </div>
-        //        </div>
-        //    </body>
-        //    </html>";
-
-        //    await SendEmailAsync(toEmail, subject, body);
-        //}
-
-        /// <summary>
-        /// Sends a payment confirmation email to a customer
-        /// </summary>
-        //public async Task SendPaymentConfirmationEmailAsync(string toEmail, string orderId, string customerName, decimal paymentAmount, string paymentMethod)
-        //{
-        //    string subject = $"CareSkin - Xác nhận thanh toán đơn hàng #{orderId}";
-            
-        //    string body = $@"
-        //    <html>
-        //    <head>
-        //        <style>
-        //            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        //            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        //            .header {{ background-color: #f8bbd0; color: #fff; padding: 15px; text-align: center; }}
-        //            .content {{ padding: 20px; border: 1px solid #ddd; }}
-        //            .footer {{ text-align: center; margin-top: 20px; font-size: 12px; color: #777; }}
-        //            .button {{ display: inline-block; background-color: #f8bbd0; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; }}
-        //            .payment-info {{ background-color: #f9f9f9; padding: 15px; margin: 15px 0; border-left: 4px solid #f8bbd0; }}
-        //        </style>
-        //    </head>
-        //    <body>
-        //        <div class='container'>
-        //            <div class='header'>
-        //                <h1>Xác nhận thanh toán</h1>
-        //            </div>
-        //            <div class='content'>
-        //                <p>Xin chào <strong>{customerName}</strong>,</p>
-        //                <p>Chúng tôi xin thông báo rằng thanh toán cho đơn hàng của bạn đã được xác nhận thành công.</p>
-                        
-        //                <div class='payment-info'>
-        //                    <p><strong>Thông tin thanh toán:</strong></p>
-        //                    <ul>
-        //                        <li>Mã đơn hàng: <strong>#{orderId}</strong></li>
-        //                        <li>Số tiền: <strong>${paymentAmount:N0}</strong></li>
-        //                        <li>Phương thức thanh toán: <strong>{paymentMethod}</strong></li>
-        //                        <li>Thời gian: <strong>{DateTime.Now:dd/MM/yyyy HH:mm:ss}</strong></li>
-        //                    </ul>
-        //                </div>
-                        
-        //                <p>Đơn hàng của bạn đang được xử lý và sẽ được giao trong thời gian sớm nhất.</p>
-        //                <p>Bạn có thể theo dõi trạng thái đơn hàng trong tài khoản của mình trên website của chúng tôi.</p>
-        //                <p>Cảm ơn bạn đã mua sắm tại CareSkin Beauty Shop!</p>
-        //                <p>Trân trọng,</p>
-        //                <p><strong>Đội ngũ CareSkin Beauty Shop</strong></p>
-        //            </div>
-        //            <div class='footer'>
-        //                <p>© {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
-        //                <p>Email này được gửi tự động, vui lòng không trả lời.</p>
-        //            </div>
-        //        </div>
-        //    </body>
-        //    </html>";
-
-        //    await SendEmailAsync(toEmail, subject, body);
-        //}
-
         public async Task SendOrderConfirmationEmailAsync(string toEmail, string orderId, string customerName, decimal orderTotal)
         {
-            string subject = $"CareSkin - Xác nhận đơn hàng #{orderId}";
+            string subject = $"CareSkin - Order Confirmation #{orderId}";
 
             string body = $@"
     <html>
@@ -299,30 +194,30 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             <div class='email-wrapper'>
                 <div class='header'>
                     <div class='header-pattern'></div>
-                    <h1>Xác nhận đơn hàng</h1>
+                    <h1>Order Confirmation</h1>
                 </div>
                 
                 <div class='content'>
-                    <p class='greeting'>Xin chào <strong>{customerName}</strong>,</p>
+                    <p class='greeting'>Hello <strong>{customerName}</strong>,</p>
                     
-                    <p>Cảm ơn bạn đã đặt hàng tại CareSkin Beauty Shop. Đơn hàng của bạn đã được xác nhận thành công.</p>
+                    <p>Thank you for your order at CareSkin Beauty Shop. Your order has been successfully confirmed.</p>
                     
                     <div class='order-details'>
-                        <h3>Chi tiết đơn hàng</h3>
-                        <p>Mã đơn hàng: <strong>#{orderId}</strong></p>
-                        <p>Tổng thanh toán: <strong>${orderTotal:N2}</strong></p>
+                        <h3>Order Details</h3>
+                        <p>Order ID: <strong>#{orderId}</strong></p>
+                        <p>Total Amount: <strong>${orderTotal:N2}</strong></p>
                     </div>
                     
-                    <p>Chúng tôi sẽ tiến hành xử lý đơn hàng của bạn trong thời gian sớm nhất.</p>
+                    <p>We will process your order as soon as possible.</p>
                     
                     <div style='text-align: center; margin: 30px 0;'>
-                        <a href='http://careskinbeauty.shop/' class='action-button'>Xem chi tiết đơn hàng</a>
+                        <a href='http://careskinbeauty.shop/order-details?orderId={orderId}' class='action-button'>View Order Details</a>
                     </div>
                 </div>
                 
                 <div class='footer'>
-                    <p>© {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
-                    <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+                    <p>&copy; {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
+                    <p>This email was sent automatically, please do not reply.</p>
                 </div>
             </div>
         </div>
@@ -334,7 +229,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task SendPaymentConfirmationEmailAsync(string toEmail, string orderId, string customerName, decimal paymentAmount, string paymentMethod)
         {
-            string subject = $"CareSkin - Xác nhận thanh toán đơn hàng #{orderId}";
+            string subject = $"CareSkin - Payment Confirmation for Order #{orderId}";
 
             string body = $@"
     <html>
@@ -441,33 +336,37 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             <div class='email-wrapper'>
                 <div class='header'>
                     <div class='header-pattern'></div>
-                    <h1>Xác nhận thanh toán</h1>
+                    <h1>Payment Confirmation</h1>
                 </div>
                 
                 <div class='content'>
-                    <p class='greeting'>Xin chào <strong>{customerName}</strong>,</p>
+                    <p class='greeting'>Hello <strong>{customerName}</strong>,</p>
                     
-                    <p>Chúng tôi xin thông báo rằng thanh toán cho đơn hàng của bạn đã được xác nhận thành công.</p>
+                    <p>We are pleased to inform you that the payment for your order has been successfully confirmed.</p>
                     
                     <div class='payment-details'>
-                        <h3>Chi tiết thanh toán</h3>
-                        <p>Mã đơn hàng: <strong>#{orderId}</strong></p>
-                        <p>Số tiền thanh toán: <strong>${paymentAmount:N2}</strong></p>
-                        <p>Phương thức thanh toán: <strong>{paymentMethod}</strong></p>
-                        <p>Thời gian thanh toán: <strong>{DateTime.Now:dd/MM/yyyy HH:mm:ss}</strong></p>
+                        <h3>Payment Details</h3>
+                        <p>Order ID: <strong>#{orderId}</strong></p>
+                        <p>Payment Amount: <strong>${paymentAmount:N2}</strong></p>
+                        <p>Payment Method: <strong>{paymentMethod}</strong></p>
+                        <p>Payment Time: <strong>{DateTime.Now:dd/MM/yyyy HH:mm:ss}</strong></p>
                     </div>
                     
-                    <p>Đơn hàng của bạn đang được xử lý và sẽ được giao trong thời gian sớm nhất.</p>
-                    <p>Bạn có thể theo dõi trạng thái đơn hàng trong tài khoản của mình trên website của chúng tôi.</p>
-                    <p>Cảm ơn bạn đã mua sắm tại CareSkin Beauty Shop!</p>
+                    <p>Your order is being processed and will be delivered as soon as possible.</p>
+                    <p>You can track your order status in your account on our website.</p>
+                    <p>Thank you for shopping at CareSkin Beauty Shop!</p>
                     
-                    <p>Trân trọng,</p>
-                    <p><strong>Đội ngũ CareSkin Beauty Shop</strong></p>
+                    <p>Best regards,</p>
+                    <p><strong>CareSkin Beauty Shop Team</strong></p>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='http://careskinbeauty.shop/order-details?orderId={orderId}' class='action-button'>View Order Details</a>
+                    </div>
                 </div>
                 
                 <div class='footer'>
-                    <p>© {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
-                    <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+                    <p>&copy; {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
+                    <p>This email was sent automatically, please do not reply.</p>
                 </div>
             </div>
         </div>
@@ -479,10 +378,10 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task SendPINForResetPassword(string toEmail, string customerName, string pin)
         {
-            string subject = "CareSkin - Xác nhận đặt lại mật khẩu";
+            string subject = "CareSkin - Password Reset Confirmation";
             if (customerName.Contains("No name"))
             {
-                customerName = "khách hàng";
+                customerName = "customer";
             }
             string body = $@"
             <html>
@@ -583,28 +482,28 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                     <div class='email-wrapper'>
                         <div class='header'>
                             <div class='header-pattern'></div>
-                            <h1>Đặt lại mật khẩu</h1>
+                            <h1>Password Reset</h1>
                         </div>
             
                         <div class='content'>
-                            <p class='greeting'>Xin chào <strong>{customerName}</strong>,</p>
+                            <p class='greeting'>Hello <strong>{customerName}</strong>,</p>
                 
-                            <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu của bạn. Vui lòng sử dụng mã PIN dưới đây để hoàn tất quá trình đặt lại mật khẩu:</p>
+                            <p>We have received your request to reset your password. Please use the PIN code below to complete the password reset process:</p>
                 
                             <div style='text-align: center; margin: 30px 0;'>
-                                <h2 style='font-size: 24px; color: #059669; font-weight: bold;'>Mã PIN: {pin}</h2>
-                                <p style='font-size: 16px; color: #4b5563;'>Mã PIN này sẽ hết hạn sau 15 phút.</p>
-                                <p style='font-size: 16px; color: #4b5563;'>Vì lí do bảo mật vui lòng không chia sẻ mã PIN với người khác.</p>
+                                <h2 style='font-size: 24px; color: #059669; font-weight: bold;'>PIN Code: {pin}</h2>
+                                <p style='font-size: 16px; color: #4b5563;'>This PIN code will expire in 15 minutes.</p>
+                                <p style='font-size: 16px; color: #4b5563;'>For security reasons, please do not share this PIN code with anyone.</p>
                             </div>
 
                             <div style='text-align: center; margin: 30px 0;'>
-                                <a href='http://careskinbeauty.shop/reset-password' class='action-button'>Đặt lại mật khẩu</a>
+                                <a href='http://careskinbeauty.shop/reset-password' class='action-button'>Reset Password</a>
                             </div>
                         </div>
             
                         <div class='footer'>
-                            <p>© {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
-                            <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+                            <p>&copy; {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
+                            <p>This email was sent automatically, please do not reply.</p>
                         </div>
                     </div>
                 </div>
