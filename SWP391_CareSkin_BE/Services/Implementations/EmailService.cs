@@ -218,6 +218,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 <div class='footer'>
                     <p>&copy; {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
                     <p>This email was sent automatically, please do not reply.</p>
+                    <div style='margin-top: 15px;'>
+                        <p>Contact to us: <a href='http://careskinbeauty.shop/contact' style='color: #059669; font-weight: 600; text-decoration: underline;'>click here</a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -367,6 +370,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 <div class='footer'>
                     <p>&copy; {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
                     <p>This email was sent automatically, please do not reply.</p>
+                    <div style='margin-top: 15px;'>
+                        <p>Contact to us: <a href='http://careskinbeauty.shop/contact' style='color: #059669; font-weight: 600; text-decoration: underline;'>click here</a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -504,6 +510,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                         <div class='footer'>
                             <p>&copy; {DateTime.Now.Year} CareSkin Beauty Shop. All rights reserved.</p>
                             <p>This email was sent automatically, please do not reply.</p>
+                            <div style='margin-top: 15px;'>
+                                <p>Contact to us: <a href='http://careskinbeauty.shop/contact' style='color: #059669; font-weight: 600; text-decoration: underline;'>click here</a></p>
+                            </div>
                         </div>
                     </div>
                 </div>

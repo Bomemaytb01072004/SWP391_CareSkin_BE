@@ -114,10 +114,9 @@ namespace SWP391_CareSkin_BE.Controllers
 
             // Redirect về trang web với orderId và trạng thái thanh toán
             var baseUrl = _config["ZaloPay:RedirectUrl"];
-            var paymentStatus = status == "1" ? "success" : "failed";
             
             // Thêm orderId vào URL redirect
-            return Redirect($"{baseUrl}?status={paymentStatus}&orderId={orderId}&apptransid={appTransId}");
+            return Redirect($"{baseUrl}?status={status}&orderId={orderId}&apptransid={appTransId}");
         }
     }
 }
