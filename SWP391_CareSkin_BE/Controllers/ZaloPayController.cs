@@ -84,7 +84,8 @@ namespace SWP391_CareSkin_BE.Controllers
             var appTransId = Request.Query["apptransid"].ToString();
             var status = Request.Query["status"].ToString();
             var orderId = Request.Query["orderId"].ToString(); // Thử lấy orderId từ query string nếu có
-            
+            var amount = Request.Query["amount"].ToString();
+
             if (string.IsNullOrEmpty(appTransId))
             {
                 return BadRequest("Missing apptransid parameter");
@@ -113,10 +114,10 @@ namespace SWP391_CareSkin_BE.Controllers
             }
 
             // Redirect về trang web với orderId và trạng thái thanh toán
-            var baseUrl = _config["ZaloPay:RedirectUrl"];
+            var baseUrl = "http://careskinbeauty.shop/zalo-confirmation";
             
             // Thêm orderId vào URL redirect
-            return Redirect($"{baseUrl}?status={status}&orderId={orderId}&apptransid={appTransId}");
+            return Redirect($"{baseUrl}?status={status}&orderId={orderId}&amount={amount}&apptransid={appTransId}");
         }
     }
 }
