@@ -309,6 +309,9 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         {
             var query = _productRepository.GetQueryable();
 
+            // Only include active products
+            query = query.Where(p => p.IsActive);
+
             query = query
                 .ApplyKeywordFilter(request.Keyword)
                 .ApplyCategoryFilter(request.Category)
@@ -320,7 +323,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var totalCount = await query.CountAsync();
 
             var pageNumber = request.PageNumber ?? 1;
-            var pageSize = request.PageSize ?? 10;
+            var pageSize = request.PageSize ?? 20;
 
             var products = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -328,7 +331,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 .Include(p => p.Brand)
                 .Include(p => p.ProductVariations)
                 .Include(p => p.ProductMainIngredients)
+                .Include(p => p.ProductDetailIngredients)
+                .Include(p => p.ProductUsages)
+                .Include(p => p.PromotionProducts.Where(pp => pp.Promotion.IsActive))
+                    .ThenInclude(pp => pp.Promotion)
                 .Include(p => p.ProductForSkinTypes)
+                    .ThenInclude(ps => ps.SkinType)
                 .Include(p => p.ProductPictures)
                 .ToListAsync();
 

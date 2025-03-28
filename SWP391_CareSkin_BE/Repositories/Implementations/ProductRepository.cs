@@ -106,8 +106,16 @@ namespace SWP391_CareSkin_BE.Repositories.Implementations
         public IQueryable<Product> GetQueryable()
         {
             return _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.ProductVariations)
+                .Include(p => p.ProductMainIngredients)
+                .Include(p => p.ProductDetailIngredients)
+                .Include(p => p.ProductUsages)
+                .Include(p => p.PromotionProducts.Where(pp => pp.Promotion.IsActive))
+                    .ThenInclude(pp => pp.Promotion)
                 .Include(p => p.ProductForSkinTypes)
                     .ThenInclude(ps => ps.SkinType)
+                .Include(p => p.ProductPictures)
                 .AsQueryable();
         }
     }

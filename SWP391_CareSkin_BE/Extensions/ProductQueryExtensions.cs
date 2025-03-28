@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SWP391_CareSkin_BE.Models;
 
 namespace SWP391_CareSkin_BE.Extensions
@@ -62,8 +62,28 @@ namespace SWP391_CareSkin_BE.Extensions
                 "name" => query.OrderBy(p => p.ProductName),
                 "price_asc" => query.OrderBy(p => p.ProductVariations.Select(v => v.Price).DefaultIfEmpty().Min()),
                 "price_desc" => query.OrderByDescending(p => p.ProductVariations.Select(v => v.Price).DefaultIfEmpty().Min()),
+                "rating_desc" => query.OrderByDescending(p => p.AverageRating).ThenByDescending(p => p.ProductId),
+                "rating_asc" => query.OrderBy(p => p.AverageRating).ThenByDescending(p => p.ProductId),
                 _ => query.OrderByDescending(p => p.ProductId) // Default sort by newest
             };
         }
+
+        // truong hop luon tra ve query moi theo id từ mới nhất đến cũ nhất
+        //public static IQueryable<Product> ApplySorting(this IQueryable<Product> query, string sortBy)
+        //{
+        //    var sortedQuery = sortBy?.ToLower() switch
+        //    {
+        //        "name" => query.OrderBy(p => p.ProductName),
+        //        "price_asc" => query.OrderBy(p => p.ProductVariations.Select(v => v.Price).DefaultIfEmpty().Min()),
+        //        "price_desc" => query.OrderByDescending(p => p.ProductVariations.Select(v => v.Price).DefaultIfEmpty().Min()),
+        //        "rating_desc" => query.OrderByDescending(p => p.AverageRating),
+        //        "rating_asc" => query.OrderBy(p => p.AverageRating),
+        //        _ => query // No specific sorting applied yet
+        //    };
+
+        //    // Always apply the default sorting by ProductId descending (newest first)
+        //    // If another sort was applied, this becomes a secondary sort criteria
+        //    return sortedQuery.ThenByDescending(p => p.ProductId);
+        //}
     }
 }
