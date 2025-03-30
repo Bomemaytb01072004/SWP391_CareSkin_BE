@@ -337,6 +337,11 @@ namespace SWP391_CareSkin_BE
                 var now = DateTime.Now;
                 var lastMidnight = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
 
+                // Always run a force update on startup to ensure all promotions are in the correct state
+                logger.LogInformation("Application starting - Running promotion force update to ensure correct states...");
+                BackgroundJob.Enqueue(() => promotionUpdaterJob.ForceUpdateAllPromotionsAsync());
+
+                // Also check for missed scheduled jobs
                 var jobStorage = JobStorage.Current;
                 using (var connection = jobStorage.GetConnection())
                 {

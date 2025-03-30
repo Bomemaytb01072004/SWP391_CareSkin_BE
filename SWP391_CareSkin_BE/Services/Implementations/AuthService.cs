@@ -1,4 +1,4 @@
-﻿using SWP391_CareSkin_BE.DTOs.Requests.Customer;
+using SWP391_CareSkin_BE.DTOs.Requests.Customer;
 using SWP391_CareSkin_BE.Models;
 using SWP391_CareSkin_BE.Repositories.Interfaces;
 using SWP391_CareSkin_BE.Services.Interfaces;
@@ -31,7 +31,8 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (customer == null) throw new Exception("Email does not exist.");
 
             var pin = new Random().Next(100000, 999999).ToString();
-            var expiryTime = DateTime.UtcNow.AddMinutes(15);
+            // Use DateTime.Now instead of UtcNow for consistency with validation
+            var expiryTime = DateTime.Now.AddMinutes(15);
 
             var resetRequest = new ResetPassword
             {
@@ -40,7 +41,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 ExpiryTime = expiryTime
             };
 
-            await _passwordResetRepository.CreateResetRequestAsync(resetRequest);
+            try
+            {
+                await _passwordResetRepository.CreateResetRequestAsync(resetRequest);
+                Console.WriteLine($"Reset PIN created for customer {customer.CustomerId}: {pin}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating reset PIN: {ex.Message}");
+                throw new Exception($"Failed to create reset PIN: {ex.Message}", ex);
+            }
+
             await _emailService.SendPINForResetPassword(customer.Email, customer.FullName, resetRequest.ResetPin);
         }
 

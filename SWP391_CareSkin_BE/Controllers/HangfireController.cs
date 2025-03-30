@@ -25,6 +25,15 @@ namespace SWP391_CareSkin_BE.Controllers
             return Ok(new { message = "Promotion update job has been triggered." });
         }
 
+        [HttpPost("force-update-all-promotions")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult ForceUpdateAllPromotions()
+        {
+            // Force update all promotions regardless of current status
+            BackgroundJob.Enqueue(() => _promotionUpdaterJob.ForceUpdateAllPromotionsAsync());
+            return Ok(new { message = "Force update of all promotions has been triggered." });
+        }
+
         [HttpGet("job-status")]
         [Authorize(Roles = "Admin")]
         public IActionResult GetJobStatus()
