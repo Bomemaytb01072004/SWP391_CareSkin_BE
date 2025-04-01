@@ -69,7 +69,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             
             if (existingRoutine != null && existingRoutine.IsActive)
             {
-                throw new ArgumentException($"Routine with name '{request.RoutineName}' and period '{request.RoutinePeriod}' already exists.");
+                throw new Exception($"Routine with name '{request.RoutineName}' and period '{request.RoutinePeriod}' already exists.");
             }
 
             // Validate skin type exists

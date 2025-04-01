@@ -48,15 +48,29 @@ namespace SWP391_CareSkin_BE.Controllers
         [HttpPost]
         public async Task<ActionResult<SkinTypeDTO>> Create([FromBody] SkinTypeCreateRequestDTO request)
         {
-            var skinType = await _skinTypeService.CreateAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = skinType.SkinTypeId }, skinType);
+            try
+            {
+                var skinType = await _skinTypeService.CreateAsync(request);
+                return CreatedAtAction(nameof(GetById), new { id = skinType.SkinTypeId }, skinType);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<SkinTypeDTO>> Update(int id, [FromBody] SkinTypeUpdateRequestDTO request)
         {
-            var skinType = await _skinTypeService.UpdateAsync(id, request);
-            return Ok(skinType);
+            try
+            {
+                var skinType = await _skinTypeService.UpdateAsync(id, request);
+                return Ok(skinType);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]

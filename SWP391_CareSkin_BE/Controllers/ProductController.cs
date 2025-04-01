@@ -90,9 +90,9 @@ namespace SWP391_CareSkin_BE.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500, "An error occurred while creating the product");
+                return StatusCode(500, $"An error occurred while creating the product: {e.Message}");
             }
         }
 
