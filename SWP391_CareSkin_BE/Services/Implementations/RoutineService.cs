@@ -64,12 +64,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<RoutineDTO> CreateRoutineAsync(RoutineCreateRequestDTO request)
         {
-            // Kiểm tra xem Routine với tên và giai đoạn này đã tồn tại và đang active chưa
+            // Check if a routine with this name and period already exists and is active
             var existingRoutine = await _routineRepository.GetByNameAndPeriodAsync(request.RoutineName, request.RoutinePeriod, request.SkinTypeId);
             
             if (existingRoutine != null && existingRoutine.IsActive)
             {
-                throw new ArgumentException($"Routine với tên '{request.RoutineName}' và giai đoạn '{request.RoutinePeriod}' đã tồn tại.");
+                throw new ArgumentException($"Routine with name '{request.RoutineName}' and period '{request.RoutinePeriod}' already exists.");
             }
 
             // Validate skin type exists
@@ -102,6 +102,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (routine == null)
             {
                 throw new NotFoundException($"Routine with ID {id} not found");
+            }
+
+            // Check for duplicate name and period when updating
+            if (request.RoutineName != routine.RoutineName || request.RoutinePeriod != routine.RoutinePeriod || request.SkinTypeId != routine.SkinTypeId)
+            {
+                var routineWithSameNameAndPeriod = await _routineRepository.GetByNameAndPeriodAsync(request.RoutineName, request.RoutinePeriod, request.SkinTypeId);
+                if (routineWithSameNameAndPeriod != null && routineWithSameNameAndPeriod.IsActive && routineWithSameNameAndPeriod.RoutineId != id)
+                {
+                    throw new ArgumentException($"Routine with name '{request.RoutineName}' and period '{request.RoutinePeriod}' already exists.");
+                }
             }
 
             // Validate skin type exists

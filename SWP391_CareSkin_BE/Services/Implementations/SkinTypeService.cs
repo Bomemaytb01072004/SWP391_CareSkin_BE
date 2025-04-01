@@ -35,12 +35,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<SkinTypeDTO> CreateAsync(SkinTypeCreateRequestDTO request)
         {
-            // Kiểm tra xem SkinType với tên này đã tồn tại và đang active chưa
+            // Check if a skin type with this name already exists and is active
             var existingSkinType = await _skinTypeRepository.GetByNameAsync(request.TypeName);
             
             if (existingSkinType != null && existingSkinType.IsActive)
             {
-                throw new Exception($"Loại da với tên '{request.TypeName}' đã tồn tại.");
+                throw new Exception($"Skin type with name '{request.TypeName}' already exists.");
             }
 
             var skinType = SkinTypeMapper.ToEntity(request);
@@ -55,6 +55,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (skinType == null)
             {
                 throw new NotFoundException($"SkinType with ID {id} not found");
+            }
+
+            // Check for duplicate name when updating
+            if (request.TypeName != skinType.TypeName)
+            {
+                var skinTypeWithSameName = await _skinTypeRepository.GetByNameAsync(request.TypeName);
+                if (skinTypeWithSameName != null && skinTypeWithSameName.IsActive && skinTypeWithSameName.SkinTypeId != id)
+                {
+                    throw new Exception($"Skin type with name '{request.TypeName}' already exists.");
+                }
             }
 
             SkinTypeMapper.UpdateEntity(skinType, request);

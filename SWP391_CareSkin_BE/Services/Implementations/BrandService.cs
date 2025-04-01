@@ -34,18 +34,18 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<BrandDTO> CreateBrandAsync(BrandCreateRequestDTO request, string pictureUrl)
         {
-            // Kiểm tra xem Brand với tên này đã tồn tại và đang active chưa
+            // Check if a brand with this name already exists and is active
             var existingBrand = await _brandRepository.GetBrandByNameAsync(request.Name);
             
             if (existingBrand != null && existingBrand.IsActive)
             {
-                throw new Exception($"Thương hiệu với tên '{request.Name}' đã tồn tại.");
+                throw new Exception($"Brand with name '{request.Name}' already exists.");
             }
 
             var brandEntity = BrandMapper.ToEntity(request, pictureUrl);
             await _brandRepository.AddBrandAsync(brandEntity);
 
-            // Lấy lại brand vừa thêm (nếu cần hiển thị ID ...)
+            // Get the newly created brand (if we need to display ID ...)
             var createdBrand = await _brandRepository.GetBrandByIdAsync(brandEntity.BrandId);
             return BrandMapper.ToDTO(createdBrand);
         }
@@ -54,6 +54,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
         {
             var existingBrand = await _brandRepository.GetBrandByIdAsync(brandId);
             if (existingBrand == null) return null;
+
+            // Check if the new name conflicts with another brand's name
+            if (request.Name != existingBrand.Name)
+            {
+                var brandWithSameName = await _brandRepository.GetBrandByNameAsync(request.Name);
+                if (brandWithSameName != null && brandWithSameName.IsActive && brandWithSameName.BrandId != brandId)
+                {
+                    throw new Exception($"Brand with name '{request.Name}' already exists.");
+                }
+            }
 
             // Update the brand properties
             BrandMapper.UpdateEntity(existingBrand, request);
@@ -66,7 +76,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
             await _brandRepository.UpdateBrandAsync(existingBrand);
 
-            // Lấy lại brand sau khi update
+            // Get the updated brand
             var updatedBrand = await _brandRepository.GetBrandByIdAsync(brandId);
             return BrandMapper.ToDTO(updatedBrand);
         }

@@ -41,7 +41,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             var existingCustomer = await _customerRepository.GetCustomerByEmailOrUsernameAsync(request.Email, request.UserName);
             if (existingCustomer != null && existingCustomer.IsActive)
             {
-                throw new ArgumentException("Email hoặc username đã tồn tại.");
+                throw new ArgumentException("Email or username already exists.");
             }
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);

@@ -19,8 +19,8 @@ namespace SWP391_CareSkin_BE.Jobs
         public async Task UpdatePromotionStatusesAsync()
         {
             // Sử dụng thời gian local của máy
-            var currentDate = DateOnly.FromDateTime(DateTime.Now);
-            _logger.LogInformation($"Running promotion status update job on {DateTime.Now}. Current date: {currentDate}");
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            _logger.LogInformation($"Running promotion status update job on {DateTime.UtcNow}. Current date: {currentDate}");
 
             // Update promotion statuses
             var promotions = await _dbContext.Promotions

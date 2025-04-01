@@ -72,13 +72,13 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<ProductDTO> CreateProductAsync(ProductCreateRequestDTO request, string pictureUrl)
         {
-            // Kiểm tra xem sản phẩm với tên này đã tồn tại và đang active chưa
+            // Check if a product with the same name already exists and is active
             var existingProduct = await _productRepository.GetProductByNameAsync(request.ProductName);
             
             if (existingProduct != null && existingProduct.IsActive)
             {
                 // Throw ArgumentException with a specific message that will be caught by the controller
-                throw new ArgumentException($"Sản phẩm với tên '{request.ProductName}' đã tồn tại");
+                throw new ArgumentException($"Product with name '{request.ProductName}' already exists");
             }
 
             var productEntity = ProductMapper.ToEntity(request, pictureUrl);
@@ -115,9 +115,16 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (existingProduct == null)
                 return null;
 
-            // Cập nhật thông tin sản phẩm (trừ hình ảnh)
+            // Check for duplicate product name
             if (request.ProductName != existingProduct.ProductName)
+            {
+                var productWithSameName = await _productRepository.GetProductByNameAsync(request.ProductName);
+                if (productWithSameName != null && productWithSameName.IsActive && productWithSameName.ProductId != productId)
+                {
+                    throw new ArgumentException($"Product with name '{request.ProductName}' already exists");
+                }
                 existingProduct.ProductName = request.ProductName;
+            }
 
             if (request.BrandId != existingProduct.BrandId)
                 existingProduct.BrandId = request.BrandId;
@@ -128,7 +135,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (request.Description != existingProduct.Description)
                 existingProduct.Description = request.Description;
 
-            // Xử lý hình ảnh sản phẩm
+            // Handle product image
             if (!string.IsNullOrEmpty(pictureUrl))
             {
                 if (!string.IsNullOrEmpty(existingProduct.PictureUrl))
@@ -142,22 +149,22 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 existingProduct.PictureUrl = pictureUrl;
             }
 
-            // Cập nhật SkinTypes mà không xóa dữ liệu cũ
+            // Update SkinTypes without deleting existing data
             if (request.ProductForSkinTypes != null && request.ProductForSkinTypes.Any())
             {
                 foreach (var skinType in request.ProductForSkinTypes)
                 {
                     var existingSkinType = existingProduct.ProductForSkinTypes
-                        .FirstOrDefault(s => s.ProductForSkinTypeId == skinType.ProductForSkinTypeId); // Kiểm tra xem SkinType đã có chưa
+                        .FirstOrDefault(s => s.ProductForSkinTypeId == skinType.ProductForSkinTypeId); // Check if SkinType already exists
 
                     if (existingSkinType != null)
                     {
-                        // Nếu có SkinType trong cơ sở dữ liệu, cập nhật thông tin
+                        // If SkinType exists in the database, update its information
                         existingSkinType.SkinTypeId = skinType.SkinTypeId;
                     }
                     else
                     {
-                        // Nếu không có SkinType trong cơ sở dữ liệu, thêm mới
+                        // If SkinType does not exist in the database, add a new one
                         existingProduct.ProductForSkinTypes.Add(new ProductForSkinType
                         {
                             SkinTypeId = skinType.SkinTypeId
@@ -167,51 +174,51 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Cập nhật hoặc thêm mới ProductVariations mà không xóa dữ liệu cũ
+            // Update or add new ProductVariations without deleting existing data
             if (request.Variations != null && request.Variations.Any())
             {
                 foreach (var variation in request.Variations)
                 {
                     var existingVariation = existingProduct.ProductVariations
-                        .FirstOrDefault(v => v.ProductVariationId == variation.ProductVariationId); // Kiểm tra nếu variation đã tồn tại
+                        .FirstOrDefault(v => v.ProductVariationId == variation.ProductVariationId); // Check if variation already exists
 
                     if (existingVariation != null)
                     {
-                        // Cập nhật thông tin của variation đã có
+                        // Update information of existing variation
                         existingVariation.Ml = variation.Ml;
                         existingVariation.Price = variation.Price;
-                        existingVariation.SalePrice = variation.SalePrice ?? existingVariation.SalePrice; // Giữ giá cũ nếu không có giá sale mới
+                        existingVariation.SalePrice = variation.SalePrice ?? existingVariation.SalePrice; // Keep old sale price if new sale price is not provided
                     }
                     else
                     {
-                        // Thêm variation mới nếu không tồn tại
+                        // Add new variation if it does not exist
                         existingProduct.ProductVariations.Add(new ProductVariation
                         {
                             Ml = variation.Ml,
                             Price = variation.Price,
-                            SalePrice = variation.SalePrice ?? 0 // Khởi tạo SalePrice = 0 nếu không có giá
+                            SalePrice = variation.SalePrice ?? 0 // Initialize SalePrice to 0 if not provided
                         });
                     }
                 }
             }
 
-            // Cập nhật MainIngredients mà không xóa dữ liệu cũ
+            // Update MainIngredients without deleting existing data
             if (request.MainIngredients != null && request.MainIngredients.Any())
             {
                 foreach (var ingredient in request.MainIngredients)
                 {
                     var existingIngredient = existingProduct.ProductMainIngredients
-                        .FirstOrDefault(i => i.ProductMainIngredientId == ingredient.ProductMainIngredientId); // Kiểm tra sự tồn tại
+                        .FirstOrDefault(i => i.ProductMainIngredientId == ingredient.ProductMainIngredientId); // Check if ingredient already exists
 
                     if (existingIngredient != null)
                     {
-                        // Cập nhật thông tin của ingredient đã có
+                        // Update information of existing ingredient
                         existingIngredient.IngredientName = ingredient.IngredientName;
                         existingIngredient.Description = ingredient.Description;
                     }
                     else
                     {
-                        // Thêm ingredient mới nếu không tồn tại
+                        // Add new ingredient if it does not exist
                         existingProduct.ProductMainIngredients.Add(new ProductMainIngredient
                         {
                             IngredientName = ingredient.IngredientName,
@@ -221,22 +228,22 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Cập nhật DetailIngredients mà không xóa dữ liệu cũ
+            // Update DetailIngredients without deleting existing data
             if (request.DetailIngredients != null && request.DetailIngredients.Any())
             {
                 foreach (var ingredient in request.DetailIngredients)
                 {
                     var existingIngredient = existingProduct.ProductDetailIngredients
-                        .FirstOrDefault(i => i.ProductDetailIngredientId == ingredient.ProductDetailIngredientId); // Kiểm tra sự tồn tại
+                        .FirstOrDefault(i => i.ProductDetailIngredientId == ingredient.ProductDetailIngredientId); // Check if ingredient already exists
 
                     if (existingIngredient != null)
                     {
-                        // Cập nhật thông tin của ingredient đã có
+                        // Update information of existing ingredient
                         existingIngredient.IngredientName = ingredient.IngredientName;
                     }
                     else
                     {
-                        // Thêm ingredient mới nếu không tồn tại
+                        // Add new ingredient if it does not exist
                         existingProduct.ProductDetailIngredients.Add(new ProductDetailIngredient
                         {
                             IngredientName = ingredient.IngredientName
@@ -245,23 +252,23 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Cập nhật Usages mà không xóa dữ liệu cũ
+            // Update Usages without deleting existing data
             if (request.Usages != null && request.Usages.Any())
             {
                 foreach (var usage in request.Usages)
                 {
                     var existingUsage = existingProduct.ProductUsages
-                        .FirstOrDefault(u => u.ProductUsageId == usage.ProductUsageId); // Kiểm tra sự tồn tại
+                        .FirstOrDefault(u => u.ProductUsageId == usage.ProductUsageId); // Check if usage already exists
 
                     if (existingUsage != null)
                     {
-                        // Cập nhật thông tin usage nếu cần
+                        // Update information of existing usage
                         existingUsage.Step = usage.Step;
                         existingUsage.Instruction = usage.Instruction;
                     }
                     else
                     {
-                        // Thêm usage mới nếu không tồn tại
+                        // Add new usage if it does not exist
                         existingProduct.ProductUsages.Add(new ProductUsage
                         {
                             Step = usage.Step,
@@ -271,7 +278,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Xử lý hình ảnh bổ sung của sản phẩm
+            // Handle additional product pictures
             if (request.AdditionalPicturesToDelete != null && request.AdditionalPicturesToDelete.Any())
             {
                 foreach (var pictureId in request.AdditionalPicturesToDelete)
@@ -297,7 +304,7 @@ namespace SWP391_CareSkin_BE.Services.Implementations
                 }
             }
 
-            // Cập nhật sản phẩm
+            // Update product
             await _productRepository.UpdateProductAsync(existingProduct);
             var updatedProduct = await _productRepository.GetProductByIdAsync(productId);
             return ProductMapper.ToDTO(updatedProduct);
