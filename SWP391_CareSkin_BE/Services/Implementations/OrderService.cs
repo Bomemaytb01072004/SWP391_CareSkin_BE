@@ -137,6 +137,17 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             if (!cartItems.Any())
                 throw new Exception("No valid products were found in the shopping cart.");
 
+            // Check if all products are active
+            var productIds = cartItems.Select(c => c.ProductId).Distinct().ToList();
+            var inactiveProducts = await _context.Products
+                .Where(p => productIds.Contains(p.ProductId) && !p.IsActive)
+                .AnyAsync();
+
+            if (inactiveProducts)
+            {
+                throw new Exception("One or more products are invalid.");
+            }
+
             // Map các thuộc tính chung của Order từ request
             var orderEntity = OrderMapper.ToEntity(request);
 
