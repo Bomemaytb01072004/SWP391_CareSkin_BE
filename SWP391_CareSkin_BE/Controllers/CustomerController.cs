@@ -85,11 +85,11 @@ namespace SWP391_CareSkin_BE.Controllers
         }
 
         [HttpDelete("delete/{customerId}")]
-        public async Task<IActionResult> DeleteCustomer(int customerId, [FromBody] string password)
+        public async Task<IActionResult> DeleteCustomer(int customerId)
         {
             try
             {
-                await _customerService.DeleteCustomerAsync(customerId, password);
+                await _customerService.DeleteCustomerAsync(customerId);
                 return Ok(new { message = "Delete account successful" });
             }
             catch (ArgumentException ex)

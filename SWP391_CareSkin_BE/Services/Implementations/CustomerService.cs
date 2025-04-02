@@ -65,17 +65,12 @@ namespace SWP391_CareSkin_BE.Services.Implementations
             return CustomerMapper.ToCustomerResponseDTO(customer);
         }
 
-        public async Task<bool> DeleteCustomerAsync(int customerId, string password)
+        public async Task<bool> DeleteCustomerAsync(int customerId)
         {
             var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
             if (customer == null)
             {
-                throw new ArgumentException("Khách hàng không tồn tại.");
-            }
-
-            if (!BCrypt.Net.BCrypt.Verify(password, customer.Password))
-            {
-                throw new ArgumentException("Mật khẩu không đúng.");
+                throw new ArgumentException("Customer is not exist.");
             }
 
             // Implement soft delete by setting IsActive to false instead of removing from database
