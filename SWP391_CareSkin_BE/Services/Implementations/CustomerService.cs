@@ -98,11 +98,19 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<Customer?> GetCustomerByEmailAsync(string email)
         {
-            return await _customerRepository.GetCustomerByEmailAsync(email);
+            var customer = await _customerRepository.GetCustomerByEmailAsync(email);
+            // Don't return inactive customers
+            if (customer != null && !customer.IsActive)
+            {
+                throw new Exception("Account is inactive. Please contact support.");
+            }
+            return customer;
         }
 
         public async Task<CustomerDTO> CreateGoogleUserAsync(Customer customer)
         {
+            // Ensure new Google users are active by default
+            customer.IsActive = true;
             await _customerRepository.AddCustomerAsync(customer);
             return CustomerMapper.ToCustomerResponseDTO(customer);
         }

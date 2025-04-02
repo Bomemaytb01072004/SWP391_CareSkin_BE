@@ -64,6 +64,17 @@ namespace SWP391_CareSkin_BE.Controllers
 
             try
             {
+                // Try to login as admin first (no IsActive check for admins)
+                try
+                {
+                    var admin = await _adminService.Login(loginDto);
+                    if (admin != null) { return Ok(admin); }
+                }
+                catch (Exception)
+                {
+                    // Continue to try other login types
+                }
+
                 // Try to login as customer
                 try
                 {
@@ -78,17 +89,6 @@ namespace SWP391_CareSkin_BE.Controllers
                         return BadRequest(new { message = "Your account is inactive. Please contact support." });
                     }
                     // Otherwise continue to try other login types
-                }
-
-                // Try to login as admin
-                try
-                {
-                    var admin = await _adminService.Login(loginDto);
-                    if (admin != null) { return Ok(admin); }
-                }
-                catch (Exception)
-                {
-                    // Continue to try other login types
                 }
 
                 // Try to login as staff
@@ -186,50 +186,63 @@ namespace SWP391_CareSkin_BE.Controllers
                     return BadRequest("Invalid Google token.");
                 }
 
-                // Check if user already exists in database
-                var existingUser = await _customerService.GetCustomerByEmailAsync(payload.Email);
-                
-                if (existingUser == null)
+                try
                 {
-                    // Create a new account if it doesn't exist
-                    // Generate a random password for Google users
-                    string randomPassword = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString());
+                    // Check if user already exists in database
+                    // GetCustomerByEmailAsync will throw an exception if the account is inactive
+                    var existingUser = await _customerService.GetCustomerByEmailAsync(payload.Email);
                     
-                    var newUser = new Customer
+                    if (existingUser == null)
                     {
-                        Email = payload.Email,
-                        UserName = payload.Email.Split('@')[0], // Use part of email as username
-                        Password = randomPassword,
-                        FullName = payload.Name,
-                        PictureUrl = payload.Picture,
-                        // Other fields can be populated as needed
-                    };
+                        // Create a new account if it doesn't exist
+                        // Generate a random password for Google users
+                        string randomPassword = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString());
+                        
+                        var newUser = new Customer
+                        {
+                            Email = payload.Email,
+                            UserName = payload.Email.Split('@')[0], // Use part of email as username
+                            Password = randomPassword,
+                            FullName = payload.Name,
+                            PictureUrl = payload.Picture,
+                            IsActive = true // Ensure new Google users are active by default
+                        };
 
-                    var createdUser = await _customerService.CreateGoogleUserAsync(newUser);
-                    existingUser = await _customerService.GetCustomerByEmailAsync(payload.Email);
-                }
-
-                // Generate JWT Token
-                string role = "Customer";
-                var jwtToken = _jwtHelper.GenerateToken(existingUser.UserName, role);
-
-                return Ok(new SocialLoginResponseDTO
-                {
-                    token = jwtToken,
-                    user = new SocialUserDTO
-                    {
-                        CustomerId = existingUser.CustomerId,
-                        Email = existingUser.Email,
-                        UserName = existingUser.UserName,
-                        FullName = existingUser.FullName,
-                        PictureUrl = existingUser.PictureUrl,
-                        role = role
+                        var createdUser = await _customerService.CreateGoogleUserAsync(newUser);
+                        existingUser = await _customerService.GetCustomerByEmailAsync(payload.Email);
                     }
-                });
+
+                    // Generate JWT Token
+                    string role = "Customer";
+                    var jwtToken = _jwtHelper.GenerateToken(existingUser.UserName, role);
+
+                    return Ok(new SocialLoginResponseDTO
+                    {
+                        token = jwtToken,
+                        user = new SocialUserDTO
+                        {
+                            CustomerId = existingUser.CustomerId,
+                            Email = existingUser.Email,
+                            UserName = existingUser.UserName,
+                            FullName = existingUser.FullName,
+                            PictureUrl = existingUser.PictureUrl,
+                            role = role
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // Check if the exception is about inactive account
+                    if (ex.Message.Contains("inactive"))
+                    {
+                        return BadRequest(new { message = "Your account is inactive. Please contact support." });
+                    }
+                    throw; // Re-throw other exceptions
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error processing Google login: {ex.Message}");
+                return BadRequest(new { message = $"Error processing Google login: {ex.Message}" });
             }
         }
 
