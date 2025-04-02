@@ -72,8 +72,19 @@ namespace SWP391_CareSkin_BE.Services
 
         public async Task<StaffDTO> Login(LoginDTO loginDto)
         {
-            var authResult = await _staffRepository.LoginStaff(loginDto);
-            return StaffMapper.ToStaffResponseDTO(authResult);
+            try
+            {
+                var authResult = await _staffRepository.LoginStaff(loginDto);
+                if (authResult == null)
+                {
+                    throw new Exception("Invalid username, password, or account is inactive.");
+                }
+                return StaffMapper.ToStaffResponseDTO(authResult);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<List<StaffDTO>> GetAllStaffAsync()

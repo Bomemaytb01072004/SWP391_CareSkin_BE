@@ -62,16 +62,58 @@ namespace SWP391_CareSkin_BE.Controllers
                 Password = request.Password
             };
 
-            var customer = await _customerService.Login(loginDto);
-            if (customer != null) { return Ok(customer); }
+            try
+            {
+                // Try to login as customer
+                try
+                {
+                    var customer = await _customerService.Login(loginDto);
+                    if (customer != null) { return Ok(customer); }
+                }
+                catch (Exception ex)
+                {
+                    // If the exception message contains "inactive", return a specific message
+                    if (ex.Message.Contains("inactive"))
+                    {
+                        return BadRequest(new { message = "Your account is inactive. Please contact support." });
+                    }
+                    // Otherwise continue to try other login types
+                }
 
-            var admin = await _adminService.Login(loginDto);
-            if (admin != null) { return Ok(admin); }
+                // Try to login as admin
+                try
+                {
+                    var admin = await _adminService.Login(loginDto);
+                    if (admin != null) { return Ok(admin); }
+                }
+                catch (Exception)
+                {
+                    // Continue to try other login types
+                }
 
-            var staff = await _staffService.Login(loginDto);
-            if (staff != null) { return Ok(staff); }
+                // Try to login as staff
+                try
+                {
+                    var staff = await _staffService.Login(loginDto);
+                    if (staff != null) { return Ok(staff); }
+                }
+                catch (Exception ex)
+                {
+                    // If the exception message contains "inactive", return a specific message
+                    if (ex.Message.Contains("inactive"))
+                    {
+                        return BadRequest(new { message = "Your account is inactive. Please contact support." });
+                    }
+                    // Otherwise continue
+                }
 
-            return BadRequest("Invalid username or password.");
+                // If we get here, no login was successful
+                return BadRequest(new { message = "Invalid username or password." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         #region === GOOGLE LOGIN (REDIRECT FLOW) ===

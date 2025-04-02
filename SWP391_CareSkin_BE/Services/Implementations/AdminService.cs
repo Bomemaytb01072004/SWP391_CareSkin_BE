@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using SWP391_CareSkin_BE.Data;
@@ -33,8 +33,19 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<AdminDTO> Login(LoginDTO loginDto)
         {
-            var authResult = await _adminRepository.LoginAdmin(loginDto);
-            return AdminMapper.ToDTO(authResult);
+            try
+            {
+                var authResult = await _adminRepository.LoginAdmin(loginDto);
+                if (authResult == null)
+                {
+                    throw new Exception("Invalid username or password.");
+                }
+                return AdminMapper.ToDTO(authResult);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<AdminDTO> UpdateAdminAsync(AdminUpdateRequestDTO request, int id, string pictureUrl)

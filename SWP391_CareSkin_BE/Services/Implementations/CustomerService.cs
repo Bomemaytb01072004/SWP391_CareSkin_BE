@@ -81,8 +81,19 @@ namespace SWP391_CareSkin_BE.Services.Implementations
 
         public async Task<CustomerDTO> Login(LoginDTO loginDto)
         {
-            var authResult = await _customerRepository.LoginCustomer(loginDto);
-            return CustomerMapper.ToCustomerResponseDTO(authResult);
+            try
+            {
+                var authResult = await _customerRepository.LoginCustomer(loginDto);
+                if (authResult == null)
+                {
+                    throw new Exception("Invalid username, password, or account is inactive.");
+                }
+                return CustomerMapper.ToCustomerResponseDTO(authResult);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<Customer?> GetCustomerByEmailAsync(string email)

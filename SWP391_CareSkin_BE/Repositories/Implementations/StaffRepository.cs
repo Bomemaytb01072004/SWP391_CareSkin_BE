@@ -61,6 +61,11 @@ namespace SWP391_CareSkin_BE.Repositories
                 return null;
             }
 
+            if (!staff.IsActive)
+            {
+                return null;
+            }
+
             string role = "Staff";
             var token = _jwtHelper.GenerateToken(request.UserName, role, staff.StaffId);
             staff.Token = token;
