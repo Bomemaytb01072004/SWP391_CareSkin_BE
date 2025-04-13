@@ -7,9 +7,9 @@
 ![Languages](https://img.shields.io/badge/languages-2-lightgrey)
 
 Built with the tools and technologies:  
-![JSON](https://img.shields.io/badge/JSON-✔️-black)
-![Docker](https://img.shields.io/badge/Docker-✔️-blue)
-![NuGet](https://img.shields.io/badge/NuGet-✔️-blue)
+![JSON](https://img.shields.io/badge/JSON-black?logo=json&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![NuGet](https://img.shields.io/badge/NuGet-004880?logo=nuget&logoColor=white)
 
 ---
 
